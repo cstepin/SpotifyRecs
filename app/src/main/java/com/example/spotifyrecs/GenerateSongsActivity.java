@@ -10,16 +10,33 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.Track;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyCallback;
+import kaaes.spotify.webapi.android.SpotifyError;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.UserPrivate;
+import retrofit.client.Response;
+
 public class GenerateSongsActivity extends AppCompatActivity {
 
     private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
     private static final String REDIRECT_URI = "http://localhost:8080";
+    String authToken;
+
+
     private SpotifyAppRemote mSpotifyAppRemote;
+
+    SpotifyApi api = new SpotifyApi();
+    public static SpotifyService spotifyService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_songs);
+
+
+        Bundle bundle = getIntent().getExtras();
+        authToken = bundle.getString("AUTH_TOKEN");
     }
 
     @Override
@@ -59,6 +76,20 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
     private void connected() {
         // Play a playlist
+
+        spotifyService.getMe(new SpotifyCallback<UserPrivate>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+
+            }
+
+            @Override
+            public void success(UserPrivate userPrivate, Response response) {
+                Log.i("user", userPrivate.display_name);
+            }
+        });
+
+        /*
         mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
 
         // Subscribe to PlayerState
@@ -70,5 +101,12 @@ public class GenerateSongsActivity extends AppCompatActivity {
                         Log.d("MainActivity", track.name + " by " + track.artist.name);
                     }
                 });
+         */
+    }
+
+    private void setServiceApi() {
+        SpotifyApi api = new SpotifyApi();
+        api.setAccessToken(authToken);
+        spotifyService = api.getService();
     }
 }

@@ -59,7 +59,7 @@ dependencies {
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:3.0.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
 
-    // new
+    // new for Web API
     implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
     implementation 'com.spotify.android:auth:1.2.5' // Maven dependency
 

@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.example.spotifyrecs.databinding.ActivityLoginBinding;
 import com.parse.LogInCallback;
 import com.parse.ParseUser;
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationRequest;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,6 +26,10 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignUp;
     ActivityLoginBinding binding;
     final String TAG = "LoginActivity";
+    String authToken = "";
+
+    AuthorizationRequest.Builder builder =
+            new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
 
     private static final int REQUEST_CODE = 1337;
     private static final String REDIRECT_URI = "com.example.capstoneapp://callback";
@@ -32,7 +39,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-      //  Log.i("currUser", "user is: " + ParseUser.getCurrentUser().toString());
+        builder.setScopes(new String[]{"streaming", "user-follow-modify",
+                "playlist-read-collaborative", "app-remote-control", "playlist-modify-public",
+                "user-follow-read", "playlist-modify-private"});
+        AuthorizationRequest request = builder.build();
+
+        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
 
         if(ParseUser.getCurrentUser() != null){
             goMainActivity();
@@ -69,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onSignUpClick() {
         Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
+        i.putExtra("AUTH_TOKEN", authToken);
         startActivity(i);
     }
 
@@ -94,4 +107,36 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        Log.i(TAG, "in onActivityResult");
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, intent);
+
+            switch (response.getType()) {
+                // Response was successful and contains auth token
+                case TOKEN:
+                    Log.i(TAG, "connected");
+                    authToken = response.getAccessToken();
+                    // Handle successful response
+                    break;
+
+                // Auth flow returned an error
+                case ERROR:
+                    Log.e("error log-in", response.getError());
+                    // Handle error response
+                    break;
+
+                // Most likely auth flow was cancelled
+                default:
+                    Log.i("login", "no token or error :0");
+                    // Handle other cases
+            }
+        }
+    }
+
 }

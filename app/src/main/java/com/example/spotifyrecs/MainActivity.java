@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnNewPlaylist;
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
+    String authToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +73,19 @@ public class MainActivity extends AppCompatActivity {
                 toNewPlaylists();
             }
         });
+
+        btnNewPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toGenerateSongs();
+            }
+        });
+
+        authToken = getIntent().getStringExtra("AUTH_TOKEN");
     }
 
     private void toNewPlaylists() {
         Intent i = new Intent(MainActivity.this, SwipeSongsActivity.class);
-        startActivity(i);
-    }
-
-    private void toNewPlaylists(ArrayList<Song> songs) {
-        Intent i = new Intent(MainActivity.this, SwipeSongsActivity.class);
-       // i.putParcelableArrayListExtra("songs", songs);
         startActivity(i);
     }
 
@@ -102,141 +106,9 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    /*
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
-
-        SpotifyAppRemote.connect(this, connectionParams,
-                new Connector.ConnectionListener() {
-
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity", "Connected! Yay!");
-
-                        // Now you can start interacting with App Remote
-                        connected();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e("MainActivity", throwable.getMessage(), throwable);
-
-                        // Something went wrong when attempting to connect! Handle errors here
-                    }
-                });
+    private void toGenerateSongs(){
+        Intent i = new Intent(MainActivity.this, GenerateSongsActivity.class);
+        i.putExtra("AUTH_TOKEN", authToken);
+        startActivity(i);
     }
-
-    private void connected() {
-        // Then we will write some more code here.
-
-        // Play a playlist
-     //   mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
-
-        List<Song> songs = new ArrayList<>();
-
-        // This gets the content asynchronously in recommended
-        CallResult<ListItems> listItemsCallResult = mSpotifyAppRemote.getContentApi()
-                .getRecommendedContentItems(ContentApi.ContentType.DEFAULT);
-        listItemsCallResult.setResultCallback(new CallResult.ResultCallback<ListItems>() {
-            @Override
-            public void onResult(ListItems data) {
-                if(data != null){
-                    Log.i("asd", "data : " + data.toString());
-                    ListItem[] items = data.items;
-
-                    for(int i = 0; i < items.length; i++) {
-                   //     for (ListItem item : items) {
-                            CallResult<ListItems> listItemsCallResult1 = mSpotifyAppRemote
-                                    .getContentApi()
-                                    .getChildrenOfItem(items[i], 3, 0);
-
-                        int finalI = i;
-                        listItemsCallResult1.setResultCallback(new CallResult.ResultCallback<ListItems>() {
-                                @Override
-                                public void onResult(ListItems data) {
-                                    if (data != null) {
-                                        ListItem[] items1 = data.items;
-
-                                        for (ListItem item1 : items1) {
-
-                                            if (item1.uri.contains("playlist") || item1.uri.contains("track")) {
-                                                Song currSong = new Song();
-                                                currSong.title = item1.title;
-                                                currSong.uri = item1.uri;
-                                                currSong.artist = item1.subtitle;
-
-                                                songs.add(currSong);
-                                                Log.i("songs leng", String.valueOf(songs.size()));
-                                                Log.i("fsd", "inside + " + item1.toString() + " and title: " + item1.toString());
-                                            }
-
-                                            Log.i("fsd", "asdf + " + item1.toString());
-                                        }
-
-                                        if(finalI == items.length - 1){
-                                            Log.i("asdf", "mainactivity songs check: " + songs.size());
-                                          //  onStop();
-                                            toNewPlaylists((ArrayList<Song>) songs);
-                                        }
-                                    }
-                                }
-                            });
-                            Log.i("asdf", "sd" + items[i].title);
-                    }
-                }
-            }
-        });
-
-       /* for(Item item : newItems.items){
-            Log.i("fsddfdfs fdsdfs", "This is one item: " + item.toString());
-        }
-        */
-
-        /*
-        Log.i("attempt", "asdfasdf " + mSpotifyAppRemote.getContentApi()
-                .getRecommendedContentItems("default").toString());
-         */
-
-        /*
-        SpotifyApi api = new SpotifyApi();
-
-// Most (but not all) of the Spotify Web API endpoints require authorisation.
-// If you know you'll only use the ones that don't require authorisation you can skip this step
-      //  api.setAccessToken(response.get);
-
-        SpotifyService spotify = api.getService();
-
-        spotify.getAlbum("2dIGnmEIy1WZIcZCFSj6i8", new Callback<Album>() {
-            @Override
-            public void success(Album album, Response response) {
-                Log.d("Album success", album.name);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Album failure", error.toString());
-            }
-        });
-    }
-
-         */
-       // toNewPlaylists(songs.toArray(new String[songs.size()]));
-    /*
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Aaand we will finish off here.
-        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
-    }
-    */
 }
