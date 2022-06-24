@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
             new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
 
     private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "com.example.capstoneapp://callback";
+    private static final String REDIRECT_URI = "http://localhost:8080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,81 +62,40 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = binding.btnLogin;
         btnSignUp = binding.btnSignUp;
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
-                onLoginClick(username, password);
-            }
+        btnLogin.setOnClickListener(v -> {
+            String username = etUsername.getText().toString();
+            String password = etPassword.getText().toString();
+            onLoginClick(username, password);
         });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSignUpClick();
-            }
-        });
+        btnSignUp.setOnClickListener(v -> onSignUpClick());
     }
 
     private void onSignUpClick() {
         Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
-        i.putExtra("AUTH_TOKEN", authToken);
         startActivity(i);
     }
 
     private void onLoginClick(String username, String password) {
         Log.i(TAG, "Attempting to log in user " + username);
 
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, com.parse.ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Issue with Login", e);
-                    return;
-                }
-                goMainActivity();
-                Toast.makeText(LoginActivity.this, "Success!",
-                        Toast.LENGTH_SHORT).show();
+        ParseUser.logInInBackground(username, password, (user, e) -> {
+            if(e != null){
+                Log.e(TAG, "Issue with Login", e);
+                return;
             }
+            goMainActivity();
+            Toast.makeText(LoginActivity.this, "Success!",
+                    Toast.LENGTH_SHORT).show();
         });
     }
 
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
+        authToken = getIntent().getStringExtra("AUTH_TOKEN");
+        i.putExtra("AUTH_TOKEN", authToken);
+        Log.i("auth-token", "authtoken is " + authToken);
         startActivity(i);
         finish();
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        Log.i(TAG, "in onActivityResult");
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, intent);
-
-            switch (response.getType()) {
-                // Response was successful and contains auth token
-                case TOKEN:
-                    Log.i(TAG, "connected");
-                    authToken = response.getAccessToken();
-                    // Handle successful response
-                    break;
-
-                // Auth flow returned an error
-                case ERROR:
-                    Log.e("error log-in", response.getError());
-                    // Handle error response
-                    break;
-
-                // Most likely auth flow was cancelled
-                default:
-                    Log.i("login", "no token or error :0");
-                    // Handle other cases
-            }
-        }
-    }
-
 }

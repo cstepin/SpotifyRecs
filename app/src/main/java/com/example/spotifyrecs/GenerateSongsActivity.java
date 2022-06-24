@@ -26,7 +26,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    SpotifyApi api = new SpotifyApi();
+    SpotifyApi api; //= new SpotifyApi();
     public static SpotifyService spotifyService;
 
     @Override
@@ -37,6 +37,19 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         authToken = bundle.getString("AUTH_TOKEN");
+        setServiceApi();
+
+        spotifyService.getMe(new SpotifyCallback<UserPrivate>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+                Log.i("user", "Hererror2" + spotifyError.getMessage());
+            }
+
+            @Override
+            public void success(UserPrivate userPrivate, Response response) {
+                Log.i("user", "Here2" + userPrivate.display_name);
+            }
+        });
     }
 
     @Override
@@ -80,12 +93,12 @@ public class GenerateSongsActivity extends AppCompatActivity {
         spotifyService.getMe(new SpotifyCallback<UserPrivate>() {
             @Override
             public void failure(SpotifyError spotifyError) {
-
+                Log.i("user", "Hererror" + spotifyError.getMessage());
             }
 
             @Override
             public void success(UserPrivate userPrivate, Response response) {
-                Log.i("user", userPrivate.display_name);
+                Log.i("user", "Here" + userPrivate.display_name);
             }
         });
 
@@ -105,7 +118,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
     }
 
     private void setServiceApi() {
-        SpotifyApi api = new SpotifyApi();
+        Log.i("setSErvice", "authToken is " + authToken);
+        api = new SpotifyApi();
         api.setAccessToken(authToken);
         spotifyService = api.getService();
     }
