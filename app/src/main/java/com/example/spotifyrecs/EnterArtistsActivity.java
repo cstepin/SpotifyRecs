@@ -23,6 +23,7 @@ public class EnterArtistsActivity extends AppCompatActivity {
     EditText etArtist2;
     Button btnMix;
     BottomNavigationView bottomNavigationView;
+    String authToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +34,17 @@ public class EnterArtistsActivity extends AppCompatActivity {
         etArtist2 = findViewById(R.id.etArtist2);
         btnMix = findViewById(R.id.btnMix);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+        authToken = getIntent().getStringExtra("AUTH_TOKEN");
 
         bottomNavigationView.setOnItemSelectedListener(
                 new BottomNavigationView.OnItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         Fragment fragment;
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_logout:
-                                onLogout();
-                            default: return true;
+                        if (menuItem.getItemId() == R.id.action_logout) {
+                            onLogout();
                         }
+                        return true;
                     }
                 });
 
@@ -64,19 +65,11 @@ public class EnterArtistsActivity extends AppCompatActivity {
                     return;
                 }
                 Intent i = new Intent(EnterArtistsActivity.this,
-                        SwipeSongsActivity.class);
+                        GenerateSongsActivity.class);
                 i.putExtra("artists", new String[]{artist1, artist2});
-
-                if(getIntent().hasExtra("songs")) {
-                    Bundle bundle = getIntent().getExtras();
-                    String[] songs = bundle.getStringArray("songs");
-                    i.putExtra("songs", songs);
-                }
-
+                i.putExtra("AUTH_TOKEN", authToken);
                 startActivity(i);
                 finish();
-                // Toast.makeText(EnterArtistsActivity.this, "Mixing the artists!",
-                // Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -90,10 +83,6 @@ public class EnterArtistsActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
         ParseUser.logOutInBackground();
-
-        //Spotify
-        //onStop();
-
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
         finish();
     }

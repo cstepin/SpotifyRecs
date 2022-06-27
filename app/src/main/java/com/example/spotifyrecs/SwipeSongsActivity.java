@@ -33,10 +33,7 @@ public class SwipeSongsActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
     private static final String REDIRECT_URI = "http://localhost:8080";
     private SpotifyAppRemote mSpotifyAppRemote;
-    private float x1,x2;
-    static final int MIN_DISTANCE = 150;
 
-  //  TextView tvExample;
     RecyclerView rvSwipeSongs;
     List<Song> allSongs = new ArrayList<>();
     ProgressBar pb;
@@ -112,7 +109,7 @@ public class SwipeSongsActivity extends AppCompatActivity {
             public void onResult(ListItems data) {
                 if(data != null){
                     Log.i("first", "first on Result");
-                    Log.i("asd", "data : " + data.toString());
+                    Log.i("asd", "data : " + data);
                     ListItem[] items = data.items;
 
                     for(int i = 0; i < items.length; i++) {
@@ -143,11 +140,11 @@ public class SwipeSongsActivity extends AppCompatActivity {
                                                 currSong.imageLink = item1.imageUri;
 
                                                 songs.add(currSong);
-                                                Log.i("fsd", "inside + " + item1.toString() + " and title: " + item1.toString());
+                                                Log.i("fsd", "inside + " + item1 + " and title: " + item1);
                                             }
                                         }
 
-                                        Log.i("fsd", "asdf + " + item1.toString());
+                                        Log.i("fsd", "asdf + " + item1);
                                     }
 
                                     if(finalI == items.length - 1){

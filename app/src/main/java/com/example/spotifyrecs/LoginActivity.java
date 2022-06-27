@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.example.spotifyrecs.databinding.ActivityLoginBinding;
 import com.parse.LogInCallback;
 import com.parse.ParseUser;
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationRequest;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,16 +26,25 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignUp;
     ActivityLoginBinding binding;
     final String TAG = "LoginActivity";
+    String authToken = "";
+
+    AuthorizationRequest.Builder builder =
+            new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
 
     private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "com.example.capstoneapp://callback";
+    private static final String REDIRECT_URI = "http://localhost:8080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-      //  Log.i("currUser", "user is: " + ParseUser.getCurrentUser().toString());
+        builder.setScopes(new String[]{"streaming", "user-follow-modify",
+                "playlist-read-collaborative", "app-remote-control", "playlist-modify-public",
+                "user-follow-read", "playlist-modify-private"});
+        AuthorizationRequest request = builder.build();
+
+        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
 
         if(ParseUser.getCurrentUser() != null){
             goMainActivity();
@@ -50,21 +62,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = binding.btnLogin;
         btnSignUp = binding.btnSignUp;
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
-                onLoginClick(username, password);
-            }
+        btnLogin.setOnClickListener(v -> {
+            String username = etUsername.getText().toString();
+            String password = etPassword.getText().toString();
+            onLoginClick(username, password);
         });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSignUpClick();
-            }
-        });
+        btnSignUp.setOnClickListener(v -> onSignUpClick());
     }
 
     private void onSignUpClick() {
@@ -75,22 +79,22 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginClick(String username, String password) {
         Log.i(TAG, "Attempting to log in user " + username);
 
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, com.parse.ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Issue with Login", e);
-                    return;
-                }
-                goMainActivity();
-                Toast.makeText(LoginActivity.this, "Success!",
-                        Toast.LENGTH_SHORT).show();
+        ParseUser.logInInBackground(username, password, (user, e) -> {
+            if(e != null){
+                Log.e(TAG, "Issue with Login", e);
+                return;
             }
+            goMainActivity();
+            Toast.makeText(LoginActivity.this, "Success!",
+                    Toast.LENGTH_SHORT).show();
         });
     }
 
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
+        authToken = getIntent().getStringExtra("AUTH_TOKEN");
+        i.putExtra("AUTH_TOKEN", authToken);
+        Log.i("auth-token", "authtoken is " + authToken);
         startActivity(i);
         finish();
     }
