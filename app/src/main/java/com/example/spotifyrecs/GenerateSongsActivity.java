@@ -184,8 +184,57 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
         Log.i("TAG TAG TAG","these are all of the related artists: " + relatedArtists);
 
-        for(String artist : relatedArtists){
-            spotifyService.searchTracks(artist, new SpotifyCallback<TracksPager>() {
+        if(relatedArtists.size() > 0) {
+            for (String artist : relatedArtists) {
+                spotifyService.searchTracks(artist, new SpotifyCallback<TracksPager>() {
+                    @Override
+                    public void failure(SpotifyError spotifyError) {
+                        Log.i("error in generate", "error is: " + spotifyError.getMessage());
+                    }
+
+                    @Override
+                    public void success(TracksPager tracksPager, Response response) {
+                        for (Track item : tracksPager.tracks.items) {
+                            Log.i("in succes artist 2", "these are the items: "
+                                    + item.name);
+                            Song song = new Song();
+                            song.title = item.name;
+                            song.artist = item.artists.get(0).name;
+                            song.uri = item.uri;
+                            song.imageString = item.album.images.get(0).url;
+                            songs.add(song);
+                            Collections.shuffle(songs);
+                        }
+
+                        querySongs(songs);
+                    }
+                });
+            }
+        }
+
+        else {
+            spotifyService.searchTracks(artists[0], new SpotifyCallback<TracksPager>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+                    Log.i("error in generate", "error is: " + spotifyError.getMessage());
+                }
+
+                @Override
+                public void success(TracksPager tracksPager, Response response) {
+                    for (Track item : tracksPager.tracks.items) {
+                        Log.i("in succes artist 1", "these are the items: "
+                                + item.name);
+                        Song song = new Song();
+                        song.title = item.name;
+                        song.artist = item.artists.get(0).name;
+                        song.uri = item.uri;
+                        song.imageString = item.album.images.get(0).url;
+                        songs.add(song);
+                    }
+                }
+            });
+
+            spotifyService.searchTracks(artists[1], new SpotifyCallback<TracksPager>() {
                 @Override
                 public void failure(SpotifyError spotifyError) {
                     Log.i("error in generate", "error is: " + spotifyError.getMessage());
@@ -209,56 +258,6 @@ public class GenerateSongsActivity extends AppCompatActivity {
                 }
             });
         }
-
-        /*
-        spotifyService.searchTracks(artists[0], new SpotifyCallback<TracksPager>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(TracksPager tracksPager, Response response) {
-                for (Track item : tracksPager.tracks.items) {
-                    Log.i("in succes artist 1", "these are the items: "
-                            + item.name);
-                    Song song = new Song();
-                    song.title = item.name;
-                    song.artist = item.artists.get(0).name;
-                    song.uri = item.uri;
-                    song.imageString = item.album.images.get(0).url;
-                    songs.add(song);
-                    //songs.ran
-                  //  Log.i("generate songs success", "success, title: " + item.name);
-                }
-             //   querySongs(Collections.shuffle(songs));
-            }
-        });
-
-        spotifyService.searchTracks(artists[1], new SpotifyCallback<TracksPager>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(TracksPager tracksPager, Response response) {
-                for (Track item : tracksPager.tracks.items) {
-                    Log.i("in succes artist 2", "these are the items: "
-                            + item.name);
-                    Song song = new Song();
-                    song.title = item.name;
-                    song.artist = item.artists.get(0).name;
-                    song.uri = item.uri;
-                    song.imageString = item.album.images.get(0).url;
-                    songs.add(song);
-                    Collections.shuffle(songs);
-                }
-
-                querySongs(songs);
-            }
-        });
-         */
     }
 
     private boolean containsIgnoreCase(List<String> currList, String artist1) {

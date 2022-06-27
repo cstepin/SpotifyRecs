@@ -41,9 +41,11 @@ public class finalPlaylistActivity extends AppCompatActivity {
                 new BottomNavigationView.OnItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        Fragment fragment;
                         if (menuItem.getItemId() == R.id.action_logout) {
                             onLogout();
+                        }
+                        else if (menuItem.getItemId() == R.id.action_home) {
+                            onHome();
                         }
                         return true;
                     }
@@ -66,6 +68,10 @@ public class finalPlaylistActivity extends AppCompatActivity {
         Log.i("artists", finalArtists.toString());
     }
 
+    private void onHome() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
     private void querySongs(List<String> finalSongs) {
         allSongs.addAll(finalSongs);
         adapter.notifyDataSetChanged();
@@ -80,10 +86,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
         ParseUser.logOutInBackground();
-
-        //Spotify
-        //onStop();
-
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
         finish();
     }

@@ -31,6 +31,7 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.ContentApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
+import com.spotify.protocol.types.ImageUri;
 import com.spotify.protocol.types.ListItem;
 import com.spotify.protocol.types.ListItems;
 
@@ -115,7 +116,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             this.itemView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                  //  Log.i("here", "in here here");
+                    Log.i("here", "in swipe");
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             x1_coord = event.getX();
@@ -176,31 +177,10 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         public void bind(Song song) throws JSONException {
             Log.i("adapter", "in item bind");
             if(song.imageString != null){
-                /*
-                CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        // TODO 1. Instruct Glide to load the bitmap into the `holder.ivProfile` profile image view
-                        Glide.with(context).asBitmap().load(resource).into(holder);
-
-                        // TODO 2. Use generate() method from the Palette API to get the vibrant color from the bitmap
-                        // Set the result as the background color for `holder.vPalette` view containing the contact's name.
-                        Palette palette = Palette.from(resource).generate();
-                        holder.vPalette.setBackgroundColor(palette.getDarkVibrantColor(0));
-
-                    }
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // can leave empty
-                        //Glide.with(DetailsActivity.this).asBitmap().load(mContact.getThumbnailDrawable()).centerCrop().into(target);
-                    }
-                };
-                 */
                 Glide.with(context).load(song.imageString).into(ivCoverArt);
             }
-            else{
-                startPlay(song, false);
-            }
+
+            startPlay(song, false);
             tvTitle.setText(song.title);
             tvArtist.setText(song.artist);
 
@@ -256,21 +236,38 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     pressed = false;
                 }
             }
-            else{
-                CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote
-                        .getImagesApi().getImage(s.imageLink);
-                bitmapCallResult.setResultCallback(new CallResult.ResultCallback<Bitmap>() {
-                    @Override
-                    public void onResult(Bitmap data) {
-                        Palette palette = Palette.from(data).generate();
-                        Palette.Swatch vibrant = palette.getVibrantSwatch();
-                        if (vibrant != null) {
-                            // Set the background color of a layout based on the vibrant color
-                            itemView.setBackgroundColor(vibrant.getRgb());
+            else {
+                if (s.imageString != null) {
+                    ImageUri newUri = new ImageUri(s.imageString);
+                    CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote
+                            .getImagesApi().getImage(newUri);
+                    bitmapCallResult.setResultCallback(new CallResult.ResultCallback<Bitmap>() {
+                        @Override
+                        public void onResult(Bitmap data) {
+                            Palette palette = Palette.from(data).generate();
+                            Palette.Swatch vibrant = palette.getVibrantSwatch();
+                            if (vibrant != null) {
+                                // Set the background color of a layout based on the vibrant color
+                                itemView.setBackgroundColor(vibrant.getRgb());
+                            }
                         }
-                        ivCoverArt.setImageBitmap(data);
-                    }
-                });
+                    });
+                } else {
+                    CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote
+                            .getImagesApi().getImage(s.imageLink);
+                    bitmapCallResult.setResultCallback(new CallResult.ResultCallback<Bitmap>() {
+                        @Override
+                        public void onResult(Bitmap data) {
+                            Palette palette = Palette.from(data).generate();
+                            Palette.Swatch vibrant = palette.getVibrantSwatch();
+                            if (vibrant != null) {
+                                // Set the background color of a layout based on the vibrant color
+                                itemView.setBackgroundColor(vibrant.getRgb());
+                            }
+                            ivCoverArt.setImageBitmap(data);
+                        }
+                    });
+                }
             }
         }
 

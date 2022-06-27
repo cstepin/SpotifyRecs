@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SpotifyRecs</string>
     <string name="enter_your_second_artist">Enter Your Second Artist…</string>
-    <string name="swipe_on_the_screen_to_see_my_text_changed">Swipe on the screen to see my text changed</string>
     <string name="log_in">Log In</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
 </resources>

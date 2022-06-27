@@ -65,7 +65,8 @@ public class SwipeSongsActivity extends AppCompatActivity {
 
            rvSwipeSongs.setAdapter(adapter);
         // set the layout manager on the recycler view
-            rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
+            rvSwipeSongs.setLayoutManager(new LinearLayoutManager
+                    (this, LinearLayoutManager.HORIZONTAL, false));
 
         Log.i("in onStart", "in Onstart");
 
