@@ -42,11 +42,10 @@ public class finalPlaylistActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         Fragment fragment;
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_logout:
-                                onLogout();
-                            default: return true;
+                        if (menuItem.getItemId() == R.id.action_logout) {
+                            onLogout();
                         }
+                        return true;
                     }
                 });
 
@@ -76,7 +75,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
         Toast.makeText(finalPlaylistActivity.this, "logging out", Toast.LENGTH_LONG).show();
         // SpotifyRecs.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, SpotifyLoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);

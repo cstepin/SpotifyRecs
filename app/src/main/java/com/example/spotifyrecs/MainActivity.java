@@ -34,10 +34,6 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
-    private static final String REDIRECT_URI = "http://localhost:8080";
-    private SpotifyAppRemote mSpotifyAppRemote;
     BottomNavigationView bottomNavigationView;
     Button btnNewPlaylist;
     Button btnOldPlaylist;
@@ -59,27 +55,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         Fragment fragment;
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_logout:
-                                onLogout();
-                            default: return true;
+                        if (menuItem.getItemId() == R.id.action_logout) {
+                            onLogout();
                         }
+                        return true;
                     }
                 });
 
-        btnSpotifyAlg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toNewPlaylists();
-            }
-        });
+        btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
-        btnNewPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toGenerateSongs();
-            }
-        });
+        btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
 
         authToken = getIntent().getStringExtra("AUTH_TOKEN");
     }
@@ -93,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "logging out", Toast.LENGTH_LONG).show();
         //  InstaClone.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, SpotifyLoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
@@ -106,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void toGenerateSongs(){
-        Intent i = new Intent(MainActivity.this, GenerateSongsActivity.class);
+    private void toSelectArtists(){
+        Intent i = new Intent(MainActivity.this, EnterArtistsActivity.class);
         i.putExtra("AUTH_TOKEN", authToken);
         startActivity(i);
     }

@@ -3,6 +3,8 @@ package com.example.spotifyrecs;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -16,10 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
@@ -31,8 +36,13 @@ import com.spotify.protocol.types.ListItems;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.ViewHolder> {
 
@@ -54,6 +64,8 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     public SwipeSongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_swipe_song, parent,
                 false);
+
+        Log.i("adapter", "in create");
         return new SwipeSongAdapter.ViewHolder(view);
     }
 
@@ -61,6 +73,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Song song = songs.get(position);
         try {
+            Log.i("adapter", "in bind");
             holder.bind(song);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -69,11 +82,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
     @Override
     public int getItemCount() {
-        if(songs.size() < 5){
-            return songs.size();
-        }
-
-        return 5;
+        return Math.min(songs.size(), 5);
     }
 
     public int numSwiped() {
@@ -88,7 +97,11 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         View itemView;
         Boolean pressed = false;
 
-        private float x1, x2;
+        //These floats keep track of the coordinates of where the user's mouse is
+        //to detect swipes
+        private float x1_coord, x2_coord;
+        //This represents the minimum amount of pixels moved which would signify
+        // an intentional swipe
         static final int MIN_DISTANCE = 150;
 
         public ViewHolder(@NonNull View itemView) {
@@ -105,15 +118,12 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                   //  Log.i("here", "in here here");
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                         //   Log.i("down", "in here");
-                            x1 = event.getX();
+                            x1_coord = event.getX();
                             break;
                         case MotionEvent.ACTION_UP:
-                        //    Log.i("up", "in here 2");
-                            x2 = event.getX();
-                            float deltaX = x2 - x1;
+                            x2_coord = event.getX();
+                            float deltaX = x2_coord - x1_coord;
                             if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
-                             //   Log.i("up", "in here 3");
                                 Toast.makeText(v.getContext(), "I'm keeping this song!",
                                         Toast.LENGTH_SHORT).show();
                                 finalSongs.add((String) tvTitle.getText());
@@ -130,7 +140,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                                 }
 
                             } else if (Math.abs(deltaX) > MIN_DISTANCE && deltaX < 0) {
-                                Log.i("up", "in here 4");
                                 Toast.makeText(v.getContext(), "Leaving this song behind!",
                                         Toast.LENGTH_SHORT).show();
                                 v.setVisibility(View.GONE);
@@ -150,7 +159,48 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             });
         }
 
+        public Bitmap getBitmapFromURL(String src) {
+            try {
+                URL url = new URL(src);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                return BitmapFactory.decodeStream(input);
+            } catch (IOException e) {
+                // Log exception
+                return null;
+            }
+        }
+
         public void bind(Song song) throws JSONException {
+            Log.i("adapter", "in item bind");
+            if(song.imageString != null){
+                /*
+                CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        // TODO 1. Instruct Glide to load the bitmap into the `holder.ivProfile` profile image view
+                        Glide.with(context).asBitmap().load(resource).into(holder);
+
+                        // TODO 2. Use generate() method from the Palette API to get the vibrant color from the bitmap
+                        // Set the result as the background color for `holder.vPalette` view containing the contact's name.
+                        Palette palette = Palette.from(resource).generate();
+                        holder.vPalette.setBackgroundColor(palette.getDarkVibrantColor(0));
+
+                    }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // can leave empty
+                        //Glide.with(DetailsActivity.this).asBitmap().load(mContact.getThumbnailDrawable()).centerCrop().into(target);
+                    }
+                };
+                 */
+                Glide.with(context).load(song.imageString).into(ivCoverArt);
+            }
+            else{
+                startPlay(song, false);
+            }
             tvTitle.setText(song.title);
             tvArtist.setText(song.artist);
 
@@ -160,13 +210,11 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     startPlay(song, true);
                 }
             });
-
-            startPlay(song, false);
         }
 
         @Override
         public void onClick(View v) {
-            Log.i("adapter", "fsda");
+          //  Log.i("adapter", "fsda");
         }
 
         protected void startPlay(Song s, Boolean onClick) {
@@ -219,8 +267,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                         if (vibrant != null) {
                             // Set the background color of a layout based on the vibrant color
                             itemView.setBackgroundColor(vibrant.getRgb());
-                            // Update the title TextView with the proper text color
-                          //  titleView.setTextColor(vibrant.getTitleTextColor());
                         }
                         ivCoverArt.setImageBitmap(data);
                     }
@@ -230,24 +276,8 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
       //  @Override
         protected void onStop() {
-        //    super.onStop();
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
-
-        /*
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
-            if (position != RecyclerView.NO_POSITION) {
-                Log.i("songadapter", "in if onclick");
-                // get the movie at the position, this won't work if the class is static
-                String song = songs.get(position);
-                // create intent for the new activity
-                Toast.makeText(context, "Song: " + song, Toast.LENGTH_SHORT).show();
-            }
-        }
-         */
     }
 }

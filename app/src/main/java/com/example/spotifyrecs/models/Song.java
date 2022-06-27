@@ -7,6 +7,7 @@ public class Song {
     public String artist;
     public String uri;
     public ImageUri imageLink;
+    public String imageString;
 
     public String getTitle() {
         return title;
