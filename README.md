@@ -99,9 +99,12 @@ Week 2 *Goal* — have the ability to swipe on song suggestions
 - Try to build a model / work on recommendations?
 - Updated:
 	- Build a Collaborative Filtering Algorithm using users in Back4App database
+		- This will be fake data as the users in Back4App are also to test the database
 
 Week 3
 - Start working on second algorithm (pulling information from multiple APIs)
+	- The algorithm will pull results from multiple API's then try to find the maximum intersection (if any exists)
+	of artists similar to the the users' inputted artists. 
 - Start researching how to do comparison matrix for algorithms
 
 Week 4 *Goal* — have a mostly-complete app
