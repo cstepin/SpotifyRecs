@@ -2,33 +2,40 @@ package com.example.spotifyrecs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.spotifyrecs.adapters.SongAdapter;
+import com.example.spotifyrecs.models.Song;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class finalPlaylistActivity extends AppCompatActivity {
 
     RecyclerView rvSongs;
-    ArrayList<String> allSongs;
+    ArrayList<Song> allSongs;
     protected SongAdapter adapter;
     BottomNavigationView bottomNavigationView;
+    JSONArray currUserArtists;
+    public static final String TAG = "FinalPlaylist";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +45,14 @@ public class finalPlaylistActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         bottomNavigationView.setOnItemSelectedListener(
-                new BottomNavigationView.OnItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        Fragment fragment;
-                        if (menuItem.getItemId() == R.id.action_logout) {
-                            onLogout();
-                        }
-                        return true;
+                menuItem -> {
+                    if (menuItem.getItemId() == R.id.action_logout) {
+                        onLogout();
                     }
+                    else if (menuItem.getItemId() == R.id.action_home) {
+                        onHome();
+                    }
+                    return true;
                 });
 
         rvSongs = findViewById(R.id.rvSongs);
@@ -59,14 +65,79 @@ public class finalPlaylistActivity extends AppCompatActivity {
         rvSongs.setLayoutManager(new LinearLayoutManager(this));
         // query posts from Parstagram
 
-        Bundle bundle = getIntent().getExtras();
-        List<String> finalArtists = bundle.getStringArrayList("final songs");
+        ArrayList<Song> finalArtists = Parcels.unwrap(getIntent()
+                .getParcelableExtra("final songs"));
+        currUserArtists = ParseUser.getCurrentUser().getJSONArray("artists");
+        for(int i = 0; i < finalArtists.size(); i++){
+            Song song = finalArtists.get(i);
+            // Does a little more work splitting by commas and also ensuring no duplicates
+            if(!song.artist.equals("")) {
+                Log.i("in final artists artists", "the current artist is: " + song.artist);
+                try {
+                    if(song.artist.contains(",")) {
+                        splitArtist(song.artist);
+                    }
+                    else if (notADuplicate(currUserArtists, song.artist)){
+                        Log.i(TAG, "i'm adding2: " + song.artist);
+                        currUserArtists.put(song.artist);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //  currUserArtists.put(song.artist);
+            }
+            if(i == finalArtists.size() - 1){
+                saveArtists();
+            }
+        }
 
         querySongs(finalArtists);
         Log.i("artists", finalArtists.toString());
     }
 
-    private void querySongs(List<String> finalSongs) {
+    private void saveArtists() {
+        ParseUser.getCurrentUser().put("artists", currUserArtists);
+        ParseUser.getCurrentUser().saveInBackground(e -> {
+            if(e != null){
+                Log.e("finalPlaylistActivity", "error saving artists", e);
+            }
+            else{
+                Log.i("finalPlaylistActivity", "artists saved successfully");
+            }
+        });
+    }
+
+
+    // Takes a JSONArray and artist and returns if the string is NOT in the array
+    private boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
+        for(int i = 0; i < currUserArtists.length(); i++){
+            if(currUserArtists.get(i).toString().equals(artist)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void splitArtist(String artists) throws JSONException {
+        String[] subArtists = artists.split(", ");
+        for(String artist : subArtists){
+            if(notADuplicate(currUserArtists, artist)) {
+                Log.i(TAG, "i'm adding: " + artist);
+                if(artist.contains(" and more")){
+                    currUserArtists.put(artist.split(" and more")[0]);
+                }
+                else {
+                    currUserArtists.put(artist);
+                }
+            }
+        }
+    }
+
+    private void onHome() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void querySongs(List<Song> finalSongs) {
         allSongs.addAll(finalSongs);
         adapter.notifyDataSetChanged();
     }
@@ -80,10 +151,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
         ParseUser.logOutInBackground();
-
-        //Spotify
-        //onStop();
-
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
         finish();
     }

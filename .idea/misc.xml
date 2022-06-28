@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_vector_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_enter_artists.xml" value="0.1734375" />
+        <entry key="app/src/main/res/layout/activity_export.xml" value="0.2328125" />
         <entry key="app/src/main/res/layout/activity_final_playlist.xml" value="0.1734375" />
         <entry key="app/src/main/res/layout/activity_generate_songs.xml" value="0.1796875" />
         <entry key="app/src/main/res/layout/activity_get_artists_top_tracks.xml" value="0.1" />
