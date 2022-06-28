@@ -97,10 +97,12 @@ Week 2 *Goal* — have the ability to swipe on song suggestions
 - Figure out how to have “swipe left” or “swipe right” technology
 - Keep the list of swipe rights to be there in the next activity
 - Try to build a model / work on recommendations?
-- 
+- Updated:
+	- Build a Collaborative Filtering Algorithm using users in Back4App database
 
 Week 3
-- Try to understand how to do recommendations
+- Start working on second algorithm (pulling information from multiple APIs)
+- Start researching how to do comparison matrix for algorithms
 
 Week 4 *Goal* — have a mostly-complete app
 - Figure out how to play bits of sound / YouTube or Spotify music in the swiping window
@@ -108,7 +110,7 @@ Week 4 *Goal* — have a mostly-complete app
 
 Week 5
 - Style the app to make it look nice
-- Buffer time
+- Run both algorithms through the recommendation matrix -- see whether one outperforms the other one.
 
 Week 6 *Goal* have the app look like a real app and have at least one stretch goal finished
 - Stretch goal: Trying to look at past albums
