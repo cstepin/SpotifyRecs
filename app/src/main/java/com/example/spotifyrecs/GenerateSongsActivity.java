@@ -1,5 +1,7 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.SpotifyLoginActivity.getAuthToken;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,13 +10,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.example.spotifyrecs.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.spotify.android.appremote.api.ConnectionParams;
-import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
 import org.json.JSONArray;
@@ -24,18 +25,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyCallback;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
-import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.Artists;
-import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
-import kaaes.spotify.webapi.android.models.UserPrivate;
 import retrofit.client.Response;
 
 public class GenerateSongsActivity extends AppCompatActivity {
@@ -69,98 +65,13 @@ public class GenerateSongsActivity extends AppCompatActivity {
         // set the layout manager on the recycler view
         rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
-        Bundle bundle = getIntent().getExtras();
-        authToken = bundle.getString("AUTH_TOKEN");
+    //    Bundle bundle = getIntent().getExtras();
+     //   authToken = bundle.getString("AUTH_TOKEN");
         String[] artists = getIntent().getStringArrayExtra("artists");
 
         setServiceApi();
 
         queryUsers(artists);
-
-    //    List<Song> songs = generateSongs(spotifyService, artists);
-
-        /*
-        spotifyService.getRelatedArtists(artists[0], new SpotifyCallback<Artists>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate 2 ", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(Artists artists, Response response) {
-                for (Artist artist : artists.artists) {
-                    Log.i("success related artists ", "artist related: " + artist.name);
-                }
-            }
-        });
-         */
-
-
-        //goal: be able to feed this thing to have the same abilities as the other class.
-
-        /*
-        spotifyService.searchTracks(artists[0], new SpotifyCallback<TracksPager>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(TracksPager tracksPager, Response response) {
-                for (Track item : tracksPager.tracks.items) {
-                    Log.i("generate songs success", "success, title: " + item.name);
-                }
-            }
-        });
-         */
-
-        /*
-        Get similar???
-
-        spotifyService.searchArtists("lana del rey", new SpotifyCallback<ArtistsPager>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate 2", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(ArtistsPager artistsPager, Response response) {
-                for (Artist item : artistsPager.artists.items) {
-                    Log.i("generate songs success", "success, title: " + item.name);
-                }
-
-            }
-        });
-
-        spotifyService.searchTracks(artists[1], new SpotifyCallback<TracksPager>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(TracksPager tracksPager, Response response) {
-                for (Track item : tracksPager.tracks.items) {
-                    Log.i("generate songs success", "success, title: " + item.name);
-                }
-            //    response.
-            }
-        });
-
-     //   spotifyService.searchI
-
-        spotifyService.getMe(new SpotifyCallback<UserPrivate>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("user", "Hererror2" + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(UserPrivate userPrivate, Response response) {
-                Log.i("user", "Here2" + userPrivate.display_name);
-            }
-        });
-         */
     }
 
     private void generateSongs(SpotifyService spotifyService, String[] artists, List<List<String>> userArtists) {
@@ -336,7 +247,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
     private void setServiceApi() {
         Log.i("setSErvice", "authToken is " + authToken);
         api = new SpotifyApi();
-        api.setAccessToken(authToken);
+        api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
     }
 }

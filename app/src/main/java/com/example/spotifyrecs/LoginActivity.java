@@ -1,4 +1,8 @@
 package com.example.spotifyrecs;
+import static com.example.spotifyrecs.Resources.getClientId;
+import static com.example.spotifyrecs.Resources.getRedirectUrl;
+import static com.example.spotifyrecs.Resources.getReqCode;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.net.ParseException;
 
@@ -18,8 +22,6 @@ import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
     EditText etUsername;
     EditText etPassword;
     Button btnLogin;
@@ -29,10 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     String authToken = "";
 
     AuthorizationRequest.Builder builder =
-            new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-
-    private static final int REQUEST_CODE = 1337;
-    private static final String REDIRECT_URI = "http://localhost:8080";
+            new AuthorizationRequest.Builder(getClientId(),
+                    AuthorizationResponse.Type.TOKEN, getRedirectUrl());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
                 "user-follow-read", "playlist-modify-private"});
         AuthorizationRequest request = builder.build();
 
-        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
+        AuthorizationClient.openLoginActivity(this, getReqCode(), request);
 
         if(ParseUser.getCurrentUser() != null){
             goMainActivity();
@@ -92,9 +92,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
-        authToken = getIntent().getStringExtra("AUTH_TOKEN");
-        i.putExtra("AUTH_TOKEN", authToken);
-        Log.i("auth-token", "authtoken is " + authToken);
+      //  authToken = getIntent().getStringExtra("AUTH_TOKEN");
+       // i.putExtra("AUTH_TOKEN", authToken);
+      //  Log.i("auth-token", "authtoken is " + authToken);
         startActivity(i);
         finish();
     }

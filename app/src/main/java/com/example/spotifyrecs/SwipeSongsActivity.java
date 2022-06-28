@@ -1,19 +1,17 @@
 package com.example.spotifyrecs;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
+import static com.example.spotifyrecs.Resources.getClientId;
+import static com.example.spotifyrecs.Resources.getRedirectUrl;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
@@ -24,14 +22,11 @@ import com.spotify.protocol.types.ListItem;
 import com.spotify.protocol.types.ListItems;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SwipeSongsActivity extends AppCompatActivity {
 
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
-    private static final String REDIRECT_URI = "http://localhost:8080";
     private SpotifyAppRemote mSpotifyAppRemote;
 
     RecyclerView rvSwipeSongs;
@@ -66,13 +61,13 @@ public class SwipeSongsActivity extends AppCompatActivity {
            rvSwipeSongs.setAdapter(adapter);
         // set the layout manager on the recycler view
             rvSwipeSongs.setLayoutManager(new LinearLayoutManager
-                    (this, LinearLayoutManager.HORIZONTAL, false));
+                    (this));
 
         Log.i("in onStart", "in Onstart");
 
         ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
+                new ConnectionParams.Builder(getClientId())
+                        .setRedirectUri(getRedirectUrl())
                         .showAuthView(true)
                         .build();
 
@@ -138,17 +133,15 @@ public class SwipeSongsActivity extends AppCompatActivity {
                                                 currSong.title = item1.title;
                                                 currSong.uri = item1.uri;
                                                 currSong.artist = item1.subtitle;
-                                                currSong.imageLink = item1.imageUri;
+                                                currSong.imageString = item1.imageUri.raw;
 
                                                 songs.add(currSong);
                                                 Log.i("fsd", "inside + " + item1 + " and title: " + item1);
                                             }
                                         }
-
-                                        Log.i("fsd", "asdf + " + item1);
                                     }
-
                                     if(finalI == items.length - 1){
+                                        Collections.shuffle(songs);
                                         querySongs(songs);
                                     }
                                 }

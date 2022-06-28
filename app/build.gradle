@@ -78,7 +78,4 @@ dependencies {
     //pytorch
     implementation 'org.pytorch:pytorch_android_lite:1.10.0'
     implementation 'org.pytorch:pytorch_android_torchvision_lite:1.10.0'
-
-    //for swiping feature
-    implementation 'com.daprlabs.aaron:cardstack:0.3.1-beta0'
 }

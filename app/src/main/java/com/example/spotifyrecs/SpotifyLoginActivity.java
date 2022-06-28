@@ -1,5 +1,8 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.Resources.getClientId;
+import static com.example.spotifyrecs.Resources.getRedirectUrl;
+import static com.example.spotifyrecs.Resources.getReqCode;
 import static com.spotify.sdk.android.auth.AuthorizationResponse.Type.TOKEN;
 
 import android.content.Intent;
@@ -17,12 +20,8 @@ import com.spotify.sdk.android.auth.AuthorizationResponse;
 public class SpotifyLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "Spotify " + SpotifyLoginActivity.class.getSimpleName();
-
-    private static final int REQUEST_CODE = 1337;
-
     public static final String AUTH_TOKEN = "AUTH_TOKEN";
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
-    private static final String REDIRECT_URL = "http://localhost:8080";
+    public static String authToken = "";
 
     @Override
 
@@ -40,13 +39,14 @@ public class SpotifyLoginActivity extends AppCompatActivity {
 
     private void openLoginWindow() {
 
-        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, TOKEN, REDIRECT_URL);
+        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(getClientId(),
+                TOKEN, getRedirectUrl());
 
         builder.setScopes(new String[]{ "streaming"});
 
         AuthorizationRequest request = builder.build();
 
-        AuthorizationClient.openLoginActivity(this,REQUEST_CODE,request);
+        AuthorizationClient.openLoginActivity(this, getReqCode(),request);
 
     }
 
@@ -56,10 +56,9 @@ public class SpotifyLoginActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_CODE)
+        if(requestCode == getReqCode())
 
         {
-
             final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
 
             switch (response.getType()) {
@@ -68,13 +67,15 @@ public class SpotifyLoginActivity extends AppCompatActivity {
 
                 case TOKEN:
 
+                    authToken = response.getAccessToken();
+
                     Log.e(TAG,"Auth token: " + response.getAccessToken());
 
                     Intent intent = new Intent(SpotifyLoginActivity.this,
 
                             LoginActivity.class);
 
-                    intent.putExtra(AUTH_TOKEN, response.getAccessToken());
+                //    intent.putExtra(AUTH_TOKEN, response.getAccessToken());
 
                     startActivity(intent);
 
@@ -117,4 +118,7 @@ public class SpotifyLoginActivity extends AppCompatActivity {
 
     }
 
+    public static String getAuthToken(){
+        return authToken;
+    }
 }

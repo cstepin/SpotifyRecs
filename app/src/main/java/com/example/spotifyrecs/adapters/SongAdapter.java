@@ -1,4 +1,4 @@
-package com.example.spotifyrecs;
+package com.example.spotifyrecs.adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,7 +11,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
+import com.example.spotifyrecs.R;
+import com.example.spotifyrecs.models.Song;
+
 import org.json.JSONException;
 
 import java.util.List;
@@ -19,9 +21,9 @@ import java.util.List;
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     private Context context;
-    private List<String> songs;
+    private List<Song> songs;
 
-    public SongAdapter(Context context, List<String> songs) {
+    public SongAdapter(Context context, List<Song> songs) {
         this.context = context;
         this.songs = songs;
     }
@@ -35,7 +37,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String song = songs.get(position);
+        Song song = songs.get(position);
         try {
             holder.bind(song);
         } catch (JSONException e) {
@@ -60,8 +62,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             tvArtist = itemView.findViewById(R.id.tvArtist);
         }
 
-        public void bind(String song) throws JSONException {
-            tvTitle.setText(song);
+        public void bind(Song song) throws JSONException {
+            tvTitle.setText(song.title);
+            if(!song.artist.equals("")) {
+                tvArtist.setText(song.artist);
+            }
+            else{
+                tvArtist.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -71,7 +79,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             if (position != RecyclerView.NO_POSITION) {
                 Log.i("songadapter", "in if onclick");
                 // get the movie at the position, this won't work if the class is static
-                String song = songs.get(position);
+                Song song = songs.get(position);
                 // create intent for the new activity
                 Toast.makeText(context, "Song: " + song, Toast.LENGTH_SHORT).show();
             }

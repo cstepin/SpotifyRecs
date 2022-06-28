@@ -34,7 +34,7 @@ public class EnterArtistsActivity extends AppCompatActivity {
         etArtist2 = findViewById(R.id.etArtist2);
         btnMix = findViewById(R.id.btnMix);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
-        authToken = getIntent().getStringExtra("AUTH_TOKEN");
+    //    authToken = getIntent().getStringExtra("AUTH_TOKEN");
 
         bottomNavigationView.setOnItemSelectedListener(
                 new BottomNavigationView.OnItemSelectedListener() {
@@ -43,6 +43,9 @@ public class EnterArtistsActivity extends AppCompatActivity {
                         Fragment fragment;
                         if (menuItem.getItemId() == R.id.action_logout) {
                             onLogout();
+                        }
+                        else if(menuItem.getItemId() == R.id.action_home){
+                            onHome();
                         }
                         return true;
                     }
@@ -67,11 +70,15 @@ public class EnterArtistsActivity extends AppCompatActivity {
                 Intent i = new Intent(EnterArtistsActivity.this,
                         GenerateSongsActivity.class);
                 i.putExtra("artists", new String[]{artist1, artist2});
-                i.putExtra("AUTH_TOKEN", authToken);
+             //   i.putExtra("AUTH_TOKEN", authToken);
                 startActivity(i);
                 finish();
             }
         });
+    }
+
+    private void onHome() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void onLogout() {
