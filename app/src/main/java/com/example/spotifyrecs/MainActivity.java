@@ -51,24 +51,20 @@ public class MainActivity extends AppCompatActivity {
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
 
         bottomNavigationView.setOnItemSelectedListener(
-                new BottomNavigationView.OnItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        Fragment fragment;
-                        if (menuItem.getItemId() == R.id.action_logout) {
-                            onLogout();
-                        }
-                        return true;
+                menuItem -> {
+                    Fragment fragment;
+                    if (menuItem.getItemId() == R.id.action_logout) {
+                        onLogout();
                     }
+                    return true;
                 });
 
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
-
-        authToken = getIntent().getStringExtra("AUTH_TOKEN");
     }
 
+    //Sending users to the right place
     private void toNewPlaylists() {
         Intent i = new Intent(MainActivity.this, SwipeSongsActivity.class);
         startActivity(i);
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Spotify
         onStop();
-
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
         finish();
     }

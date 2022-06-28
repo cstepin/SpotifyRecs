@@ -1,5 +1,9 @@
 package com.example.spotifyrecs.adapters;
 
+import static com.example.spotifyrecs.resources.Resources.getClientId;
+import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,8 +49,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     private List<Song> songs;
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
-    private static final String REDIRECT_URI = "http://localhost:8080";
     private SpotifyAppRemote mSpotifyAppRemote;
 
     public SwipeSongAdapter(Context context, List<Song> songs) {
@@ -76,6 +78,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     }
 
     @Override
+    //For now, we limit item count at 5
     public int getItemCount() {
         return Math.min(songs.size(), 5);
     }
@@ -108,6 +111,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             ivCoverArt = itemView.findViewById(R.id.ivCoverArt);
 
             this.itemView.setOnTouchListener(new View.OnTouchListener() {
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     Log.i("here", "in swipe");
@@ -117,18 +121,26 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                             break;
                         case MotionEvent.ACTION_UP:
                             x2_coord = event.getX();
+                            //We calculate the distance between where the user pressed down
+                            // and then released up
                             float deltaX = x2_coord - x1_coord;
+                            //If we detect a right swipe...
                             if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
                                 Toast.makeText(v.getContext(), "I'm keeping this song!",
                                         Toast.LENGTH_SHORT).show();
                                 Song song = new Song();
                                 song.title = (String) tvTitle.getText();
                                 song.artist = (String) tvArtist.getText();
+                                //this means they liked the song, so we keep the song
                                 finalSongs.add(song);
+                                //This keeps track of how many songs have been reacted to already
+                                //To-do: add a way to not swipe all songs and go to the next activity
                                 swiped++;
                                 Log.i("SwipeSong", String.valueOf(finalSongs.size()));
+                                //To-do: figure out how to ensure the screen moves when a song is swiped
                                 v.setVisibility(View.GONE);
 
+                                //We check if we've swiped the correct number of songs.
                                 if(numSwiped() == getItemCount()){
                                     Intent i = new Intent(v.getContext(),
                                             finalPlaylistActivity.class);
@@ -136,9 +148,11 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                                     v.getContext().startActivity(i);
                                 }
 
+                                //Else if we detect a left swipe...
                             } else if (Math.abs(deltaX) > MIN_DISTANCE && deltaX < 0) {
                                 Toast.makeText(v.getContext(), "Leaving this song behind!",
                                         Toast.LENGTH_SHORT).show();
+                                //This means we ignore the song.
                                 v.setVisibility(View.GONE);
                                 swiped++;
                                 if(numSwiped() == getItemCount()){
@@ -158,35 +172,41 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
         public void bind(Song song) throws JSONException {
             Log.i("adapter", "in item bind");
+            //set up the image
             if(song.imageString != null){
-                ImageUri newUri = new ImageUri(song.imageString);
-
                 Glide.with(context).load(song.imageString).into(ivCoverArt);
             }
 
+            //this sets-up the backgrounds of each item view
             startPlay(song, false);
             tvTitle.setText(song.title);
             tvArtist.setText(song.artist);
 
+            //otherwise this sets on an click listener for the play button
             ibPlay.setOnClickListener(v -> startPlay(song, true));
         }
 
+        //an override method because it's required (we're only going to be swiping on image
+        // views, so we don't necessarily need this
         @Override
         public void onClick(View v) {
-          //  Log.i("adapter", "fsda");
         }
 
+        //This function if set by the on Click turns on the specific song that the listener
+        // wanted to listen to (or turns off
+        //If sent by the general call, just sets up the background color for the item view
         protected void startPlay(Song s, Boolean onClick) {
             //    super.onStart();
 
             ConnectionParams connectionParams =
-                    new ConnectionParams.Builder(CLIENT_ID)
-                            .setRedirectUri(REDIRECT_URI)
+                    new ConnectionParams.Builder(getClientId())
+                            .setRedirectUri(getRedirectUrl())
                             .showAuthView(true)
                             .build();
 
             SpotifyAppRemote.connect(context, connectionParams,
                     new Connector.ConnectionListener() {
+                //Connects with the Android SDK
                 @Override
                 public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                     mSpotifyAppRemote = spotifyAppRemote;
@@ -206,7 +226,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         private void connected(Song s, Boolean onClick) {
             if (onClick) {
                 if (!pressed) {
-                    // Play a playlist
+                    // Play a song
                     mSpotifyAppRemote.getPlayerApi().play(s.uri);
                     pressed = true;
                 } else {
@@ -214,6 +234,8 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     pressed = false;
                 }
             } else {
+                //Sets up background by converting image to a bitmap then finding the brightest color
+                // and setting the background to be that color
                 Log.i("adapter", "in has image string with image string: " + s.imageString);
                 ImageUri newUri = new ImageUri(s.imageString);
                 CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote.getImagesApi()
@@ -229,9 +251,8 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     ivCoverArt.setImageBitmap(data);
                 });
             }
-    }
+        }
 
-      //  @Override
         protected void onStop() {
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);

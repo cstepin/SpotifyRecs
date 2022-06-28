@@ -23,7 +23,6 @@ public class EnterArtistsActivity extends AppCompatActivity {
     EditText etArtist2;
     Button btnMix;
     BottomNavigationView bottomNavigationView;
-    String authToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +36,15 @@ public class EnterArtistsActivity extends AppCompatActivity {
     //    authToken = getIntent().getStringExtra("AUTH_TOKEN");
 
         bottomNavigationView.setOnItemSelectedListener(
-                new BottomNavigationView.OnItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        Fragment fragment;
-                        if (menuItem.getItemId() == R.id.action_logout) {
-                            onLogout();
-                        }
-                        else if(menuItem.getItemId() == R.id.action_home){
-                            onHome();
-                        }
-                        return true;
+                menuItem -> {
+                    Fragment fragment;
+                    if (menuItem.getItemId() == R.id.action_logout) {
+                        onLogout();
                     }
+                    else if(menuItem.getItemId() == R.id.action_home){
+                        onHome();
+                    }
+                    return true;
                 });
 
         btnMix.setOnClickListener(new View.OnClickListener() {
@@ -57,11 +53,13 @@ public class EnterArtistsActivity extends AppCompatActivity {
                 String artist1 = etArtist1.getText().toString();
                 String artist2 = etArtist2.getText().toString();
 
+                //Check the artists aren't empty
                 if(artist1.isEmpty() || artist2.isEmpty()){
                     Toast.makeText(EnterArtistsActivity.this,
                             "The artists cannot be empty!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //Check artists are distinct
                 else if(artist1.equals(artist2)){
                     Toast.makeText(EnterArtistsActivity.this,
                             "Please input different artists!", Toast.LENGTH_SHORT).show();
@@ -70,13 +68,13 @@ public class EnterArtistsActivity extends AppCompatActivity {
                 Intent i = new Intent(EnterArtistsActivity.this,
                         GenerateSongsActivity.class);
                 i.putExtra("artists", new String[]{artist1, artist2});
-             //   i.putExtra("AUTH_TOKEN", authToken);
                 startActivity(i);
                 finish();
             }
         });
     }
 
+    //Menu navigation buttons
     private void onHome() {
         startActivity(new Intent(this, MainActivity.class));
     }

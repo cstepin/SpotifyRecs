@@ -1,10 +1,8 @@
 package com.example.spotifyrecs;
-import static com.example.spotifyrecs.Resources.getClientId;
-import static com.example.spotifyrecs.Resources.getRedirectUrl;
-import static com.example.spotifyrecs.Resources.getReqCode;
+import static com.example.spotifyrecs.resources.Resources.getClientId;
+import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.net.ParseException;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.spotifyrecs.databinding.ActivityLoginBinding;
-import com.parse.LogInCallback;
 import com.parse.ParseUser;
-import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
@@ -39,13 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        builder.setScopes(new String[]{"streaming", "user-follow-modify",
-                "playlist-read-collaborative", "app-remote-control", "playlist-modify-public",
-                "user-follow-read", "playlist-modify-private"});
-        AuthorizationRequest request = builder.build();
-
-        AuthorizationClient.openLoginActivity(this, getReqCode(), request);
-
+        //If already logged-in, go straight to main activity.
         if(ParseUser.getCurrentUser() != null){
             goMainActivity();
         }
@@ -71,6 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(v -> onSignUpClick());
     }
 
+    //Sending users to correct places functions
+
     private void onSignUpClick() {
         Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(i);
@@ -92,9 +84,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
-      //  authToken = getIntent().getStringExtra("AUTH_TOKEN");
-       // i.putExtra("AUTH_TOKEN", authToken);
-      //  Log.i("auth-token", "authtoken is " + authToken);
         startActivity(i);
         finish();
     }

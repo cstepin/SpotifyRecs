@@ -68,33 +68,42 @@ public class finalPlaylistActivity extends AppCompatActivity {
         ArrayList<Song> finalArtists = Parcels.unwrap(getIntent()
                 .getParcelableExtra("final songs"));
         currUserArtists = ParseUser.getCurrentUser().getJSONArray("artists");
+
+        //This stores information on the artists the user liked to use for collaborative filtering
         for(int i = 0; i < finalArtists.size(); i++){
             Song song = finalArtists.get(i);
             // Does a little more work splitting by commas and also ensuring no duplicates
             if(!song.artist.equals("")) {
-                Log.i("in final artists artists", "the current artist is: " + song.artist);
+              //  Log.i("in final artists artists", "the current artist is: " + song.artist);
                 try {
+                    //If the artist is given as a list, we have to enter each artist separately
                     if(song.artist.contains(",")) {
                         splitArtist(song.artist);
                     }
-                    else if (notADuplicate(currUserArtists, song.artist)){
-                        Log.i(TAG, "i'm adding2: " + song.artist);
-                        currUserArtists.put(song.artist);
+                    //else we can just enter the artist
+                    else {
+                        assert currUserArtists != null;
+                        if (notADuplicate(currUserArtists, song.artist)){
+                            Log.i(TAG, "i'm adding2: " + song.artist);
+                            currUserArtists.put(song.artist);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //  currUserArtists.put(song.artist);
             }
+            //Because saveArtists() is async, we call it at the end of this for loop
             if(i == finalArtists.size() - 1){
                 saveArtists();
             }
         }
 
+        //This puts in the artists in the adapter
         querySongs(finalArtists);
         Log.i("artists", finalArtists.toString());
     }
 
+    //This just adds new artists for every user into the database
     private void saveArtists() {
         ParseUser.getCurrentUser().put("artists", currUserArtists);
         ParseUser.getCurrentUser().saveInBackground(e -> {
@@ -107,7 +116,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
         });
     }
 
-
     // Takes a JSONArray and artist and returns if the string is NOT in the array
     private boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
         for(int i = 0; i < currUserArtists.length(); i++){
@@ -118,6 +126,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
         return true;
     }
 
+    //This splits by artist ad ensures that spaces and "and more" aren't included in artist names
     private void splitArtist(String artists) throws JSONException {
         String[] subArtists = artists.split(", ");
         for(String artist : subArtists){
@@ -133,13 +142,14 @@ public class finalPlaylistActivity extends AppCompatActivity {
         }
     }
 
-    private void onHome() {
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
     private void querySongs(List<Song> finalSongs) {
         allSongs.addAll(finalSongs);
         adapter.notifyDataSetChanged();
+    }
+
+    //Menu item functions
+    private void onHome() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void onLogout() {

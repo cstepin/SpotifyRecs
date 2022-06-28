@@ -1,4 +1,4 @@
-package com.example.spotifyrecs;
+package com.example.spotifyrecs.resources;
 
 public class Resources {
     public static int getReqCode(){

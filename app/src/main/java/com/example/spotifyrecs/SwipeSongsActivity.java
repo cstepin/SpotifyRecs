@@ -1,7 +1,7 @@
 package com.example.spotifyrecs;
 
-import static com.example.spotifyrecs.Resources.getClientId;
-import static com.example.spotifyrecs.Resources.getRedirectUrl;
+import static com.example.spotifyrecs.resources.Resources.getClientId;
+import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
 
 import android.os.Bundle;
 import android.util.Log;
