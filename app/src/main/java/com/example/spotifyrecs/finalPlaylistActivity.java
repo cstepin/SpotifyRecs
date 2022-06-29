@@ -2,6 +2,7 @@ package com.example.spotifyrecs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,9 +12,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.spotifyrecs.adapters.SongAdapter;
+import com.example.spotifyrecs.fragments.AddPlaylistFragment;
 import com.example.spotifyrecs.models.Song;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseException;
@@ -35,6 +39,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
     protected SongAdapter adapter;
     BottomNavigationView bottomNavigationView;
     JSONArray currUserArtists;
+    Button btnAddPlaylist;
     public static final String TAG = "FinalPlaylist";
 
     @Override
@@ -43,6 +48,9 @@ public class finalPlaylistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_playlist);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+
+        btnAddPlaylist = findViewById(R.id.btnAddPlaylist);
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
@@ -101,6 +109,19 @@ public class finalPlaylistActivity extends AppCompatActivity {
         //This puts in the artists in the adapter
         querySongs(finalArtists);
         Log.i("artists", finalArtists.toString());
+
+        btnAddPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewPlaylist(finalArtists);
+            }
+        });
+    }
+
+    private void addNewPlaylist(ArrayList<Song> finalArtists) {
+        FragmentManager fm = getSupportFragmentManager();
+        AddPlaylistFragment addPlaylistFragment = new AddPlaylistFragment(finalArtists);
+        addPlaylistFragment.show(fm, "hello");
     }
 
     //This just adds new artists for every user into the database
