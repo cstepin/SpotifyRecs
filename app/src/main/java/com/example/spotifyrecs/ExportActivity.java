@@ -38,14 +38,7 @@ public class ExportActivity extends AppCompatActivity {
             finish();
         }
 
-       // I'm not trying to do things with images so I commented this part out
-       /* try {
-            mBitmap = BitmapFactory.decodeStream(getAssets().open(mImagename));
-        } catch (IOException e) {
-            Log.e("ImageSegmentation", "Error reading assets", e);
-            finish();
-        }
-         */
+        run(mModule);
     }
 
     public static String assetFilePath(Context context, String assetName) throws IOException {
@@ -67,10 +60,16 @@ public class ExportActivity extends AppCompatActivity {
         }
     }
 
-    public void run(){
+    public static void run(Module mModule){
+        /*
         final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(mBitmap,
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
         final float[] inputs = inputTensor.getDataAsFloatArray();
-        Map<String, IValue> outTensors = mModule.forward(IValue.from(inputTensor)).toDictStringKey();
+         */
+
+        Tensor input = Tensor.fromBlob(data, new long[]{1, data.length});
+        double outTensors = mModule.forward(IValue.from(input)).toDouble();
+
+        Log.i("In export activity", "everything runs correctly: " + outTensors);
     }
 }

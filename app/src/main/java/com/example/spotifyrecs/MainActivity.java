@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
     String authToken;
+    Button btnExport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         btnNewPlaylist = findViewById(R.id.btnNewPlaylist);
         btnOldPlaylist = findViewById(R.id.btnOldPlaylist);
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
+        btnExport = findViewById(R.id.btnExport);
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
+
+        btnExport.setOnClickListener(v -> toExport());
     }
 
     //Sending users to the right place
@@ -88,7 +92,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void toSelectArtists(){
         Intent i = new Intent(MainActivity.this, EnterArtistsActivity.class);
-        i.putExtra("AUTH_TOKEN", authToken);
+        startActivity(i);
+    }
+
+    private void toExport(){
+        Intent i = new Intent(MainActivity.this, ExportActivity.class);
         startActivity(i);
     }
 }
