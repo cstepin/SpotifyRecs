@@ -1,6 +1,6 @@
 package com.example.spotifyrecs;
 
-import static com.example.spotifyrecs.SpotifyLoginActivity.getAuthToken;
+import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,15 +65,17 @@ public class GenerateSongsActivity extends AppCompatActivity {
         // set the layout manager on the recycler view
         rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
-    //    Bundle bundle = getIntent().getExtras();
-     //   authToken = bundle.getString("AUTH_TOKEN");
+        //First, we retrieve the input from user
         String[] artists = getIntent().getStringArrayExtra("artists");
 
+        //Then we authenticate our current api
         setServiceApi();
 
+        //Finally set up the RecyclerView for Android
         queryUsers(artists);
     }
 
+    //This gets related artists and compiles a list of songs by those artists
     private void generateSongs(SpotifyService spotifyService, String[] artists, List<List<String>> userArtists) {
 
         List<Song> songs = new ArrayList<>();
@@ -83,7 +85,12 @@ public class GenerateSongsActivity extends AppCompatActivity {
         String artist2 = artists[1];
         int index = 0;
 
-        while(index < userArtists.size() && relatedArtists.size() < 5){ //List<String> currList : userArtists){
+        //For every user list, we see if they contain at least one of the artists that we were asked
+        //If it does, we add them to our "relatedArtists" list
+
+        //To-do: we can first try to find "perfect" matches (both artists present"
+        // Before going to lists with only one user there.
+        while(index < userArtists.size() && relatedArtists.size() < 5){
             List<String> currList = userArtists.get(index);
             Log.i("in generate songs", "this is the current list: " + currList);
             // need to make contains that ignores cases
@@ -95,6 +102,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
         Log.i("TAG TAG TAG","these are all of the related artists: " + relatedArtists);
 
+        //Here, we just add the top songs of each "related artist"
         if(relatedArtists.size() > 0) {
             for (String artist : relatedArtists) {
                 spotifyService.searchTracks(artist, new SpotifyCallback<TracksPager>() {
@@ -114,9 +122,10 @@ public class GenerateSongsActivity extends AppCompatActivity {
                             song.uri = item.uri;
                             song.imageString = item.album.images.get(0).url;
                             songs.add(song);
+                            //We shuffle to ensure new results on the screen every time.
                             Collections.shuffle(songs);
                         }
-
+                        //change for loop
                         querySongs(songs);
                     }
                 });
@@ -124,6 +133,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
         }
 
         else {
+            //If no lists contain our artists, we just recommend songs of those original artists
+            //To-do: change to instead be songs in the genre
             spotifyService.searchTracks(artists[0], new SpotifyCallback<TracksPager>() {
                 @Override
                 public void failure(SpotifyError spotifyError) {
@@ -171,6 +182,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
         }
     }
 
+    //Checks if there's already a similar word in a list using equalsIgnoreCase
     private boolean containsIgnoreCase(List<String> currList, String artist1) {
         for(String artist : currList){
             if(artist.equalsIgnoreCase(artist1)){
@@ -180,6 +192,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
         return false;
     }
 
+    //If a match in artist has been found, gets other artists in the user's playlist to generate
+    // their top songs
     private Collection<String> getOtherArtists(List<String> currList, String artist1,
                                                String artist2) {
         List<String> otherArtists = new ArrayList<>();
@@ -194,6 +208,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
         return otherArtists;
     }
 
+    //Gets a list of all of the users' artists list.
     private void queryUsers(String[] artists) {
         ArrayList<List<String>> allArtists = new ArrayList<>();
         // specify what type of data we want to query - Post.class
@@ -226,6 +241,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
         });
     }
 
+    //Turns the JSONArray of artists back into a String array
     private List<String> jsonToStringArray(JSONArray artists) throws JSONException {
         List<String> newArtists = new ArrayList<>();
         for(int i = 0; i < artists.length(); i++){
@@ -234,16 +250,18 @@ public class GenerateSongsActivity extends AppCompatActivity {
         return newArtists;
     }
 
+    //Adds suggested songs into the recycler view.
     private void querySongs(List<Song> finalSongs) {
         Log.i("generate", "in query songs" + finalSongs.size());
         allSongs.addAll(finalSongs);
         Log.i("allSongs", "allSongs is: " + allSongs.toString());
         adapter.notifyDataSetChanged();
         Log.i("generate", "after adapter notified");
-// run a background job and once complete
+        // run a background job and once complete
         pb.setVisibility(ProgressBar.INVISIBLE);
     }
 
+    //This sets up our api by passing in the authentication token from the log-in screen
     private void setServiceApi() {
         Log.i("setSErvice", "authToken is " + authToken);
         api = new SpotifyApi();
