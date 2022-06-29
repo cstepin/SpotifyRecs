@@ -1,6 +1,6 @@
 package com.example.spotifyrecs;
 
-import static com.example.spotifyrecs.SpotifyLoginActivity.getAuthToken;
+import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

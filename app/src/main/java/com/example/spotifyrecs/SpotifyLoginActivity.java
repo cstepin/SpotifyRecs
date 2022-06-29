@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.spotifyrecs.resources.Resources;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -66,8 +67,9 @@ public class SpotifyLoginActivity extends AppCompatActivity {
             switch (response.getType()) {
                 // Response was successful and contains auth token
                 case TOKEN:
+                    Resources.setAuthToken(response.getAccessToken());
                     authToken = response.getAccessToken();
-                    Log.e(TAG,"Auth token: " + response.getAccessToken());
+                    Log.e(TAG,"Auth token: " + authToken);
                     Intent intent = new Intent(SpotifyLoginActivity.this,
                             LoginActivity.class);
                     startActivity(intent);
@@ -92,11 +94,5 @@ public class SpotifyLoginActivity extends AppCompatActivity {
 
     public void destroy(){
         SpotifyLoginActivity.this.finish();
-    }
-
-    //Static method for other methods to use
-    // To-do: move this to Resources
-    public static String getAuthToken(){
-        return authToken;
     }
 }
