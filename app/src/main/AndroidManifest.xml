@@ -24,6 +24,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ExportActivity"
+            android:exported="false" />
+        <activity
             android:name=".GenerateSongsActivity"
             android:exported="false" />
         <activity

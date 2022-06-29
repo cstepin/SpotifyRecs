@@ -30,6 +30,8 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyCallback;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.Artists;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
@@ -85,6 +87,20 @@ public class GenerateSongsActivity extends AppCompatActivity {
         String artist2 = artists[1];
         int index = 0;
 
+        spotifyService.getRelatedArtists("lady gaga", new SpotifyCallback<Artists>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+                Log.i("error in generate", "error is: " + spotifyError.getMessage());
+            }
+
+            @Override
+            public void success(Artists artists, Response response) {
+                for(Artist artist : artists.artists){
+                    Log.i("asdlkfas;dl", "curr artist is: " + artist.name);
+                }
+            }
+        });
+
         //For every user list, we see if they contain at least one of the artists that we were asked
         //If it does, we add them to our "relatedArtists" list
 
@@ -104,7 +120,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
         //Here, we just add the top songs of each "related artist"
         if(relatedArtists.size() > 0) {
-            for (String artist : relatedArtists) {
+            for(int i = 0; i < relatedArtists.size(); i++){
+                String artist = relatedArtists.get(i);
                 spotifyService.searchTracks(artist, new SpotifyCallback<TracksPager>() {
                     @Override
                     public void failure(SpotifyError spotifyError) {
@@ -122,13 +139,15 @@ public class GenerateSongsActivity extends AppCompatActivity {
                             song.uri = item.uri;
                             song.imageString = item.album.images.get(0).url;
                             songs.add(song);
-                            //We shuffle to ensure new results on the screen every time.
-                            Collections.shuffle(songs);
                         }
-                        //change for loop
-                        querySongs(songs);
                     }
                 });
+
+                if(i == relatedArtists.size() - 1){
+                    //We shuffle to ensure new results on the screen every time.
+                    Collections.shuffle(songs);
+                    querySongs(songs);
+                }
             }
         }
 

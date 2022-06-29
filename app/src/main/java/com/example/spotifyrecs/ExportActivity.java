@@ -38,14 +38,7 @@ public class ExportActivity extends AppCompatActivity {
             finish();
         }
 
-       // I'm not trying to do things with images so I commented this part out
-       /* try {
-            mBitmap = BitmapFactory.decodeStream(getAssets().open(mImagename));
-        } catch (IOException e) {
-            Log.e("ImageSegmentation", "Error reading assets", e);
-            finish();
-        }
-         */
+        run(mModule);
     }
 
     public static String assetFilePath(Context context, String assetName) throws IOException {
@@ -67,10 +60,21 @@ public class ExportActivity extends AppCompatActivity {
         }
     }
 
-    public void run(){
-        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(mBitmap,
-                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
-        final float[] inputs = inputTensor.getDataAsFloatArray();
-        Map<String, IValue> outTensors = mModule.forward(IValue.from(inputTensor)).toDictStringKey();
+    public static void run(Module mModule){
+        final long[] inputTensorShape = new long[] {1, 3, 224, 224};
+        final long numElements = Tensor.numel(inputTensorShape);
+        final float[] inputTensorData = new float[(int) numElements];
+        for (int i = 0; i < numElements; ++i) {
+            inputTensorData[i] = i;
+        }
+        final Tensor inputTensor = Tensor.fromBlob(inputTensorData, inputTensorShape);
+
+        IValue input = IValue.from(inputTensor);
+        IValue output = mModule.forward(input);
+
+      //  IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
+      //  IValue output = mModule.forward(input);
+        Tensor outputTensor = output.toTensor();
+        Log.i("In export activity", "input: " + inputTensor + " and output: " + outputTensor);
     }
 }
