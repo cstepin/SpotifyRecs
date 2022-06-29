@@ -67,9 +67,16 @@ public class ExportActivity extends AppCompatActivity {
         final float[] inputs = inputTensor.getDataAsFloatArray();
          */
 
-        Tensor input = Tensor.fromBlob(data, new long[]{1, data.length});
-        double outTensors = mModule.forward(IValue.from(input)).toDouble();
+       // Tensor input = Tensor.fromBlob(data, new long[]{1, data.length});
+//
+//        IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
+//        IValue output = mModule.forward(input);
 
-        Log.i("In export activity", "everything runs correctly: " + outTensors);
+        IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
+        IValue output = mModule.forward(input);
+
+        //double outTensors = mModule.forward(IValue.from(String.valueOf(input))).toDouble();
+
+        Log.i("In export activity", "everything runs correctly: " + output);
     }
 }
