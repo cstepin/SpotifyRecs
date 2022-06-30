@@ -63,9 +63,16 @@ public class MainActivity extends AppCompatActivity {
 
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
+        btnOldPlaylist.setOnClickListener(v -> toOldPlaylist());
+
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
 
         btnExport.setOnClickListener(v -> toExport());
+    }
+
+    private void toOldPlaylist() {
+        Intent i = new Intent(MainActivity.this, OldPlaylistActivity.class);
+        startActivity(i);
     }
 
     //Sending users to the right place

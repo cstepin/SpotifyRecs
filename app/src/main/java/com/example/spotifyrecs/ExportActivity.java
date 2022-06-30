@@ -32,7 +32,7 @@ public class ExportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_export);
 
         try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model.ptl"));
+            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p0.ptl"));
         } catch (IOException e) {
             Log.e("ImageSegmentation", "Error reading assets", e);
             finish();
