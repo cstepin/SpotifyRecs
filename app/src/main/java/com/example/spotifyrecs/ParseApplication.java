@@ -3,6 +3,7 @@ package com.example.spotifyrecs;
 
 import android.app.Application;
 
+import com.example.spotifyrecs.models.Playlist;
 import com.example.spotifyrecs.models.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -15,6 +16,7 @@ public class ParseApplication extends Application {
 
         // Register your parse models
         ParseObject.registerSubclass(User.class);
+        ParseObject.registerSubclass(Playlist.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("ECKrwWJds2hTllc8pLUl8kULfXqL0TPYPadof62e")

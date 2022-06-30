@@ -20,6 +20,7 @@ import com.example.spotifyrecs.models.Song;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -51,21 +52,27 @@ public class AddPlaylistFragment extends DialogFragment {
         etPlaylistName = view.findViewById(R.id.etPlaylistName);
         btnAddPlaylist = view.findViewById(R.id.btnSubmitPlaylist);
 
-        btnAddPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnAddPlaylist.setOnClickListener(v -> {
+            try {
                 addPlaylist(songs);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
-    private void addPlaylist(List<Song> songs) {
+    private void addPlaylist(List<Song> songs) throws JSONException {
         for(Song song : songs){
             Log.i("tag tag", "curr song is: " + song);
         }
         Playlist newPlaylist = new Playlist();
-        newPlaylist.name = etPlaylistName.getText().toString();
-        newPlaylist.songs = songs;
+        newPlaylist.setName(etPlaylistName.getText().toString());
+        JSONArray jsonArray = new JSONArray();
+        for(Song song : songs){
+            jsonArray.put(song.toJSON());
+        }
+        newPlaylist.setSongs(jsonArray);
+        newPlaylist.setUser(ParseUser.getCurrentUser());
 
         Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
 
