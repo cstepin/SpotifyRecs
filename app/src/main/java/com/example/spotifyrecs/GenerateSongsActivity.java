@@ -87,20 +87,6 @@ public class GenerateSongsActivity extends AppCompatActivity {
         String artist2 = artists[1];
         int index = 0;
 
-        spotifyService.getRelatedArtists("lady gaga", new SpotifyCallback<Artists>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error in generate", "error is: " + spotifyError.getMessage());
-            }
-
-            @Override
-            public void success(Artists artists, Response response) {
-                for(Artist artist : artists.artists){
-                    Log.i("asdlkfas;dl", "curr artist is: " + artist.name);
-                }
-            }
-        });
-
         //For every user list, we see if they contain at least one of the artists that we were asked
         //If it does, we add them to our "relatedArtists" list
 

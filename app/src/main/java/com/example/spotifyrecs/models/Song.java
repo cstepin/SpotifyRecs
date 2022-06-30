@@ -2,6 +2,8 @@ package com.example.spotifyrecs.models;
 
 import com.spotify.protocol.types.ImageUri;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcel;
 import org.parceler.TypeRangeParcelConverter;
 
@@ -48,4 +50,12 @@ public class Song {
     }
 
     public Song(){}
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject jo = new JSONObject();
+        jo.put("title", title);
+        jo.put("artist", artist);
+
+        return jo;
+    }
 }
