@@ -102,6 +102,13 @@ Week 2 *Goal* — have the ability to swipe on song suggestions
 		- This will be fake data as the users in Back4App are also to test the database
 
 Week 3
+*Update*
+- Try to include PyTorch model
+	- Figure out how to input multiple arguments into JavaFile
+	- Figure out how to calibrate users (to find similar users)
+	- Figure out how to translate users' opinions into matrix
+	- Figure out how to get song recommendation from what the PyTorch model gives back.
+
 - Start working on second algorithm (pulling information from multiple APIs)
 	- The algorithm will pull results from multiple API's then try to find the maximum intersection (if any exists)
 	of artists similar to the the users' inputted artists. 
