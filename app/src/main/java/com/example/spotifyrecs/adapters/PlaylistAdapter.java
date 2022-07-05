@@ -1,6 +1,7 @@
 package com.example.spotifyrecs.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,12 @@ import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifyrecs.R;
+import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Playlist;
 import com.example.spotifyrecs.models.Song;
 
 import org.json.JSONException;
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -55,11 +58,59 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             super(itemView);
             this.itemView = itemView;
             tvTitle = itemView.findViewById(R.id.tvTitle);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    // make sure the position is valid, i.e. actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+
+                        Log.i("playlist adapter", "in if onclick");
+                        // get the movie at the position, this won't work if the class is static
+                        Playlist playlist = playlists.get(position);
+                        // create intent for the new activity
+                        Intent intent = new Intent(context, finalPlaylistActivity.class);
+                        // serialize the movie using parceler, use its short name as a key
+                        intent.putExtra("details", true);
+                        intent.putExtra("final songs",
+                                Parcels.wrap(playlist.getSongs()));
+                        // show the activity
+                        context.startActivity(intent);
+                    }
+                }
+            });
+            /*
+            tvTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, finalPlaylistActivity.class);
+                    i.putExtra("details", true);
+                  //  getContext().startActivity();
+                }
+            });
+             */
         }
 
         @Override
         public void onClick(View v) {
             Toast.makeText(v.getContext(), "I've been clicked", Toast.LENGTH_SHORT).show();
+            int position = getAdapterPosition();
+            // make sure the position is valid, i.e. actually exists in the view
+            if (position != RecyclerView.NO_POSITION) {
+
+                Log.i("postsadapter", "in if onclick");
+                // get the movie at the position, this won't work if the class is static
+                Playlist playlist = playlists.get(position);
+                // create intent for the new activity
+                Intent intent = new Intent(context, finalPlaylistActivity.class);
+                // serialize the movie using parceler, use its short name as a key
+                intent.putExtra("details", true);
+                intent.putExtra("final songs",
+                        Parcels.wrap(playlist.getSongs()));
+                // show the activity
+                context.startActivity(intent);
+            }
         }
 
         public void bind(Playlist playlist) {
