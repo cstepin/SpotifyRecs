@@ -67,12 +67,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                     if (position != RecyclerView.NO_POSITION) {
 
                         Log.i("playlist adapter", "in if onclick");
-                        // get the movie at the position, this won't work if the class is static
                         Playlist playlist = playlists.get(position);
                         // create intent for the new activity
                         Intent intent = new Intent(context, finalPlaylistActivity.class);
-                        // serialize the movie using parceler, use its short name as a key
                         intent.putExtra("details", true);
+                        //need to figure out how to get songs
                         intent.putExtra("final songs",
                                 Parcels.wrap(playlist.getSongs()));
                         // show the activity

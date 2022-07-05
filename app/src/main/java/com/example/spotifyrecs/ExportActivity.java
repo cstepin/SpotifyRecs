@@ -70,8 +70,6 @@ public class ExportActivity extends AppCompatActivity {
         final Tensor inputTensor = Tensor.fromBlob(inputTensorData, inputTensorShape);
 
         IValue input = IValue.from(inputTensor);
-        //IValue output = mModule.forward(IValue.from(0));
-        //IValue[IValue, IValue]
         IValue output = mModule.forward(IValue.listFrom(IValue.from(0), input));
 
       //  IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
