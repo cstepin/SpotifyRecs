@@ -118,6 +118,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                     intent.putExtra("details", true);
                     //need to figure out how to get songs
 
+                    //Convert each song in the JSONArray to a Song object
                     List<Song> songs = new ArrayList<>();
                     for(int i = 0; i < playlist1.getSongs().length(); i++){
                         try {
