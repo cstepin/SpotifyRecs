@@ -7,9 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,12 +35,9 @@ import com.spotify.protocol.types.ImageUri;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.ViewHolder> {
 
@@ -100,7 +94,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         ImageView ivCoverArt;
         View itemView;
         Boolean pressed = false;
-        final long[] lastClickTime = {0};
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +104,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             ivCoverArt = itemView.findViewById(R.id.ivCoverArt);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         public void bind(Song song) throws JSONException {
             Log.i("adapter", "in item bind");
             //set up the image
@@ -126,9 +120,12 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             //otherwise this sets on an click listener for the play button
             ibPlay.setOnClickListener(v -> startPlay(song, true));
 
+            AtomicLong lastClickTime = new AtomicLong();
+            lastClickTime.set(0);
+
             this.itemView.setOnTouchListener((v, event) -> {
-                onSongClick(v, event, lastClickTime[0], song);
-                lastClickTime[0] = System.currentTimeMillis();
+                onSongClick(v, event, lastClickTime.get(), song);
+                lastClickTime.set(System.currentTimeMillis());
                 return true;
             });
         }
@@ -211,19 +208,18 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
           //  long lastClickTime = 0;
             //This represents the minimum amount of pixels moved which would signify
             // an intentional swipe
-            final int MIN_DISTANCE = 250;
+            final int MIN_DISTANCE = 150;
 
             Log.i("here", "in swipe");
             long clickTime = System.currentTimeMillis();
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
-                Log.i("here2", "in double tap");
-                onDoubleClick(v, s);
-            }
-            lastClickTime = clickTime;
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     x1_coord = event.getX();
+                    if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                        Log.i("here2", "in double tap with delta time: " + (clickTime - lastClickTime));
+                        onDoubleClick(v, s);
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
                     x2_coord = event.getX();
