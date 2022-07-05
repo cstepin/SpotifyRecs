@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +56,24 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     public SwipeSongAdapter(Context context, List<Song> songs) {
         this.context = context;
         this.songs = songs;
+    }
+
+    public abstract class DoubleClickListener implements View.OnClickListener {
+
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
+
+        long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                onDoubleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public abstract void onDoubleClick(View v);
     }
 
     @NonNull
@@ -110,11 +130,30 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             ibPlay = itemView.findViewById(R.id.ibPlay);
             ivCoverArt = itemView.findViewById(R.id.ivCoverArt);
 
-            this.itemView.setOnTouchListener(new View.OnTouchListener() {
-                @SuppressLint("ClickableViewAccessibility")
+            this.itemView.setOnClickListener(new DoubleClickListener(){
+
                 @Override
+                public void onDoubleClick(View v) {
+                    Log.i("In double click", "double click noticed");
+                    itemView.setBackgroundColor(Color.parseColor("#000000"));
+                }
+            });
+
+            this.itemView.setOnTouchListener(new View.OnTouchListener() {
+                private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
+
+                long lastClickTime = 0;
+
+                @Override
+                @SuppressLint("ClickableViewAccessibility")
                 public boolean onTouch(View v, MotionEvent event) {
                     Log.i("here", "in swipe");
+                    long clickTime = System.currentTimeMillis();
+                    if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                        onDoubleClick(v);
+                    }
+                    lastClickTime = clickTime;
+
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             x1_coord = event.getX();
@@ -257,5 +296,10 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
+    }
+
+    private void onDoubleClick(View v) {
+        Log.i("In double click2", "double click noticed");
+        v.setBackgroundColor(Color.parseColor("#000000"));
     }
 }
