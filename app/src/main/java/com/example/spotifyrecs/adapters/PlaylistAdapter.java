@@ -74,7 +74,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                         //need to figure out how to get songs
                         intent.putExtra("final songs",
                                 Parcels.wrap(playlist.getSongs()));
-                        // show the activity
                         context.startActivity(intent);
                     }
                 }
