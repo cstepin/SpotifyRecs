@@ -19,8 +19,10 @@ import com.example.spotifyrecs.models.Playlist;
 import com.example.spotifyrecs.models.Song;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
@@ -59,25 +61,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             this.itemView = itemView;
             tvTitle = itemView.findViewById(R.id.tvTitle);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    // make sure the position is valid, i.e. actually exists in the view
-                    if (position != RecyclerView.NO_POSITION) {
 
-                        Log.i("playlist adapter", "in if onclick");
-                        Playlist playlist = playlists.get(position);
-                        // create intent for the new activity
-                        Intent intent = new Intent(context, finalPlaylistActivity.class);
-                        intent.putExtra("details", true);
-                        //need to figure out how to get songs
-                        intent.putExtra("final songs",
-                                Parcels.wrap(playlist.getSongs()));
-                        context.startActivity(intent);
-                    }
-                }
-            });
             /*
             tvTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,16 +88,50 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 Intent intent = new Intent(context, finalPlaylistActivity.class);
                 // serialize the movie using parceler, use its short name as a key
                 intent.putExtra("details", true);
-                intent.putExtra("final songs",
-                        Parcels.wrap(playlist.getSongs()));
                 // show the activity
                 context.startActivity(intent);
             }
         }
 
+        public Song fromJson(JSONObject jsonObject) throws JSONException{
+            Song song = new Song();
+
+            song.title = (String) jsonObject.get("title");
+            song.artist = (String) jsonObject.get("artist");
+
+            return song;
+        }
+
         public void bind(Playlist playlist) {
             Log.i("Binding", "Binding the current title: " + playlist.getName());
             tvTitle.setText(playlist.getName());
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+
+                    Log.i("playlist adapter", "in if onclick");
+                    Playlist playlist1 = playlists.get(position);
+                    // create intent for the new activity
+                    Intent intent = new Intent(context, finalPlaylistActivity.class);
+                    intent.putExtra("details", true);
+                    //need to figure out how to get songs
+
+                    List<Song> songs = new ArrayList<>();
+                    for(int i = 0; i < playlist1.getSongs().length(); i++){
+                        try {
+                            songs.add(fromJson(playlist1.getSongs().getJSONObject(i)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    intent.putExtra("final songs",
+                            Parcels.wrap(songs));
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
