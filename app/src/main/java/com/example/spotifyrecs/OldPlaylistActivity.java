@@ -91,7 +91,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
             public void done(List<Playlist> playlists, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e("TAG", "Issue with getting posts", e);
+                    Log.e("TAG", "Issue with getting playlists", e);
                     return;
                 }
 
