@@ -15,9 +15,6 @@ public class Playlist extends ParseObject {
     public static final String KEY_SONGS = "songs";
     public static final String KEY_USER = "user";
 
-    public List<Song> songs;
-    public String name;
-
     public Playlist(){}
 
     /*

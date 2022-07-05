@@ -51,6 +51,9 @@ public class finalPlaylistActivity extends AppCompatActivity {
 
 
         btnAddPlaylist = findViewById(R.id.btnAddPlaylist);
+        if(getIntent().hasExtra("details")){
+            btnAddPlaylist.setVisibility(View.GONE);
+        }
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {

@@ -32,7 +32,7 @@ public class ExportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_export);
 
         try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model.ptl"));
+            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p0.ptl"));
         } catch (IOException e) {
             Log.e("ImageSegmentation", "Error reading assets", e);
             finish();
@@ -70,7 +70,7 @@ public class ExportActivity extends AppCompatActivity {
         final Tensor inputTensor = Tensor.fromBlob(inputTensorData, inputTensorShape);
 
         IValue input = IValue.from(inputTensor);
-        IValue output = mModule.forward(input);
+        IValue output = mModule.forward(IValue.listFrom(IValue.from(0), input));
 
       //  IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
       //  IValue output = mModule.forward(input);
