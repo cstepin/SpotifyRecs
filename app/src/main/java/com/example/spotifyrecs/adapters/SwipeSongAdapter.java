@@ -49,31 +49,17 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
     private Context context;
     private List<Song> songs;
+    private List<Song> faveSongs;
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
+    //These floats keep track of the coordinates of where the user's mouse is
+    //to detect swipes
+    static float x1_coord, x2_coord;
 
     public SwipeSongAdapter(Context context, List<Song> songs) {
         this.context = context;
         this.songs = songs;
-    }
-
-    public abstract class DoubleClickListener implements View.OnClickListener {
-
-        private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
-
-        long lastClickTime = 0;
-
-        @Override
-        public void onClick(View v) {
-            long clickTime = System.currentTimeMillis();
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
-                onDoubleClick(v);
-            }
-            lastClickTime = clickTime;
-        }
-
-        public abstract void onDoubleClick(View v);
     }
 
     @NonNull
@@ -114,13 +100,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         ImageView ivCoverArt;
         View itemView;
         Boolean pressed = false;
-
-        //These floats keep track of the coordinates of where the user's mouse is
-        //to detect swipes
-        private float x1_coord, x2_coord;
-        //This represents the minimum amount of pixels moved which would signify
-        // an intentional swipe
-        static final int MIN_DISTANCE = 150;
+        final long[] lastClickTime = {0};
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,84 +109,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             tvArtist = itemView.findViewById(R.id.tvArtist);
             ibPlay = itemView.findViewById(R.id.ibPlay);
             ivCoverArt = itemView.findViewById(R.id.ivCoverArt);
-
-            this.itemView.setOnClickListener(new DoubleClickListener(){
-
-                @Override
-                public void onDoubleClick(View v) {
-                    Log.i("In double click", "double click noticed");
-                    itemView.setBackgroundColor(Color.parseColor("#000000"));
-                }
-            });
-
-            this.itemView.setOnTouchListener(new View.OnTouchListener() {
-                private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
-
-                long lastClickTime = 0;
-
-                @Override
-                @SuppressLint("ClickableViewAccessibility")
-                public boolean onTouch(View v, MotionEvent event) {
-                    Log.i("here", "in swipe");
-                    long clickTime = System.currentTimeMillis();
-                    if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
-                        onDoubleClick(v);
-                    }
-                    lastClickTime = clickTime;
-
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            x1_coord = event.getX();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            x2_coord = event.getX();
-                            //We calculate the distance between where the user pressed down
-                            // and then released up
-                            float deltaX = x2_coord - x1_coord;
-                            //If we detect a right swipe...
-                            if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
-                                Toast.makeText(v.getContext(), "I'm keeping this song!",
-                                        Toast.LENGTH_SHORT).show();
-                                Song song = new Song();
-                                song.title = (String) tvTitle.getText();
-                                song.artist = (String) tvArtist.getText();
-                                //this means they liked the song, so we keep the song
-                                finalSongs.add(song);
-                                //This keeps track of how many songs have been reacted to already
-                                //To-do: add a way to not swipe all songs and go to the next activity
-                                swiped++;
-                                Log.i("SwipeSong", String.valueOf(finalSongs.size()));
-                                //To-do: figure out how to ensure the screen moves when a song is swiped
-                                v.setVisibility(View.GONE);
-
-                                //We check if we've swiped the correct number of songs.
-                                if(numSwiped() == getItemCount()){
-                                    Intent i = new Intent(v.getContext(),
-                                            finalPlaylistActivity.class);
-                                    i.putExtra("final songs", Parcels.wrap(finalSongs));
-                                    v.getContext().startActivity(i);
-                                }
-
-                                //Else if we detect a left swipe...
-                            } else if (Math.abs(deltaX) > MIN_DISTANCE && deltaX < 0) {
-                                Toast.makeText(v.getContext(), "Leaving this song behind!",
-                                        Toast.LENGTH_SHORT).show();
-                                //This means we ignore the song.
-                                v.setVisibility(View.GONE);
-                                swiped++;
-                                if(numSwiped() == getItemCount()){
-                                    Intent i = new Intent(v.getContext(),
-                                            finalPlaylistActivity.class);
-                                    i.putExtra("final songs",
-                                            Parcels.wrap(finalSongs));
-                                    v.getContext().startActivity(i);
-                                }
-                            }
-                            break;
-                    }
-                    return true;
-                }
-            });
         }
 
         public void bind(Song song) throws JSONException {
@@ -223,6 +125,12 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
             //otherwise this sets on an click listener for the play button
             ibPlay.setOnClickListener(v -> startPlay(song, true));
+
+            this.itemView.setOnTouchListener((v, event) -> {
+                onSongClick(v, event, lastClickTime[0], song);
+                lastClickTime[0] = System.currentTimeMillis();
+                return true;
+            });
         }
 
         //an override method because it's required (we're only going to be swiping on image
@@ -296,10 +204,80 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
+
+        private void onSongClick(View v, MotionEvent event, long lastClickTime, Song s){
+            final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
+
+          //  long lastClickTime = 0;
+            //This represents the minimum amount of pixels moved which would signify
+            // an intentional swipe
+            final int MIN_DISTANCE = 250;
+
+            Log.i("here", "in swipe");
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                Log.i("here2", "in double tap");
+                onDoubleClick(v, s);
+            }
+            lastClickTime = clickTime;
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    x1_coord = event.getX();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    x2_coord = event.getX();
+                    //We calculate the distance between where the user pressed down
+                    // and then released up
+                    float deltaX = x2_coord - x1_coord;
+                    Log.i("this was", "this was the distinace travelled: " + deltaX);
+                    //If we detect a right swipe...
+                    if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
+                        Toast.makeText(v.getContext(), "I'm keeping this song!",
+                                Toast.LENGTH_SHORT).show();
+                        Song song = new Song();
+                        song.title = (String) tvTitle.getText();
+                        song.artist = (String) tvArtist.getText();
+                        //this means they liked the song, so we keep the song
+                        finalSongs.add(song);
+                        //This keeps track of how many songs have been reacted to already
+                        //To-do: add a way to not swipe all songs and go to the next activity
+                        swiped++;
+                        Log.i("SwipeSong", String.valueOf(finalSongs.size()));
+                        //To-do: figure out how to ensure the screen moves when a song is swiped
+                        v.setVisibility(View.GONE);
+
+                        //We check if we've swiped the correct number of songs.
+                        if(numSwiped() == getItemCount()){
+                            Intent i = new Intent(v.getContext(),
+                                    finalPlaylistActivity.class);
+                            i.putExtra("final songs", Parcels.wrap(finalSongs));
+                            v.getContext().startActivity(i);
+                        }
+
+                        //Else if we detect a left swipe...
+                    } else if (Math.abs(deltaX) > MIN_DISTANCE && deltaX < 0) {
+                        Toast.makeText(v.getContext(), "Leaving this song behind!",
+                                Toast.LENGTH_SHORT).show();
+                        //This means we ignore the song.
+                        v.setVisibility(View.GONE);
+                        swiped++;
+                        if(numSwiped() == getItemCount()){
+                            Intent i = new Intent(v.getContext(),
+                                    finalPlaylistActivity.class);
+                            i.putExtra("final songs",
+                                    Parcels.wrap(finalSongs));
+                            v.getContext().startActivity(i);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
-    private void onDoubleClick(View v) {
+    private void onDoubleClick(View v, Song s) {
         Log.i("In double click2", "double click noticed");
         v.setBackgroundColor(Color.parseColor("#000000"));
+       // faveSongs.add(s);
     }
 }
