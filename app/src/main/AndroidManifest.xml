@@ -15,6 +15,9 @@
         android:theme="@style/Theme.SpotifyRecs"
         tools:targetApi="31">
         <activity
+            android:name=".recommendations.CollabFilteringActivity"
+            android:exported="false" />
+        <activity
             android:name=".OldPlaylistActivity"
             android:exported="false" />
         <activity
@@ -30,13 +33,13 @@
             android:name=".ExportActivity"
             android:exported="false" />
         <activity
-            android:name=".GenerateSongsActivity"
+            android:name=".recommendations.GenerateSongsActivity"
             android:exported="false" />
         <activity
             android:name=".finalPlaylistActivity"
             android:exported="false" />
         <activity
-            android:name=".SwipeSongsActivity"
+            android:name=".recommendations.SwipeSongsActivity"
             android:exported="false" />
         <activity
             android:name=".EnterArtistsActivity"

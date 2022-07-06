@@ -1,4 +1,4 @@
-package com.example.spotifyrecs;
+package com.example.spotifyrecs.recommendations;
 
 import static com.example.spotifyrecs.resources.Resources.getClientId;
 import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.ConnectionParams;
