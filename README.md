@@ -104,18 +104,25 @@ Week 2 *Goal* — have the ability to swipe on song suggestions
 Week 3
 *Update*
 - Try to include PyTorch model
-	- Figure out how to input multiple arguments into JavaFile
-	- Figure out how to calibrate users (to find similar users)
+	[x] Figure out how to input multiple arguments into JavaFile
+	[x] Figure out how to calibrate users (to find similar users)
 	- Figure out how to translate users' opinions into matrix
 	- Figure out how to get song recommendation from what the PyTorch model gives back.
 
+GOAL: Get the above end-to-end complete by the end of this week
+
+(Optional)
 - Start working on second algorithm (pulling information from multiple APIs)
 	- The algorithm will pull results from multiple API's then try to find the maximum intersection (if any exists)
-	of artists similar to the the users' inputted artists. 
+	of artists similar to the the users' inputted artists.
+	
+
 - Start researching how to do comparison matrix for algorithms
+- Also start working on Unit tests for algorithms
+	- Especially for the Pytorch model, unit tests are very important
 
 Week 4 *Goal* — have a mostly-complete app
-- Figure out how to play bits of sound / YouTube or Spotify music in the swiping window
+- [x] Figure out how to play bits of sound / YouTube or Spotify music in the swiping window
 - (Maybe) figure out how to export the album into a different window
 
 Week 5
@@ -123,7 +130,7 @@ Week 5
 - Run both algorithms through the recommendation matrix -- see whether one outperforms the other one.
 
 Week 6 *Goal* have the app look like a real app and have at least one stretch goal finished
-- Stretch goal: Trying to look at past albums
+- [x] Stretch goal: Trying to look at past albums
 - Stretch goal: Trying to play the “most repeated” part of videos
 
 Week 7:
@@ -131,7 +138,6 @@ Week 7:
 - Polishing the app
 
 ### 6. Models
-
 
 Models
 
