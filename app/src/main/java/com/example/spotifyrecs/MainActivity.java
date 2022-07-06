@@ -1,36 +1,18 @@
 package com.example.spotifyrecs;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.spotifyrecs.models.Song;
+import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
+import com.example.spotifyrecs.recommendations.SwipeSongsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
-import com.spotify.android.appremote.api.ConnectionParams;
-import com.spotify.android.appremote.api.Connector;
-import com.spotify.android.appremote.api.ContentApi;
-import com.spotify.android.appremote.api.SpotifyAppRemote;
-
-import com.spotify.protocol.client.CallResult;
-import com.spotify.protocol.client.Subscription;
-import com.spotify.protocol.types.Item;
-import com.spotify.protocol.types.ListItem;
-import com.spotify.protocol.types.ListItems;
-import com.spotify.protocol.types.PlayerState;
-import com.spotify.protocol.types.Track;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnSpotifyAlg;
     String authToken;
     Button btnExport;
+    Button btnCollab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         btnOldPlaylist = findViewById(R.id.btnOldPlaylist);
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
         btnExport = findViewById(R.id.btnExport);
+        btnCollab = findViewById(R.id.btnCollab);
+        
+        btnCollab.setOnClickListener(v -> toCollab());
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
@@ -68,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
 
         btnExport.setOnClickListener(v -> toExport());
+    }
+
+    private void toCollab() {
+        Intent i = new Intent(MainActivity.this, CollabFilteringActivity.class);
+        startActivity(i);
     }
 
     private void toOldPlaylist() {

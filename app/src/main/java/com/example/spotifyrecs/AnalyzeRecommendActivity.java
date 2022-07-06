@@ -1,12 +1,18 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.resources.Resources.getAuthToken;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.spotify.android.appremote.api.SpotifyAppRemote;
 
 import org.pytorch.IValue;
 import org.pytorch.LiteModuleLoader;
@@ -20,18 +26,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyCallback;
+import kaaes.spotify.webapi.android.SpotifyError;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.Artists;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.TracksPager;
+import retrofit.client.Response;
 
-public class ExportActivity extends AppCompatActivity {
+public class AnalyzeRecommendActivity extends AppCompatActivity {
     private Module mModule = null;
     private Bitmap mBitmap = null;
+
+    //For spotify calls
+    private SpotifyAppRemote mSpotifyAppRemote;
+    SpotifyApi api;
+    public static SpotifyService spotifyService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export);
+        setContentView(R.layout.activity_analyze_recommend);
 
         try {
             mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p1.ptl"));
@@ -40,7 +62,60 @@ public class ExportActivity extends AppCompatActivity {
             finish();
         }
 
+        setServiceApi();
+
         run(mModule);
+
+        // This can find the artist and generate songs of 3 related artists
+        String artist = "beatles";
+        // given a song with an attached artist:
+        getSimilarSongs(artist);
+    }
+
+    private void getSimilarSongs(String artist) {
+        ArrayList<String> simArtists = new ArrayList<>();
+
+        spotifyService.searchArtists("beatles", new SpotifyCallback<ArtistsPager>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+                Log.i("error in generate34", "error is: " + spotifyError.getMessage());
+            }
+
+            @Override
+            public void success(ArtistsPager artistsPager, Response response) {
+                String id = artistsPager.artists.items.get(0).id;
+
+                spotifyService.getRelatedArtists(id, new SpotifyCallback<Artists>() {
+                    @Override
+                    public void failure(SpotifyError spotifyError) {
+                        Log.i("error in generate234", "error is: " + spotifyError.getMessage());
+                    }
+
+                    @Override
+                    public void success(Artists artists, Response response) {
+                        for(Artist artist : artists.artists){
+                            Log.i("test", "these are related artists: " + artist.name);
+                            simArtists.add(artist.name);
+                        }
+                    }
+                });
+            }
+        });
+
+        for(String artist1 : simArtists){
+            spotifyService.searchTracks(artist1, new SpotifyCallback<TracksPager>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+                    Log.i("error in generate5", "error is: " + spotifyError.getMessage());
+                }
+
+                @Override
+                public void success(TracksPager tracksPager, Response response) {
+                    Log.i("succes", "success in getting related songs: "
+                            + tracksPager.tracks.items.get(0));
+                }
+            });
+        }
     }
 
     public static String assetFilePath(Context context, String assetName) throws IOException {
@@ -97,21 +172,13 @@ public class ExportActivity extends AppCompatActivity {
 
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
+    }
 
-//        final long[] inputTensorShape = new long[] {1, 3, 224, 224};
-//        final long numElements = Tensor.numel(inputTensorShape);
-//        final float[] inputTensorData = new float[(int) numElements];
-//        for (int i = 0; i < numElements; ++i) {
-//            inputTensorData[i] = i;
-//        }
-//        final Tensor inputTensor = Tensor.fromBlob(inputTensorData, inputTensorShape);
-//
-//        IValue input = IValue.from(inputTensor);
-//        IValue output = mModule.forward(IValue.listFrom(IValue.from(0), input));
-//
-//      //  IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
-//      //  IValue output = mModule.forward(input);
-//        Tensor outputTensor = output.toTensor();
-//        Log.i("In export activity", "input: " + inputTensor + " and output: " + outputTensor);
+    //This sets up our api by passing in the authentication token from the log-in screen
+    private void setServiceApi() {
+      //  Log.i("setService", "authToken is " + authToken);
+        api = new SpotifyApi();
+        api.setAccessToken(getAuthToken());
+        spotifyService = api.getService();
     }
 }
