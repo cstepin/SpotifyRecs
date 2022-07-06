@@ -4,4 +4,7 @@
     <string name="log_in">Log In</string>
     <string name="logout">Logout</string>
     <string name="home">Home</string>
+    <string name="skip_this_song">Skip This Song</string>
+    <string name="covert_art_of_the_current_song">Covert art of the current song</string>
+    <string name="play_button_to_hear_a_snippet_of_the_song">Play button to hear a snippet of the song</string>
 </resources>

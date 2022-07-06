@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/ic_vector_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_collab_filtering.xml" value="0.11322188449848024" />
         <entry key="app/src/main/res/layout/activity_enter_artists.xml" value="0.1734375" />
         <entry key="app/src/main/res/layout/activity_export.xml" value="0.2328125" />
         <entry key="app/src/main/res/layout/activity_final_playlist.xml" value="0.1734375" />
