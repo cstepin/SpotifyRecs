@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
 import com.example.spotifyrecs.recommendations.SwipeSongsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnSpotifyAlg;
     String authToken;
     Button btnExport;
+    Button btnCollab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         btnOldPlaylist = findViewById(R.id.btnOldPlaylist);
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
         btnExport = findViewById(R.id.btnExport);
+        btnCollab = findViewById(R.id.btnCollab);
+        
+        btnCollab.setOnClickListener(v -> toCollab());
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
@@ -48,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
 
         btnExport.setOnClickListener(v -> toExport());
+    }
+
+    private void toCollab() {
+        Intent i = new Intent(MainActivity.this, CollabFilteringActivity.class);
+        startActivity(i);
     }
 
     private void toOldPlaylist() {

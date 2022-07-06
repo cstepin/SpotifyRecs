@@ -24,6 +24,8 @@ import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.spotifyrecs.AnalyzeRecommendActivity;
+import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Song;
@@ -44,8 +46,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
     private Context context;
     private List<Song> songs;
     private List<Song> faveSongs;
-    float[] user_x_rating_raw = new float[10];
-    int user_rating_index = 0;
+    float[] user_x_rating_raw = new float[11];
+    int user_rating_index = 1;
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -61,6 +63,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
     @NonNull
     @Override
     public CollabSongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        user_x_rating_raw[0] = 11.0F;
         View view = LayoutInflater.from(context).inflate(R.layout.item_collab_song, parent,
                 false);
 
@@ -136,14 +139,13 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
         }
 
         private void ignoreClicked(View v) {
-            user_x_rating_raw[user_rating_index] = 0;
+            user_x_rating_raw[user_rating_index] = 0.0F;
             user_rating_index++;
 
             if(user_rating_index == 10){
                 Intent i = new Intent(v.getContext(),
-                        finalPlaylistActivity.class);
-                i.putExtra("final songs",
-                        Parcels.wrap(finalSongs));
+                        AnalyzeRecommendActivity.class);
+                i.putExtra("floats", user_x_rating_raw);
                 v.getContext().startActivity(i);
             }
         }
@@ -249,7 +251,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                     if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
                         Toast.makeText(v.getContext(), "I'm like this song!",
                                 Toast.LENGTH_SHORT).show();
-                        user_x_rating_raw[user_rating_index] = 1;
+                        user_x_rating_raw[user_rating_index] = 1.0F;
                         user_rating_index++;
                         //This keeps track of how many songs have been reacted to already
                         //To-do: add a way to not swipe all songs and go to the next activity
@@ -261,8 +263,9 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                         //We check if we've swiped the correct number of songs.
                         if(user_rating_index == 10){
                             Intent i = new Intent(v.getContext(),
-                                    finalPlaylistActivity.class);
-                            i.putExtra("final songs", Parcels.wrap(finalSongs));
+                                    AnalyzeRecommendActivity.class);
+
+                            i.putExtra("floats", user_x_rating_raw);
                             v.getContext().startActivity(i);
                         }
 
@@ -270,16 +273,18 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                     } else if (Math.abs(deltaX) > MIN_DISTANCE && deltaX < 0) {
                         Toast.makeText(v.getContext(), "This is not my taste!",
                                 Toast.LENGTH_SHORT).show();
-                        user_x_rating_raw[user_rating_index] = -1;
+                        user_x_rating_raw[user_rating_index] = -1.0F;
                         user_rating_index++;
                         //This means we ignore the song.
                         v.setVisibility(View.GONE);
                         swiped++;
                         if(user_rating_index == 10){
                             Intent i = new Intent(v.getContext(),
-                                    finalPlaylistActivity.class);
-                            i.putExtra("final songs",
+                                    AnalyzeRecommendActivity.class);
+                            i.putExtra("floats", user_x_rating_raw);
+                           /* i.putExtra("final songs",
                                     Parcels.wrap(finalSongs));
+                            */
                             v.getContext().startActivity(i);
                         }
                     }

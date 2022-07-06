@@ -33,6 +33,7 @@ import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.Artists;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
@@ -88,6 +89,20 @@ public class GenerateSongsActivity extends AppCompatActivity {
         String artist2 = artists[1];
         int index = 0;
 
+        /*
+        spotifyService.getTrack("hey jude", new SpotifyCallback<Track>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+                Log.i("error in generate234234", "error is: " + spotifyError.getMessage());
+            }
+
+            @Override
+            public void success(Track track, Response response) {
+                Log.i("example", "example track type: " + track.type + " and linked tracks " + track.linked_from.toString());
+            }
+        });
+         */
+
         //For every user list, we see if they contain at least one of the artists that we were asked
         //If it does, we add them to our "relatedArtists" list
 
@@ -131,6 +146,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
                             songs.add(song);
                             Log.i("songs size", "songs size is: " + songs.size());
                         }
+
                         if(finalI == relatedArtists.size() - 1){
                             Log.i("In at end of for loop", "escaped other for loop");
                             //We shuffle to ensure new results on the screen every time.

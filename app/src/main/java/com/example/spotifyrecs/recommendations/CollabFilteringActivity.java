@@ -58,6 +58,26 @@ public class CollabFilteringActivity extends AppCompatActivity {
         // first, we need to show 10 songs which are very different to generate the thing.
         // then we need to have a specific swiping thing to see if we should keep the data as a -1
         // 0 or 1
+
+        getSongs();
+    }
+
+    private void getSongs(){
+        List<Song> songs = new ArrayList<>();
+
+        //get the ten songs somehow.
+        querySongs(songs);
+    }
+
+    //Adds suggested songs into the recycler view.
+    private void querySongs(List<Song> finalSongs) {
+        Log.i("generate", "in query songs" + finalSongs.size());
+        allSongs.addAll(finalSongs);
+        Log.i("allSongs", "allSongs is: " + allSongs.toString());
+        adapter.notifyDataSetChanged();
+        Log.i("generate", "after adapter notified");
+        // run a background job and once complete
+        pb.setVisibility(ProgressBar.INVISIBLE);
     }
 
     private void setServiceApi() {
