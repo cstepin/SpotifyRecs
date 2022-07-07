@@ -84,7 +84,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return Math.min(songs.size(), 5);
+        return Math.min(songs.size(), 10);
     }
 
     public int numSwiped() {
@@ -141,6 +141,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
         private void ignoreClicked(View v) {
             user_x_rating_raw[user_rating_index] = 0.0F;
             user_rating_index++;
+
+            v.setVisibility(View.GONE);
 
             if(user_rating_index == 10){
                 Intent i = new Intent(v.getContext(),
