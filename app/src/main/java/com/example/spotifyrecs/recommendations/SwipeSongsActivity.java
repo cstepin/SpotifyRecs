@@ -99,6 +99,7 @@ public class SwipeSongsActivity extends AppCompatActivity {
         List<Song> songs = new ArrayList<>();
 
         // This gets the content asynchronously in recommended
+
         CallResult<ListItems> listItemsCallResult = mSpotifyAppRemote.getContentApi()
                 .getRecommendedContentItems(ContentApi.ContentType.DEFAULT);
         listItemsCallResult.setResultCallback(new CallResult.ResultCallback<ListItems>() {
