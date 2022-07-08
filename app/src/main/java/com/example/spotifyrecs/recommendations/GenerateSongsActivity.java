@@ -92,31 +92,6 @@ public class GenerateSongsActivity extends AppCompatActivity {
         String artist2 = artists[1];
         int index = 0;
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("seed_genres", "show-tunes");
-        Log.i("this is map", "map: " + map);
-
-        spotifyService.getRecommendations(map, new SpotifyCallback<Recommendations>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                Log.i("error querying", "error: " + spotifyError.getMessage() +
-                        " and details: " + spotifyError.getErrorDetails().message);
-            }
-
-            @Override
-            public void success(Recommendations recommendations, Response response) {
-                Track track = recommendations.tracks.get(0);
-                Song song = new Song();
-                song.artist = track.artists.get(0).name;
-                song.title = track.name;
-                song.uri = track.uri;
-                song.imageString = track.album.images.get(0).url;
-              //  songs.add(song);
-
-                Log.i("success querying", "title: " + track.name);
-            }
-        });
-
         //For every user list, we see if they contain at least one of the artists that we were asked
         //If it does, we add them to our "relatedArtists" list
 

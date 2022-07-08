@@ -16,6 +16,15 @@ public class Song {
     public String uri;
   //  public ImageUri imageLink;
     public String imageString;
+    public Boolean visible = true;
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
 
     public String getTitle() {
         return title;

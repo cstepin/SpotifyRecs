@@ -3,7 +3,10 @@ package com.example.spotifyrecs;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import android.content.Context;
@@ -11,9 +14,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
+import com.example.spotifyrecs.adapters.SwipeSongAdapter;
+import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
+import org.parceler.Parcels;
 import org.pytorch.IValue;
 import org.pytorch.LiteModuleLoader;
 import org.pytorch.Module;
@@ -28,6 +35,7 @@ import java.io.OutputStream;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -38,6 +46,7 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.Artists;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.Tracks;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
 
@@ -50,10 +59,27 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     SpotifyApi api;
     public static SpotifyService spotifyService;
 
+    RecyclerView rvSwipeSongs;
+    List<Song> allSongs = new ArrayList<>();
+    ProgressBar pb;
+
+    protected SwipeSongAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze_recommend);
+
+        pb = findViewById(R.id.pbLoading);
+
+        pb.setVisibility(ProgressBar.VISIBLE);
+        rvSwipeSongs = findViewById(R.id.rvSwipeSongs);
+
+        adapter = new SwipeSongAdapter(this, allSongs);
+
+        rvSwipeSongs.setAdapter(adapter);
+        // set the layout manager on the recycler view
+        rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
         try {
             mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p1.ptl"));
@@ -67,15 +93,19 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         run(mModule);
 
         // This can find the artist and generate songs of 3 related artists
-        String artist = "beatles";
+      //  String artist = "beatles";
         // given a song with an attached artist:
-        getSimilarSongs(artist);
+    //    getSimilarSongs(artist);
     }
 
-    private void getSimilarSongs(String artist) {
+    // Given a certain song, it pulls the artist of the song and finds similar artists to
+    // that given artist and pulls their top songs.
+    private void getSimilarArtists(String artist) {
         ArrayList<String> simArtists = new ArrayList<>();
 
-        spotifyService.searchArtists("beatles", new SpotifyCallback<ArtistsPager>() {
+        Log.i("in get similar", "in get similar");
+
+        spotifyService.searchArtists(artist, new SpotifyCallback<ArtistsPager>() {
             @Override
             public void failure(SpotifyError spotifyError) {
                 Log.i("error in generate34", "error is: " + spotifyError.getMessage());
@@ -93,15 +123,16 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
                     @Override
                     public void success(Artists artists, Response response) {
-                        for(Artist artist : artists.artists){
-                            Log.i("test", "these are related artists: " + artist.name);
-                            simArtists.add(artist.name);
+                        for(int i = 0; i < 3; i++) {
+                            simArtists.add(artists.artists.get(i).id);
                         }
+                        getSimilarSongs(simArtists);
                     }
                 });
             }
         });
 
+/*
         for(String artist1 : simArtists){
             spotifyService.searchTracks(artist1, new SpotifyCallback<TracksPager>() {
                 @Override
@@ -113,6 +144,35 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 public void success(TracksPager tracksPager, Response response) {
                     Log.i("succes", "success in getting related songs: "
                             + tracksPager.tracks.items.get(0));
+                }
+            });
+        }
+ */
+    }
+
+    private void getSimilarSongs(ArrayList<String> simArtists) {
+        List<Song> songs = new ArrayList<>();
+
+        for(String artist1 : simArtists) {
+            spotifyService.getArtistTopTrack(artist1, "ES", new SpotifyCallback<Tracks>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+                    Log.i("error in generate top tracks", "error is: " + spotifyError.getMessage());
+                }
+
+                @Override
+                public void success(Tracks tracks, Response response) {
+                    for(Track track : tracks.tracks){
+                        Song song = new Song();
+                        song.uri = track.uri;
+                        song.title = track.name;
+                        song.artist = track.artists.get(0).name;
+                        song.imageString = track.album.images.get(0).url;
+                        song.visible = true;
+                        songs.add(song);
+                        Log.i("success getting tracks", "track: " + track.name);
+                    }
+                    querySongs(songs);
                 }
             });
         }
@@ -144,6 +204,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         if(getIntent().hasExtra("floats")) {
             user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
+            Log.i("floats", "got floats from user input: " + Arrays.toString(user_x_rating_raw));
         }
         else{
             user_x_rating_raw = new float[]{11.0F, 0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
@@ -172,7 +233,67 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
+
+        mostRelatedUser(output_rating.getDataAsFloatArray());
     }
+
+    private void mostRelatedUser(float[] data) {
+        Log.i("in most related", "in most related");
+        // I need to change variable names in this function
+        float max = -2.0F;
+        int pos = -1;
+
+        for(int i = 0; i < data.length; i++){
+            float f = data[i];
+            if(f > max){
+                max = f;
+                pos = i;
+            }
+        }
+
+        double[][] arr = {
+                {0, 1, 0.5, 0.5, 1, 1, 1, 1, 1, 0, 0},
+                {1, -1, 0, -0.5, 1, 0, 0, 1, 0, 0, 0.5},
+                {2, 0, 0, 0, 0, 0, -0.5, 0, 0, -0.5, -0.5},
+                {3, 0, 0, 0, -1, -1, 0.5, 1, 0, 0, 0},
+                {4, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0},
+                {5, 0, -0.5, 0.5, 0, 0, 0, 0.5, 1, 0.5, 0},
+                {6, 0, 0, 1, 0, 0.5, 1, 1, 0, 0, 0},
+                {7, 0, 0, 0.5, 0, 0, -1, 0.5, 0, 0, 0},
+                {8, 0, 1, -1, 1, 1, 0, 0, 0, 1, 0},
+                {9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {10, 0, 0.5, 0.5, 0, 0, 0, -1, 0, 0, 0}
+        };
+
+        double max2 = -2;
+        int pos2 = -1;
+
+        for(int i = 0; i < arr[pos].length; i++){
+            if(arr[pos][i] > max2){
+                max2 = arr[pos][i];
+                pos2 = i;
+            }
+        }
+
+        //now we know which is the favorite song...
+        ArrayList<Song> songs = Parcels.unwrap(getIntent()
+                .getParcelableExtra("songs"));
+
+        getSimilarArtists(songs.get(pos2).artist);
+    }
+
+    //Adds suggested songs into the recycler view.
+    @SuppressLint("NotifyDataSetChanged")
+    private void querySongs(List<Song> finalSongs) {
+        Log.i("generate", "in query songs" + finalSongs.size());
+        allSongs.addAll(finalSongs);
+        Log.i("allSongs", "allSongs is: " + allSongs.toString());
+        adapter.notifyDataSetChanged();
+        Log.i("generate", "after adapter notified");
+        // run a background job and once complete
+        pb.setVisibility(ProgressBar.INVISIBLE);
+    }
+
 
     //This sets up our api by passing in the authentication token from the log-in screen
     private void setServiceApi() {
