@@ -26,12 +26,14 @@ import com.bumptech.glide.Glide;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Song;
+import com.parse.ParseUser;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
 import com.spotify.protocol.types.ImageUri;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
@@ -245,6 +247,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
                         //We check if we've swiped the correct number of songs.
                         if(numSwiped() == getItemCount()){
+                            updateLikedSongs();
                             Intent i = new Intent(v.getContext(),
                                     finalPlaylistActivity.class);
                             i.putExtra("final songs", Parcels.wrap(finalSongs));
@@ -259,6 +262,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                         v.setVisibility(View.GONE);
                         swiped++;
                         if(numSwiped() == getItemCount()){
+                            updateLikedSongs();
                             Intent i = new Intent(v.getContext(),
                                     finalPlaylistActivity.class);
                             i.putExtra("final songs",
@@ -279,6 +283,28 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
           //  Log.i("in double click3", "this is song: " + song.toString());
             faveSongs.add(song);
         }
+    }
+
+    private void updateLikedSongs() {
+        if(faveSongs.size() == 0){
+            return;
+        }
+
+        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
+
+        //    Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
+
+        assert currLiked != null;
+        currLiked.put(faveSongs);
+        ParseUser.getCurrentUser().put("faveSongs", currLiked);
+        ParseUser.getCurrentUser().saveInBackground(e -> {
+            if(e != null){
+                Log.e("AddPlaylistFragment", "error saving playlists", e);
+            }
+            else{
+                Log.i("Addplaylistfragment", "playlists saved successfully");
+            }
+        });
     }
     // I need to change the input vector, and also remove the first thing in the float array.
 }
