@@ -45,7 +45,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
     private final Context context;
     private final List<Song> songs;
-    private List<Song> faveSongs = new ArrayList<>();
+    private List<String> faveSongs = new ArrayList<>();
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -281,7 +281,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             song.artist = (String) tvArtist.getText();
             song.title = (String) tvTitle.getText();
           //  Log.i("in double click3", "this is song: " + song.toString());
-            faveSongs.add(song);
+            faveSongs.add(song.title);
         }
     }
 
@@ -302,7 +302,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                 Log.e("AddPlaylistFragment", "error saving playlists", e);
             }
             else{
-                Log.i("Addplaylistfragment", "playlists saved successfully");
+                Log.i("Addplaylistfragment", "faveSongs saved successfully");
             }
         });
     }

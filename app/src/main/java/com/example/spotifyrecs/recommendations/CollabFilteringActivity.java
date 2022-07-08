@@ -127,6 +127,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
                     song.title = track.name;
                     song.uri = track.uri;
                     song.imageString = track.album.images.get(0).url;
+                    song.visible = true;
                     songs.add(song);
                     Log.i("added song", "added song: " + songs.size());
 

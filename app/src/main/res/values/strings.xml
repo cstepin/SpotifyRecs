@@ -12,4 +12,13 @@
     <string name="spotify_s_generation_algorithm">Spotify\'s Generation Algorithm!</string>
     <string name="to_export_songs">To Export Songs</string>
     <string name="improved_filtering_system">Improved Filtering System</string>
+    <string name="liked_songs">Liked Songs</string>
+    <string name="playlist_s_name">Playlist\'s Name:</string>
+    <string name="enter">Enter!</string>
+    <string name="add_this_playlist">Add this Playlist!</string>
+    <string name="navigation">Navigation:</string>
+    <string name="home1">Home</string>
+    <string name="recommendations">Recommendations:</string>
+    <string name="enter_your_first_artist">Enter Your First Artist…</string>
+    <string name="mix_your_artists">Mix Your Artists!</string>
 </resources>

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#455A64"
+    android:backgroundTint="#455A64"
     tools:context=".OldPlaylistActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

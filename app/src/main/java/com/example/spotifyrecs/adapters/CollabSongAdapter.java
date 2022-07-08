@@ -114,7 +114,10 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
 
             if(!song.getVisible()){
                 Log.i("in here", "not visible anymore");
-            //    itemView.setVisibility(View.GONE);
+                itemView.setVisibility(View.GONE);
+            }
+            else{
+                itemView.setVisibility(View.VISIBLE);
             }
 
             Log.i("adapter", "in item bind");
@@ -147,7 +150,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
 
             song.setVisible(false);
 
-           // itemView.setVisibility(View.GONE);
+            itemView.setVisibility(View.GONE);
+            song.visible = false;
             Log.i("in ignore", "this is index: " + user_rating_index + " and " +
                     "this is the floats: " + user_x_rating_raw.length);
 
@@ -261,7 +265,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                     Log.i("this was", "this was the distinace travelled: " + deltaX);
                     //If we detect a right swipe...
                     if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
-                        Toast.makeText(v.getContext(), "I'm like this song!",
+                        Toast.makeText(v.getContext(), "I like this song!",
                                 Toast.LENGTH_SHORT).show();
                         user_x_rating_raw[user_rating_index] = 1.0F;
                         user_rating_index++;
@@ -270,7 +274,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                         swiped++;
                         Log.i("SwipeSong", String.valueOf(finalSongs.size()));
                         //To-do: figure out how to ensure the screen moves when a song is swiped
-                    //    v.setVisibility(View.GONE);
+                        v.setVisibility(View.GONE);
+                        s.visible = false;
 
                         //We check if we've swiped the correct number of songs.
                         if(user_rating_index == 10){
@@ -290,7 +295,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                         user_x_rating_raw[user_rating_index] = -1.0F;
                         user_rating_index++;
                         //This means we ignore the song.
-                //        v.setVisibility(View.GONE);
+                        v.setVisibility(View.GONE);
+                        s.visible = false;
                         swiped++;
                         if(user_rating_index == 10){
                             Intent i = new Intent(v.getContext(),
