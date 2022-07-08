@@ -106,8 +106,8 @@ Week 3
 - Try to include PyTorch model
 	[x] Figure out how to input multiple arguments into JavaFile
 	[x] Figure out how to calibrate users (to find similar users)
-	- Figure out how to translate users' opinions into matrix
-	- Figure out how to get song recommendation from what the PyTorch model gives back.
+	[x] Figure out how to translate users' opinions into matrix
+	[x] Figure out how to get song recommendation from what the PyTorch model gives back.
 
 GOAL: Get the above end-to-end complete by the end of this week
 
