@@ -18,7 +18,7 @@ public class Song {
     public String uri;
   //  public ImageUri imageLink;
     public String imageString;
-    public Boolean visible = true;
+    public Boolean visible;
 
     public Boolean getVisible() {
         return visible;
