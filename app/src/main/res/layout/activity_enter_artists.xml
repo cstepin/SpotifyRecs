@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#BCD6E3"
+    android:backgroundTint="#BCD6E3"
     tools:context=".EnterArtistsActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,12 +24,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="152dp"
         android:ems="10"
-        android:hint="Enter Your First Artist..."
+        android:hint="@string/enter_your_first_artist"
         android:inputType="textPersonName"
+        android:textColor="#373847"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="Enter your first artist" />
 
     <EditText
         android:id="@+id/etArtist2"
@@ -38,19 +41,25 @@
         android:ems="10"
         android:hint="@string/enter_your_second_artist"
         android:inputType="textPersonName"
+        android:textColor="#373847"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etArtist1" />
+        app:layout_constraintTop_toBottomOf="@+id/etArtist1"
+        android:autofillHints="Enter your second artist" />
 
     <Button
         android:id="@+id/btnMix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Mix Your Artists!"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#536DFE"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="@string/mix_your_artists"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etArtist2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

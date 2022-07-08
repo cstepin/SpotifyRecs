@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#38464C"
     tools:context=".MainActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,54 +20,99 @@
         android:id="@+id/btnNewPlaylist"
         android:layout_width="wrap_content"
         android:layout_height="51dp"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="2dp"
+        android:backgroundTint="#536DFE"
         android:text="@string/mix_new_playlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnOldPlaylist"
-        android:layout_width="wrap_content"
-        android:layout_height="51dp"
-        android:layout_marginTop="52dp"
-        android:text="@string/revisit_old_playlists"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSpotifyAlg" />
 
     <Button
+        android:id="@+id/btnOldPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="51dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#536DFE"
+        android:text="@string/revisit_old_playlists"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNav" />
+
+    <Button
         android:id="@+id/btnSpotifyAlg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#536DFE"
         android:text="@string/spotify_s_generation_algorithm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist" />
+        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs" />
 
     <Button
         android:id="@+id/btnExport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#536DFE"
         android:text="@string/to_export_songs"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/bottomNavigation"
-        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnOldPlaylist"
-        app:layout_constraintVertical_bias="0.116" />
+        app:layout_constraintTop_toBottomOf="@+id/btnOldPlaylist" />
 
     <Button
         android:id="@+id/btnCollab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
+        android:backgroundTint="#536DFE"
         android:text="@string/improved_filtering_system"
-        app:layout_constraintBottom_toTopOf="@+id/btnNewPlaylist"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist" />
+
+    <TextView
+        android:id="@+id/tvGenAlgs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="@string/recommendations"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#E0E1EF"
+        android:textStyle="bold"
+        android:typeface="sans"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHome" />
+
+    <TextView
+        android:id="@+id/tvHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="@string/home1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:textColor="#E0E1EF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="@string/navigation"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#E0E1EF"
+        android:textStyle="bold"
+        android:typeface="sans"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCollab" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

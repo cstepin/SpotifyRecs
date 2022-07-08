@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#455A64"
+    android:backgroundTint="#455A64"
     tools:context=".finalPlaylistActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -27,7 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="164dp"
-        android:text="Add this Playlist!"
+        android:backgroundTint="#536DFE"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="@string/add_this_playlist"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
