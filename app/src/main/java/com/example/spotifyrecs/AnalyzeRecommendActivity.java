@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -207,7 +208,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             Log.i("floats", "got floats from user input: " + Arrays.toString(user_x_rating_raw));
         }
         else{
-            user_x_rating_raw = new float[]{11.0F, 0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
+            user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
         }
 
         System.out.println("num_user_x_rating_numel is: " + num_user_x_rating_numel);
@@ -252,17 +253,16 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         }
 
         double[][] arr = {
-                {0, 1, 0.5, 0.5, 1, 1, 1, 1, 1, 0, 0},
-                {1, -1, 0, -0.5, 1, 0, 0, 1, 0, 0, 0.5},
-                {2, 0, 0, 0, 0, 0, -0.5, 0, 0, -0.5, -0.5},
-                {3, 0, 0, 0, -1, -1, 0.5, 1, 0, 0, 0},
-                {4, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0},
-                {5, 0, -0.5, 0.5, 0, 0, 0, 0.5, 1, 0.5, 0},
-                {6, 0, 0, 1, 0, 0.5, 1, 1, 0, 0, 0},
-                {7, 0, 0, 0.5, 0, 0, -1, 0.5, 0, 0, 0},
-                {8, 0, 1, -1, 1, 1, 0, 0, 0, 1, 0},
-                {9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {10, 0, 0.5, 0.5, 0, 0, 0, -1, 0, 0, 0}
+                {1, 0.5, 0.5, 1, 1, 1, 1, 1, 0, 0},
+                {-1, 0, -0.5, 1, 0, 0, 1, 0, 0, 0.5},
+                {0, 0, 0, 0, 0, -0.5, 0, 0, -0.5, -0.5},
+                {0, 0, 0, -1, -1, 0.5, 1, 0, 0, 0},
+                {0, 0, 0, 0, -1, -1, -1, -1, -1, 0},
+                {0, -0.5, 0.5, 0, 0, 0, 0.5, 1, 0.5, 0},
+                {0, 0, 1, 0, 0.5, 1, 1, 0, 0, 0},
+                {0, 0, 0.5, 0, 0, -1, 0.5, 0, 0, 0},
+                {0, 1, -1, 1, 1, 0, 0, 0, 1, 0},
+                {0, 0.5, 0.5, 0, 0, 0, -1, 0, 0, 0}
         };
 
         double max2 = -2;
@@ -286,6 +286,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void querySongs(List<Song> finalSongs) {
         Log.i("generate", "in query songs" + finalSongs.size());
+        Collections.shuffle(finalSongs);
         allSongs.addAll(finalSongs);
         Log.i("allSongs", "allSongs is: " + allSongs.toString());
         adapter.notifyDataSetChanged();

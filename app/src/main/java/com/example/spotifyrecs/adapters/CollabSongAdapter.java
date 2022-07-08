@@ -46,8 +46,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
     private Context context;
     private List<Song> songs;
     private List<Song> faveSongs;
-    float[] user_x_rating_raw = new float[11];
-    int user_rating_index = 1;
+    float[] user_x_rating_raw = new float[10];
+    int user_rating_index = 0;
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -63,7 +63,6 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
     @NonNull
     @Override
     public CollabSongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        user_x_rating_raw[0] = 11.0F;
         View view = LayoutInflater.from(context).inflate(R.layout.item_collab_song, parent,
                 false);
 
@@ -152,7 +151,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
             Log.i("in ignore", "this is index: " + user_rating_index + " and " +
                     "this is the floats: " + user_x_rating_raw.length);
 
-            if(user_rating_index == 11){
+            if(user_rating_index == 10){
                 Intent i = new Intent(v.getContext(),
                         AnalyzeRecommendActivity.class);
                 i.putExtra("floats", user_x_rating_raw);
@@ -274,7 +273,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                     //    v.setVisibility(View.GONE);
 
                         //We check if we've swiped the correct number of songs.
-                        if(user_rating_index == 11){
+                        if(user_rating_index == 10){
                             Intent i = new Intent(v.getContext(),
                                     AnalyzeRecommendActivity.class);
 
@@ -293,7 +292,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                         //This means we ignore the song.
                 //        v.setVisibility(View.GONE);
                         swiped++;
-                        if(user_rating_index == 11){
+                        if(user_rating_index == 10){
                             Intent i = new Intent(v.getContext(),
                                     AnalyzeRecommendActivity.class);
                             i.putExtra("floats", user_x_rating_raw);
