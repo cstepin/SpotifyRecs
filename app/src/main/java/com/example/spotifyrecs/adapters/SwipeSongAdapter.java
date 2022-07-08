@@ -41,9 +41,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Song> songs;
-    private List<Song> faveSongs;
+    private final Context context;
+    private final List<Song> songs;
+    private List<Song> faveSongs = new ArrayList<>();
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -124,7 +124,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             lastClickTime.set(0);
 
             this.itemView.setOnTouchListener((v, event) -> {
-                onSongClick(v, event, lastClickTime.get(), song);
+                onSongClick(v, event, lastClickTime.get());
                 lastClickTime.set(System.currentTimeMillis());
                 return true;
             });
@@ -202,7 +202,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
 
-        private void onSongClick(View v, MotionEvent event, long lastClickTime, Song s){
+        private void onSongClick(View v, MotionEvent event, long lastClickTime){
             final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
 
           //  long lastClickTime = 0;
@@ -218,7 +218,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     x1_coord = event.getX();
                     if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
                         Log.i("here2", "in double tap with delta time: " + (clickTime - lastClickTime));
-                        onDoubleClick(v, s);
+                        onDoubleClick(v);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
@@ -269,11 +269,16 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     break;
             }
         }
-    }
 
-    private void onDoubleClick(View v, Song s) {
-        Log.i("In double click2", "double click noticed");
-        v.setBackgroundColor(Color.parseColor("#000000"));
-       // faveSongs.add(s);
+        private void onDoubleClick(View v) {
+            Log.i("In double click2", "double click noticed");
+            v.setBackgroundColor(Color.parseColor("#000000"));
+            Song song = new Song();
+            song.artist = (String) tvArtist.getText();
+            song.title = (String) tvTitle.getText();
+          //  Log.i("in double click3", "this is song: " + song.toString());
+            faveSongs.add(song);
+        }
     }
+    // I need to change the input vector, and also remove the first thing in the float array.
 }

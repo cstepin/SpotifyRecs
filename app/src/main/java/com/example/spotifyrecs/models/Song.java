@@ -1,5 +1,7 @@
 package com.example.spotifyrecs.models;
 
+import androidx.annotation.NonNull;
+
 import com.spotify.protocol.types.ImageUri;
 
 import org.json.JSONException;
@@ -66,5 +68,11 @@ public class Song {
         jo.put("artist", artist);
 
         return jo;
+    }
+
+    @NonNull
+    @Override
+    public String toString(){
+        return "Title: " + title + " and artist: " + artist;
     }
 }
