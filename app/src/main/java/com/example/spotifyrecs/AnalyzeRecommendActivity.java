@@ -3,7 +3,10 @@ package com.example.spotifyrecs;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import android.content.Context;
@@ -11,7 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
+import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
@@ -30,6 +35,7 @@ import java.io.OutputStream;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -53,10 +59,27 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     SpotifyApi api;
     public static SpotifyService spotifyService;
 
+    RecyclerView rvSwipeSongs;
+    List<Song> allSongs = new ArrayList<>();
+    ProgressBar pb;
+
+    protected SwipeSongAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze_recommend);
+
+        pb = findViewById(R.id.pbLoading);
+
+        pb.setVisibility(ProgressBar.VISIBLE);
+        rvSwipeSongs = findViewById(R.id.rvSwipeSongs);
+
+        adapter = new SwipeSongAdapter(this, allSongs);
+
+        rvSwipeSongs.setAdapter(adapter);
+        // set the layout manager on the recycler view
+        rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
         try {
             mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p1.ptl"));
@@ -128,6 +151,8 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     }
 
     private void getSimilarSongs(ArrayList<String> simArtists) {
+        List<Song> songs = new ArrayList<>();
+
         for(String artist1 : simArtists) {
             spotifyService.getArtistTopTrack(artist1, "ES", new SpotifyCallback<Tracks>() {
                 @Override
@@ -138,8 +163,16 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 @Override
                 public void success(Tracks tracks, Response response) {
                     for(Track track : tracks.tracks){
+                        Song song = new Song();
+                        song.uri = track.uri;
+                        song.title = track.name;
+                        song.artist = track.artists.get(0).name;
+                        song.imageString = track.album.images.get(0).url;
+                        song.visible = true;
+                        songs.add(song);
                         Log.i("success getting tracks", "track: " + track.name);
                     }
+                    querySongs(songs);
                 }
             });
         }
@@ -248,6 +281,19 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         getSimilarArtists(songs.get(pos2).artist);
     }
+
+    //Adds suggested songs into the recycler view.
+    @SuppressLint("NotifyDataSetChanged")
+    private void querySongs(List<Song> finalSongs) {
+        Log.i("generate", "in query songs" + finalSongs.size());
+        allSongs.addAll(finalSongs);
+        Log.i("allSongs", "allSongs is: " + allSongs.toString());
+        adapter.notifyDataSetChanged();
+        Log.i("generate", "after adapter notified");
+        // run a background job and once complete
+        pb.setVisibility(ProgressBar.INVISIBLE);
+    }
+
 
     //This sets up our api by passing in the authentication token from the log-in screen
     private void setServiceApi() {
