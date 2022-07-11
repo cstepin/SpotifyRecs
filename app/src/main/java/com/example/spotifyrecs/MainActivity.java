@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                     if (menuItem.getItemId() == R.id.action_logout) {
                         onLogout();
                     }
+                    else if(menuItem.getItemId() == R.id.action_liked){
+                        onLiked();
+                    }
                     return true;
                 });
 
@@ -71,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
     //Sending users to the right place
     private void toNewPlaylists() {
         Intent i = new Intent(MainActivity.this, SwipeSongsActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    private void onLiked(){
+        Intent i = new Intent(MainActivity.this, LikedSongsActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

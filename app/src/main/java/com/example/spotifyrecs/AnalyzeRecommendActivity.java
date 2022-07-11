@@ -84,7 +84,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         try {
             mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p3.ptl"));
         } catch (IOException e) {
-            Log.e("ImageSegmentation", "Error reading assets", e);
+            Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
         }
 
