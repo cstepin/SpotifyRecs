@@ -16,7 +16,6 @@ public class Song {
     public String title;
     public String artist;
     public String uri;
-  //  public ImageUri imageLink;
     public String imageString;
     public Boolean visible;
 

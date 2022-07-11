@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.spotifyrecs.models.Song;
 import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
 import com.example.spotifyrecs.recommendations.SwipeSongsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
         btnExport = findViewById(R.id.btnExport);
         btnCollab = findViewById(R.id.btnCollab);
+
+        Song song = new Song();
+        String toStringResult = song.toString();
+        Log.i("empty", "toStringResult: " + toStringResult);
         
         btnCollab.setOnClickListener(v -> toCollab());
 
