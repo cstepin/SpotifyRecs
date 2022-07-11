@@ -53,7 +53,6 @@ import retrofit.client.Response;
 
 public class AnalyzeRecommendActivity extends AppCompatActivity {
     private Module mModule = null;
-    private Bitmap mBitmap = null;
 
     //For spotify calls
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -83,7 +82,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
         try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p1.ptl"));
+            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p3.ptl"));
         } catch (IOException e) {
             Log.e("ImageSegmentation", "Error reading assets", e);
             finish();
@@ -92,11 +91,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         setServiceApi();
 
         run(mModule);
-
-        // This can find the artist and generate songs of 3 related artists
-      //  String artist = "beatles";
-        // given a song with an attached artist:
-    //    getSimilarSongs(artist);
     }
 
     // Given a certain song, it pulls the artist of the song and finds similar artists to
@@ -132,23 +126,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 });
             }
         });
-
-/*
-        for(String artist1 : simArtists){
-            spotifyService.searchTracks(artist1, new SpotifyCallback<TracksPager>() {
-                @Override
-                public void failure(SpotifyError spotifyError) {
-                    Log.i("error in generate5", "error is: " + spotifyError.getMessage());
-                }
-
-                @Override
-                public void success(TracksPager tracksPager, Response response) {
-                    Log.i("succes", "success in getting related songs: "
-                            + tracksPager.tracks.items.get(0));
-                }
-            });
-        }
- */
     }
 
     private void getSimilarSongs(ArrayList<String> simArtists) {
@@ -173,7 +150,9 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                         songs.add(song);
                         Log.i("success getting tracks", "track: " + track.name);
                     }
-                    querySongs(songs);
+                    if(songs.size() > 20) {
+                        querySongs(songs);
+                    }
                 }
             });
         }
@@ -199,7 +178,8 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     }
 
     public void run(Module mModule){
-        final long[] user_x_rating_shape = new long[] {1, 11};
+        Log.i("in run", "run message here");
+        final long[] user_x_rating_shape = new long[] {1, 10};
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final float[] user_x_rating_raw;
 
@@ -219,19 +199,10 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final IValue user_x_rating = IValue.from(user_x_rating_tensor);
         System.out.println("user_x_rating: " + Arrays.toString(user_x_rating.toTensor().getDataAsFloatArray()));
 
-        final IValue user_x_index = IValue.from(0);
-        System.out.println("user_x_index: " + user_x_index.toLong());
-
         Log.i("export", "this is the rating: " + user_x_rating + " and this is the ");
-        final Tensor output_rating = mModule.forward(IValue.from(0), user_x_rating).toTensor();
+        final Tensor output_rating = mModule.forward(user_x_rating).toTensor(); //IValue.from(0)
 
         output_rating.getDataAsFloatArray();
-        // i need to have access to the original matrix
-        // to see the songs the most similar liked as well
-        // I also need to have access to the list of songs, to recommend similar songs.
-
-        // I need to figure out a way to recommend similar songs given a certain song.
-
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
