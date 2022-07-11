@@ -51,6 +51,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
+
     //These floats keep track of the coordinates of where the user's mouse is
     //to detect swipes
     static float x1_coord, x2_coord;
@@ -166,7 +167,7 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
             }
         }
 
-        //an override method because it's required (we're only going to be swiping on image
+        //an override method because it's required -- we're only going to be swiping on image
         // views, so we don't necessarily need this
         @Override
         public void onClick(View v) {
@@ -176,8 +177,6 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
         // wanted to listen to (or turns off
         //If sent by the general call, just sets up the background color for the item view
         protected void startPlay(Song s, Boolean onClick) {
-            //    super.onStart();
-
             ConnectionParams connectionParams =
                     new ConnectionParams.Builder(getClientId())
                             .setRedirectUri(getRedirectUrl())
@@ -198,7 +197,6 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                         @Override
                         public void onFailure(Throwable throwable) {
                             Log.e("Adapter", throwable.getMessage(), throwable);
-                            // Something went wrong when attempting to connect! Handle errors here
                         }
                     });
         }
@@ -233,15 +231,16 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
             }
         }
 
+        /*
         protected void onStop() {
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
+         */
 
         private void onSongClick(View v, MotionEvent event, long lastClickTime, Song s){
             final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
 
-            //  long lastClickTime = 0;
             //This represents the minimum amount of pixels moved which would signify
             // an intentional swipe
             final int MIN_DISTANCE = 150;
@@ -253,7 +252,8 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                 case MotionEvent.ACTION_DOWN:
                     x1_coord = event.getX();
                     if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
-                        Log.i("here2", "in double tap with delta time: " + (clickTime - lastClickTime));
+                        Log.i("here2", "in double tap with delta time: " +
+                                (clickTime - lastClickTime));
                         onDoubleClick(v, s);
                     }
                     break;
@@ -304,9 +304,6 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
                             i.putExtra("floats", user_x_rating_raw);
                             i.putExtra("songs",
                                     Parcels.wrap(songs));
-                           /* i.putExtra("final songs",
-                                    Parcels.wrap(finalSongs));
-                            */
                             v.getContext().startActivity(i);
                         }
                     }
@@ -317,7 +314,6 @@ public class CollabSongAdapter extends RecyclerView.Adapter<CollabSongAdapter.Vi
 
     private void onDoubleClick(View v, Song s) {
         Log.i("In double click2", "double click noticed");
-        v.setBackgroundColor(Color.parseColor("#000000"));
         // faveSongs.add(s);
     }
 }

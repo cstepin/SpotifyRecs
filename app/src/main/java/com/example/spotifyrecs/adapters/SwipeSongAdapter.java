@@ -49,6 +49,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
     List<Song> finalSongs = new ArrayList<>();
     int swiped = 0;
     private SpotifyAppRemote mSpotifyAppRemote;
+
     //These floats keep track of the coordinates of where the user's mouse is
     //to detect swipes
     static float x1_coord, x2_coord;
@@ -142,7 +143,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         // wanted to listen to (or turns off
         //If sent by the general call, just sets up the background color for the item view
         protected void startPlay(Song s, Boolean onClick) {
-            //    super.onStart();
 
             ConnectionParams connectionParams =
                     new ConnectionParams.Builder(getClientId())
@@ -164,7 +164,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                 @Override
                 public void onFailure(Throwable throwable) {
                     Log.e("Adapter", throwable.getMessage(), throwable);
-                    // Something went wrong when attempting to connect! Handle errors here
                 }
             });
         }
@@ -180,9 +179,9 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     pressed = false;
                 }
             } else {
-                //Sets up background by converting image to a bitmap then finding the brightest color
+                //Sets up background by converting image to bitmap then finding the brightest color
                 // and setting the background to be that color
-                Log.i("adapter", "in has image string with image string: " + s.imageString);
+                Log.i("adapter", "in image string: " + s.imageString);
                 ImageUri newUri = new ImageUri(s.imageString);
                 CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote.getImagesApi()
                         .getImage(newUri);
@@ -199,27 +198,28 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             }
         }
 
+        /*
         protected void onStop() {
             // Aaand we will finish off here.
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
         }
+         */
 
         private void onSongClick(View v, MotionEvent event, long lastClickTime){
             final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
 
-          //  long lastClickTime = 0;
             //This represents the minimum amount of pixels moved which would signify
             // an intentional swipe
             final int MIN_DISTANCE = 150;
 
-            Log.i("here", "in swipe");
             long clickTime = System.currentTimeMillis();
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     x1_coord = event.getX();
                     if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
-                        Log.i("here2", "in double tap with delta time: " + (clickTime - lastClickTime));
+                        Log.i("here2", "in double tap with delta time: " + (clickTime
+                                - lastClickTime));
                         onDoubleClick(v);
                     }
                     break;
@@ -228,7 +228,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                     //We calculate the distance between where the user pressed down
                     // and then released up
                     float deltaX = x2_coord - x1_coord;
-                    Log.i("this was", "this was the distinace travelled: " + deltaX);
                     //If we detect a right swipe...
                     if (Math.abs(deltaX) > MIN_DISTANCE && deltaX > 0) {
                         Toast.makeText(v.getContext(), "I'm keeping this song!",
@@ -239,10 +238,7 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
                         //this means they liked the song, so we keep the song
                         finalSongs.add(song);
                         //This keeps track of how many songs have been reacted to already
-                        //To-do: add a way to not swipe all songs and go to the next activity
                         swiped++;
-                        Log.i("SwipeSong", String.valueOf(finalSongs.size()));
-                        //To-do: figure out how to ensure the screen moves when a song is swiped
                         v.setVisibility(View.GONE);
 
                         //We check if we've swiped the correct number of songs.
@@ -276,7 +272,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
 
         private void onDoubleClick(View v) {
             Log.i("In double click2", "double click noticed");
-            v.setBackgroundColor(Color.parseColor("#000000"));
             Song song = new Song();
             song.artist = (String) tvArtist.getText();
             song.title = (String) tvTitle.getText();
@@ -291,14 +286,10 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         }
 
         JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
-
-        //    Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
-
         assert currLiked != null;
         for(String song : faveSongs){
             currLiked.put(song);
         }
-      //  currLiked.put(faveSongs);
         ParseUser.getCurrentUser().put("faveSongs", currLiked);
         ParseUser.getCurrentUser().saveInBackground(e -> {
             if(e != null){
@@ -309,5 +300,4 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             }
         });
     }
-    // I need to change the input vector, and also remove the first thing in the float array.
 }
