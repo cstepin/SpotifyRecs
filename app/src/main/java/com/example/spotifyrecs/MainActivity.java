@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                     if (menuItem.getItemId() == R.id.action_logout) {
                         onLogout();
                     }
+                    else if(menuItem.getItemId() == R.id.action_liked){
+                        onLiked();
+                    }
                     return true;
                 });
 
@@ -59,17 +62,26 @@ public class MainActivity extends AppCompatActivity {
     private void toCollab() {
         Intent i = new Intent(MainActivity.this, CollabFilteringActivity.class);
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void toOldPlaylist() {
         Intent i = new Intent(MainActivity.this, OldPlaylistActivity.class);
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     //Sending users to the right place
     private void toNewPlaylists() {
         Intent i = new Intent(MainActivity.this, SwipeSongsActivity.class);
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    private void onLiked(){
+        Intent i = new Intent(MainActivity.this, LikedSongsActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void onLogout() {
@@ -91,10 +103,12 @@ public class MainActivity extends AppCompatActivity {
     private void toSelectArtists(){
         Intent i = new Intent(MainActivity.this, EnterArtistsActivity.class);
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void toExport(){
         Intent i = new Intent(MainActivity.this, ExportActivity.class);
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

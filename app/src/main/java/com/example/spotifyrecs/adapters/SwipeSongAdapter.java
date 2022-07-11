@@ -295,7 +295,10 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
         //    Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
 
         assert currLiked != null;
-        currLiked.put(faveSongs);
+        for(String song : faveSongs){
+            currLiked.put(song);
+        }
+      //  currLiked.put(faveSongs);
         ParseUser.getCurrentUser().put("faveSongs", currLiked);
         ParseUser.getCurrentUser().saveInBackground(e -> {
             if(e != null){

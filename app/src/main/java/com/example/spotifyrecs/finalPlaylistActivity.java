@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -48,7 +49,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_playlist);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
-
 
         btnAddPlaylist = findViewById(R.id.btnAddPlaylist);
         if(getIntent().hasExtra("details")){
@@ -113,12 +113,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
         querySongs(finalArtists);
         Log.i("artists", finalArtists.toString());
 
-        btnAddPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewPlaylist(finalArtists);
-            }
-        });
+        btnAddPlaylist.setOnClickListener(v -> addNewPlaylist(finalArtists));
     }
 
     private void addNewPlaylist(ArrayList<Song> finalArtists) {
@@ -142,6 +137,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
 
     // Takes a JSONArray and artist and returns if the string is NOT in the array
     private boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
+        Log.i("this is the length", "length: " + currUserArtists.length());
         for(int i = 0; i < currUserArtists.length(); i++){
             if(currUserArtists.get(i).toString().equals(artist)){
                 return false;
@@ -166,6 +162,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void querySongs(List<Song> finalSongs) {
         allSongs.addAll(finalSongs);
         adapter.notifyDataSetChanged();
