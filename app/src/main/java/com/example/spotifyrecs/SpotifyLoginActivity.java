@@ -24,7 +24,6 @@ import com.spotify.sdk.android.auth.AuthorizationResponse;
 public class SpotifyLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "Spotify " + SpotifyLoginActivity.class.getSimpleName();
-    public static final String AUTH_TOKEN = "AUTH_TOKEN";
     public static String authToken = "";
 
     @Override

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,7 +64,6 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
     private void onLogout() {
         Toast.makeText(this, "logging out", Toast.LENGTH_LONG).show();
-        // SpotifyRecs.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
         Intent i = new Intent(this, SpotifyLoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
@@ -74,6 +74,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
         finish();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void queryPlaylists() {
         // specify what type of data we want to query - Post.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
@@ -86,24 +87,16 @@ public class OldPlaylistActivity extends AppCompatActivity {
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Playlist>() {
-            @Override
-            public void done(List<Playlist> playlists, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e("TAG", "Issue with getting playlists", e);
-                    return;
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Playlist playlist : playlists) {
-                    Log.i("TAG", "Playlist: " + playlist.getName() + ", username: " + playlist.getUser().getUsername());
-                }
-
-                // save received posts to list and notify adapter of new data
-                allPlaylists.addAll(playlists);
-                adapter.notifyDataSetChanged();
+        query.findInBackground((playlists, e) -> {
+            // check for errors
+            if (e != null) {
+                Log.e("TAG", "Issue with getting playlists", e);
+                return;
             }
+
+            // save received playlists to list and notify adapter of new data
+            allPlaylists.addAll(playlists);
+            adapter.notifyDataSetChanged();
         });
     }
 }

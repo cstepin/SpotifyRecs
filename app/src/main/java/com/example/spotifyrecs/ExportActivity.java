@@ -89,29 +89,8 @@ public class ExportActivity extends AppCompatActivity {
         final Tensor output_rating = mModule.forward(IValue.from(0), user_x_rating).toTensor();
 
         output_rating.getDataAsFloatArray();
-        // i need to have access to the original matrix
-        // to see the songs the most similar liked as well
-        // I also need to have access to the list of songs, to recommend similar songs.
-
-        // I need to figure out a way to recommend similar songs given a certain song.
-
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-//        final long[] inputTensorShape = new long[] {1, 3, 224, 224};
-//        final long numElements = Tensor.numel(inputTensorShape);
-//        final float[] inputTensorData = new float[(int) numElements];
-//        for (int i = 0; i < numElements; ++i) {
-//            inputTensorData[i] = i;
-//        }
-//        final Tensor inputTensor = Tensor.fromBlob(inputTensorData, inputTensorShape);
-//
-//        IValue input = IValue.from(inputTensor);
-//        IValue output = mModule.forward(IValue.listFrom(IValue.from(0), input));
-//
-//      //  IValue input = IValue.from(Tensor.fromBlob(Tensor.allocateByteBuffer(1), new long[] {1}));
-//      //  IValue output = mModule.forward(input);
-//        Tensor outputTensor = output.toTensor();
-//        Log.i("In export activity", "input: " + inputTensor + " and output: " + outputTensor);
     }
 }

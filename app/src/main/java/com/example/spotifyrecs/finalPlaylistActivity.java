@@ -175,7 +175,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
 
     private void onLogout() {
         Toast.makeText(finalPlaylistActivity.this, "logging out", Toast.LENGTH_LONG).show();
-        // SpotifyRecs.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
         Intent i = new Intent(this, SpotifyLoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work

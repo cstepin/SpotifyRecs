@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignUp;
     ActivityLoginBinding binding;
     final String TAG = "LoginActivity";
-    String authToken = "";
 
     AuthorizationRequest.Builder builder =
             new AuthorizationRequest.Builder(getClientId(),
