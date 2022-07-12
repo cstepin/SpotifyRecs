@@ -58,4 +58,27 @@ public class SongTest {
         assert(result.get("artist")).equals("");
     }
 
+    @Test
+    public void toJsonShort() throws JSONException {
+        Song song = new Song();
+        song.artist = "1234";
+        song.title = "oneWord";
+        JSONObject result = song.toJSON();
+        assert(result.has("title"));
+        assert(result.has("artist"));
+        assert(result.get("title")).equals("oneWord");
+        assert(result.get("artist")).equals("1234");
+    }
+
+    @Test
+    public void toJsonValid() throws JSONException {
+        Song song = new Song();
+        song.artist = "Bach";
+        song.title = "Chaconne in G";
+        JSONObject result = song.toJSON();
+        assert(result.has("title"));
+        assert(result.has("artist"));
+        assert(result.get("title")).equals("Chaconne in G");
+        assert(result.get("artist")).equals("Bach");
+    }
 }

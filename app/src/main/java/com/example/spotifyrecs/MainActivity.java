@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     Button btnNewPlaylist;
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
-    String authToken;
     Button btnExport;
     Button btnCollab;
 
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         Song song = new Song();
         String toStringResult = song.toString();
-        Log.i("empty", "toStringResult: " + toStringResult);
         
         btnCollab.setOnClickListener(v -> toCollab());
 

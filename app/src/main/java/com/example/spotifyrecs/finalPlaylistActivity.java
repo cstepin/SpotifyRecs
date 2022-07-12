@@ -136,8 +136,8 @@ public class finalPlaylistActivity extends AppCompatActivity {
     }
 
     // Takes a JSONArray and artist and returns if the string is NOT in the array
-    private boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
-        Log.i("this is the length", "length: " + currUserArtists.length());
+    public static boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
+    //    Log.i("this is the length", "length: " + currUserArtists.length());
         for(int i = 0; i < currUserArtists.length(); i++){
             if(currUserArtists.get(i).toString().equals(artist)){
                 return false;

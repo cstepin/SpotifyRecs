@@ -80,7 +80,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
         try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p3.ptl"));
+            mModule = LiteModuleLoader.load(assetFilePath(getApplicationContext(), "model_p3.ptl"));
         } catch (IOException e) {
             Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
