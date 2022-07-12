@@ -47,7 +47,6 @@ public class LikedSongsActivity extends AppCompatActivity {
     JSONArray likedSongs;
     public static final String TAG = "LikeSongs";
 
-    private SpotifyAppRemote mSpotifyAppRemote;
     SpotifyApi api;
     public static SpotifyService spotifyService;
 

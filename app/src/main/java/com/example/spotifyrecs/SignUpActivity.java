@@ -43,15 +43,12 @@ public class SignUpActivity extends AppCompatActivity {
         etPassword = binding.etPassword;
         btnSignUp = binding.btnSignUp;
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick signup button");
-                String username = etUsername.getText().toString();
+        btnSignUp.setOnClickListener(v -> {
+            Log.i(TAG, "onClick signup button");
+            String username = etUsername.getText().toString();
 
-                String password = etPassword.getText().toString();
-                signUpUser(username, password);
-            }
+            String password = etPassword.getText().toString();
+            signUpUser(username, password);
         });
     }
 
@@ -61,20 +58,14 @@ public class SignUpActivity extends AppCompatActivity {
         user.setUsername(username);
         user.setPassword(password);
 
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.i(TAG, "signed up");
-                    Intent i = new Intent(SignUpActivity.this, LoginActivity.class);
-                    startActivity(i);
-                    finish();
-                    // Hooray! Let them use the app now.
-                } else {
-                    Log.e(TAG, "sign in unsuccesful", e);
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                }
+        user.signUpInBackground(e -> {
+            if (e == null) {
+                Log.i(TAG, "signed up");
+                Intent i = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
+            } else {
+                Log.e(TAG, "sign in unsuccesful", e);
             }
         });
     }

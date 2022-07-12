@@ -136,8 +136,8 @@ public class finalPlaylistActivity extends AppCompatActivity {
     }
 
     // Takes a JSONArray and artist and returns if the string is NOT in the array
-    private boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
-        Log.i("this is the length", "length: " + currUserArtists.length());
+    public static boolean notADuplicate(JSONArray currUserArtists, String artist) throws JSONException {
+    //    Log.i("this is the length", "length: " + currUserArtists.length());
         for(int i = 0; i < currUserArtists.length(); i++){
             if(currUserArtists.get(i).toString().equals(artist)){
                 return false;
@@ -175,7 +175,6 @@ public class finalPlaylistActivity extends AppCompatActivity {
 
     private void onLogout() {
         Toast.makeText(finalPlaylistActivity.this, "logging out", Toast.LENGTH_LONG).show();
-        // SpotifyRecs.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
         Intent i = new Intent(this, SpotifyLoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work

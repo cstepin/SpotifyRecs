@@ -20,8 +20,8 @@ import java.util.List;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Song> songs;
+    private final Context context;
+    private final List<Song> songs;
 
     public SongAdapter(Context context, List<Song> songs) {
         this.context = context;
@@ -31,7 +31,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     @NonNull
     @Override
     public SongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_song, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_song, parent,
+                false);
         return new ViewHolder(view);
     }
 
@@ -77,7 +78,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             int position = getAdapterPosition();
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
-                Log.i("songadapter", "in if onclick");
                 // get the movie at the position, this won't work if the class is static
                 Song song = songs.get(position);
                 // create intent for the new activity

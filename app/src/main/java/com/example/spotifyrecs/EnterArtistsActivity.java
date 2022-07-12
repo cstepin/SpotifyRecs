@@ -30,7 +30,6 @@ public class EnterArtistsActivity extends AppCompatActivity {
         etArtist2 = findViewById(R.id.etArtist2);
         btnMix = findViewById(R.id.btnMix);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
-    //    authToken = getIntent().getStringExtra("AUTH_TOKEN");
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
@@ -44,30 +43,27 @@ public class EnterArtistsActivity extends AppCompatActivity {
                     return true;
                 });
 
-        btnMix.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String artist1 = etArtist1.getText().toString();
-                String artist2 = etArtist2.getText().toString();
+        btnMix.setOnClickListener(v -> {
+            String artist1 = etArtist1.getText().toString();
+            String artist2 = etArtist2.getText().toString();
 
-                //Check the artists aren't empty
-                if(artist1.isEmpty() || artist2.isEmpty()){
-                    Toast.makeText(EnterArtistsActivity.this,
-                            "The artists cannot be empty!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //Check artists are distinct
-                else if(artist1.equals(artist2)){
-                    Toast.makeText(EnterArtistsActivity.this,
-                            "Please input different artists!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Intent i = new Intent(EnterArtistsActivity.this,
-                        GenerateSongsActivity.class);
-                i.putExtra("artists", new String[]{artist1, artist2});
-                startActivity(i);
-                finish();
+            //Check the artists aren't empty
+            if(artist1.isEmpty() || artist2.isEmpty()){
+                Toast.makeText(EnterArtistsActivity.this,
+                        "The artists cannot be empty!", Toast.LENGTH_SHORT).show();
+                return;
             }
+            //Check artists are distinct
+            else if(artist1.equals(artist2)){
+                Toast.makeText(EnterArtistsActivity.this,
+                        "Please input different artists!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent i = new Intent(EnterArtistsActivity.this,
+                    GenerateSongsActivity.class);
+            i.putExtra("artists", new String[]{artist1, artist2});
+            startActivity(i);
+            finish();
         });
     }
 
@@ -78,7 +74,6 @@ public class EnterArtistsActivity extends AppCompatActivity {
 
     private void onLogout() {
         Toast.makeText(EnterArtistsActivity.this, "logging out", Toast.LENGTH_LONG).show();
-       // SpotifyRecs.getRestClient(this).clearAccessToken();
         // navigate backwards to Login screen
         Intent i = new Intent(this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work

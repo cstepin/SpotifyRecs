@@ -54,8 +54,6 @@ import retrofit.client.Response;
 public class AnalyzeRecommendActivity extends AppCompatActivity {
     private Module mModule = null;
 
-    //For spotify calls
-    private SpotifyAppRemote mSpotifyAppRemote;
     SpotifyApi api;
     public static SpotifyService spotifyService;
 
@@ -82,7 +80,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
 
         try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p3.ptl"));
+            mModule = LiteModuleLoader.load(assetFilePath(getApplicationContext(), "model_p3.ptl"));
         } catch (IOException e) {
             Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
@@ -266,10 +264,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         pb.setVisibility(ProgressBar.INVISIBLE);
     }
 
-
-    //This sets up our api by passing in the authentication token from the log-in screen
     private void setServiceApi() {
-      //  Log.i("setService", "authToken is " + authToken);
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();

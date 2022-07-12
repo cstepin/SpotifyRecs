@@ -60,18 +60,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             super(itemView);
             this.itemView = itemView;
             tvTitle = itemView.findViewById(R.id.tvTitle);
-
-
-            /*
-            tvTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, finalPlaylistActivity.class);
-                    i.putExtra("details", true);
-                  //  getContext().startActivity();
-                }
-            });
-             */
         }
 
         @Override
@@ -116,7 +104,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                     // create intent for the new activity
                     Intent intent = new Intent(context, finalPlaylistActivity.class);
                     intent.putExtra("details", true);
-                    //need to figure out how to get songs
 
                     //Convert each song in the JSONArray to a Song object
                     List<Song> songs = new ArrayList<>();
