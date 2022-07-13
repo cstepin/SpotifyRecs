@@ -20,11 +20,6 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
 
     private Context context;
     private List<Song> songs;
-    List<String> finalSongs = new ArrayList<>();
-    int swiped = 0;
-    private static final String CLIENT_ID = "f67855f9416e4ca999b13ec503540bc8";
-    private static final String REDIRECT_URI = "http://localhost:8080";
-    private SpotifyAppRemote mSpotifyAppRemote;
 
     public SwipeSongDeckAdapter(Context context, List<Song> songs) {
         this.context = context;
@@ -48,22 +43,21 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView tvTitle;
-        TextView tvArtist;
-        ImageButton ibPlay;
-        ImageView ivCoverArt;
+     //   TextView tvTitle;
+     //   TextView tvArtist;
 
         // in get view method we are inflating our layout on below line.
         View v = convertView;
         if (v == null) {
             // on below line we are inflating our layout.
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_swipe_song, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_song, parent,
+                    false);
         }
+
         // on below line we are initializing our variables and setting data to our variables.
-        tvTitle = v.findViewById(R.id.tvTitle);
-        tvArtist = v.findViewById(R.id.tvArtist);
-        ibPlay = v.findViewById(R.id.ibPlay);
-        ivCoverArt = v.findViewById(R.id.ivCoverArt);
+        ((TextView) v.findViewById(R.id.tvTitle)).setText(songs.get(position).getTitle());
+        ((TextView) v.findViewById(R.id.tvArtist)).setText(songs.get(position).getArtist());
+
         return v;
     }
 }

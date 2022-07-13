@@ -1,96 +1,97 @@
 package com.example.spotifyrecs;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
-import org.pytorch.IValue;
-import org.pytorch.LiteModuleLoader;
-import org.pytorch.Module;
-import org.pytorch.Tensor;
-import org.pytorch.torchvision.TensorImageUtils;
+import com.example.spotifyrecs.adapters.SwipeSongAdapter;
+import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
+import com.example.spotifyrecs.models.Song;
+import com.yalantis.library.Koloda;
+import com.yalantis.library.KolodaListener;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
 public class ExportActivity extends AppCompatActivity {
-    private Module mModule = null;
-    private Bitmap mBitmap = null;
+
+    List<Song> songs = new ArrayList<>();
+
+    Koloda koloda;
+
+    protected SwipeSongDeckAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
 
-        try {
-            mModule = LiteModuleLoader.load(ExportActivity.assetFilePath(getApplicationContext(), "model_p1.ptl"));
-        } catch (IOException e) {
-            Log.e("ImageSegmentation", "Error reading assets", e);
-            finish();
-        }
+        Koloda koloda = findViewById(R.id.koloda);
 
-        run(mModule);
-    }
+        songs.add(new Song("ex", "1"));
+        songs.add(new Song("ex2", "2"));
+        songs.add(new Song("ex3", "3"));
 
-    public static String assetFilePath(Context context, String assetName) throws IOException {
-        File file = new File(context.getFilesDir(), assetName);
-        if (file.exists() && file.length() > 0) {
-            return file.getAbsolutePath();
-        }
+        adapter = new SwipeSongDeckAdapter(this, songs);
 
-        try (InputStream is = context.getAssets().open(assetName)) {
-            try (OutputStream os = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4 * 1024];
-                int read;
-                while ((read = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, read);
-                }
-                os.flush();
+        koloda.setAdapter(adapter);
+
+        koloda.setKolodaListener(new KolodaListener() {
+            @Override
+            public void onNewTopCard(int i) {
+
             }
-            return file.getAbsolutePath();
-        }
-    }
 
-    public void run(Module mModule){
-        final long[] user_x_rating_shape = new long[] {1, 11};
-        final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
-        final float[] user_x_rating_raw;
+            @Override
+            public void onCardDrag(int i, @NonNull View view, float v) {
 
-        if(getIntent().hasExtra("floats")) {
-            user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
-        }
-        else{
-            user_x_rating_raw = new float[]{11.0F, 0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
-        }
+            }
 
-        System.out.println("num_user_x_rating_numel is: " + num_user_x_rating_numel);
+            @Override
+            public void onCardSwipedLeft(int i) {
+                Log.i("koloda", "detected left swipe");
+            }
 
-        final FloatBuffer user_x_rating_float_buffer = Tensor.allocateFloatBuffer((int)num_user_x_rating_numel);
-        user_x_rating_float_buffer.put(user_x_rating_raw);
-        final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_float_buffer, user_x_rating_shape);
-        final IValue user_x_rating = IValue.from(user_x_rating_tensor);
-        System.out.println("user_x_rating: " + Arrays.toString(user_x_rating.toTensor().getDataAsFloatArray()));
+            @Override
+            public void onCardSwipedRight(int i) {
+                Log.i("koloda", "detected right swipe");
+            }
 
-        final IValue user_x_index = IValue.from(0);
-        System.out.println("user_x_index: " + user_x_index.toLong());
+            @Override
+            public void onClickRight(int i) {
 
-        Log.i("export", "this is the rating: " + user_x_rating + " and this is the ");
-        final Tensor output_rating = mModule.forward(IValue.from(0), user_x_rating).toTensor();
+            }
 
-        output_rating.getDataAsFloatArray();
+            @Override
+            public void onClickLeft(int i) {
 
-        System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
+            }
 
+            @Override
+            public void onCardSingleTap(int i) {
+
+            }
+
+            @Override
+            public void onCardDoubleTap(int i) {
+
+            }
+
+            @Override
+            public void onCardLongPress(int i) {
+
+            }
+
+            @Override
+            public void onEmptyDeck() {
+
+            }
+        });
     }
 }
