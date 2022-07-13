@@ -18,7 +18,7 @@
 
         <!--image view for course image-->
         <ImageView
-            android:id="@+id/idIVCourse"
+            android:id="@+id/ivCoverArt"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
@@ -41,6 +41,12 @@
             android:padding="3dp"
             android:textColor="@color/black"
             tools:text="Artist Artist Artist" />
+
+        <ImageButton
+            android:id="@+id/ibPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_media_play" />
 
     </LinearLayout>
 
