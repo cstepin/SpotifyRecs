@@ -20,7 +20,7 @@
         android:id="@+id/koloda"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:koloda_card_layout="@layout/item_card_song"
+        app:koloda_card_layout="@layout/item_card_collab_song"
         app:koloda_card_offsetY="16dp"
         app:koloda_card_rotate_angle="30">
     </com.yalantis.library.Koloda>

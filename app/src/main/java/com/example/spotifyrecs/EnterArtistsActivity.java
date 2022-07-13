@@ -60,7 +60,7 @@ public class EnterArtistsActivity extends AppCompatActivity {
                 return;
             }
             Intent i = new Intent(EnterArtistsActivity.this,
-                    GenerateSongsActivity.class);
+                    ExportActivity.class);
             i.putExtra("artists", new String[]{artist1, artist2});
             startActivity(i);
             finish();

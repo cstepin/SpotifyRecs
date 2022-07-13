@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,30 +18,28 @@ import androidx.palette.graphics.Palette;
 
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.models.Song;
-import com.parse.ParseUser;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
 import com.spotify.protocol.types.ImageUri;
 
-import org.json.JSONArray;
-
 import java.util.List;
 
-public class SwipeSongDeckAdapter extends BaseAdapter {
+public class CollabSongDeckAdapter extends BaseAdapter {
 
     TextView tvTitle;
     TextView tvArtist;
     ImageView ivCoverArt;
     ImageButton ibPlay;
+
     Boolean pressed = false;
 
     private Context context;
     private List<Song> songs;
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    public SwipeSongDeckAdapter(Context context, List<Song> songs) {
+    public CollabSongDeckAdapter(Context context, List<Song> songs) {
         this.context = context;
         this.songs = songs;
     }
@@ -70,7 +67,7 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
         View v = convertView;
         if (v == null) {
             // on below line we are inflating our layout.
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_song, parent,
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_collab_song, parent,
                     false);
         }
 
@@ -145,36 +142,4 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
             });
         }
     }
-
-    /*
-    private void onDoubleClick(View v) {
-        Log.i("In double click2", "double click noticed");
-        Song song = new Song();
-        song.artist = (String) tvArtist.getText();
-        song.title = (String) tvTitle.getText();
-        //  Log.i("in double click3", "this is song: " + song.toString());
-        faveSongs.add(song.title);
-    }
-
-    private void updateLikedSongs() {
-        if(faveSongs.size() == 0){
-            return;
-        }
-
-        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
-        assert currLiked != null;
-        for(String song : faveSongs){
-            currLiked.put(song);
-        }
-        ParseUser.getCurrentUser().put("faveSongs", currLiked);
-        ParseUser.getCurrentUser().saveInBackground(e -> {
-            if(e != null){
-                Log.e("AddPlaylistFragment", "error saving playlists", e);
-            }
-            else{
-                Log.i("Addplaylistfragment", "faveSongs saved successfully");
-            }
-        });
-    }
-     */
 }

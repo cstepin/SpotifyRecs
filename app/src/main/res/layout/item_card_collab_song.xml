@@ -48,6 +48,17 @@
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_media_play" />
 
+        <Button
+            android:id="@+id/btnIgnore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/skip_this_song"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvArtist" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
