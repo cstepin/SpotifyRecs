@@ -8,14 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.models.Song;
+import com.parse.ParseUser;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.ContentApi;
@@ -26,6 +30,9 @@ import com.spotify.protocol.types.ListItems;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
+import org.json.JSONArray;
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,22 +40,27 @@ import java.util.List;
 
 
 public class ExportActivity extends AppCompatActivity {
-
-
     private SpotifyAppRemote mSpotifyAppRemote;
     List<Song> songs = new ArrayList<>();
+    List<String> faveSongs = new ArrayList<>();
+    List<Song> keepSongs = new ArrayList<>();
     Koloda koloda;
     protected SwipeSongDeckAdapter adapter;
     ProgressBar pb;
     final String TAG = "ExportActivity";
+    LottieAnimationView animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
 
-        Koloda koloda = findViewById(R.id.koloda);
+        koloda = findViewById(R.id.koloda);
         pb = findViewById(R.id.pbLoading);
+        pb.setVisibility(ProgressBar.VISIBLE);
+        animationView = new LottieAnimationView(ExportActivity.this);
+        animationView.findViewById(R.id.animationView);
+        animationView.pauseAnimation();
     }
 
     private void querySongs(List<Song> finalSongs) {
@@ -63,7 +75,7 @@ public class ExportActivity extends AppCompatActivity {
         koloda.setKolodaListener(new KolodaListener() {
             @Override
             public void onNewTopCard(int i) {
-
+                animationView.pauseAnimation();
             }
 
             @Override
@@ -73,12 +85,20 @@ public class ExportActivity extends AppCompatActivity {
 
             @Override
             public void onCardSwipedLeft(int i) {
-                Log.i("koloda", "detected left swipe");
+                Log.i("koloda", "detected left swipe " + i);
+                Toast.makeText(ExportActivity.this, "Leaving this song behind!",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCardSwipedRight(int i) {
-                Log.i("koloda", "detected right swipe");
+                Log.i("koloda", "detected right swipe " + i);
+
+                Toast.makeText(ExportActivity.this, "I'm keeping this song!",
+                        Toast.LENGTH_SHORT).show();
+                Song song = (Song) koloda.getAdapter().getItem(i + 1);
+                //this means they liked the song, so we keep the song
+                keepSongs.add(song);
             }
 
             @Override
@@ -98,6 +118,12 @@ public class ExportActivity extends AppCompatActivity {
 
             @Override
             public void onCardDoubleTap(int i) {
+                animationView.playAnimation();
+                Song song = (Song) koloda.getAdapter().getItem(i + 1);
+                Log.i(TAG, "This is the song: " +
+                        ((Song) koloda.getAdapter().getItem(i + 1)).title);
+                faveSongs.add(song.title);
+             //   animationView.resumeAnimation();
 
             }
 
@@ -108,7 +134,11 @@ public class ExportActivity extends AppCompatActivity {
 
             @Override
             public void onEmptyDeck() {
-
+                updateLikedSongs();
+                Intent i = new Intent(ExportActivity.this,
+                        finalPlaylistActivity.class);
+                i.putExtra("final songs", Parcels.wrap(keepSongs));
+                startActivity(i);
             }
         });
 
@@ -157,52 +187,67 @@ public class ExportActivity extends AppCompatActivity {
 
         CallResult<ListItems> listItemsCallResult = mSpotifyAppRemote.getContentApi()
                 .getRecommendedContentItems(ContentApi.ContentType.DEFAULT);
-        listItemsCallResult.setResultCallback(new CallResult.ResultCallback<ListItems>() {
-            @Override
-            public void onResult(ListItems data) {
-                if(data != null){
-                    Log.i("first", "first on Result");
-                    ListItem[] items = data.items;
+        listItemsCallResult.setResultCallback(data -> {
+            if(data != null){
+                Log.i("first", "first on Result");
+                ListItem[] items = data.items;
 
-                    for(int i = 0; i < items.length; i++) {
-                        //     for (ListItem item : items) {
-                        CallResult<ListItems> listItemsCallResult1 = mSpotifyAppRemote
-                                .getContentApi()
-                                .getChildrenOfItem(items[i], 3, 0);
+                for(int i = 0; i < items.length; i++) {
+                    //     for (ListItem item : items) {
+                    CallResult<ListItems> listItemsCallResult1 = mSpotifyAppRemote
+                            .getContentApi()
+                            .getChildrenOfItem(items[i], 3, 0);
 
-                        int finalI = i;
-                        listItemsCallResult1.setResultCallback(new CallResult.ResultCallback<ListItems>() {
-                            @Override
-                            public void onResult(ListItems data) {
-                                if (data != null) {
-                                    ListItem[] items1 = data.items;
+                    int finalI = i;
+                    listItemsCallResult1.setResultCallback(data1 -> {
+                        if (data1 != null) {
+                            ListItem[] items1 = data1.items;
 
-                                    for (ListItem item1 : items1) {
+                            for (ListItem item1 : items1) {
 
-                                        if (item1.uri.contains("playlist") ||
-                                                item1.uri.contains("track") ||
-                                                item1.uri.contains("album")){
-                                            if(!InList(item1.title, songs)) {
-                                                Song currSong = new Song();
-                                                currSong.title = item1.title;
-                                                currSong.uri = item1.uri;
-                                                currSong.artist = item1.subtitle;
-                                                currSong.imageString = item1.imageUri.raw;
+                                if (item1.uri.contains("playlist") ||
+                                        item1.uri.contains("track") ||
+                                        item1.uri.contains("album")){
+                                    if(!InList(item1.title, songs)) {
+                                        Song currSong = new Song();
+                                        currSong.title = item1.title;
+                                        currSong.uri = item1.uri;
+                                        currSong.artist = item1.subtitle;
+                                        currSong.imageString = item1.imageUri.raw;
 
-                                                songs.add(currSong);
-                                                Log.i("fsd", "inside + " + item1 + " and title: " + item1);
-                                            }
-                                        }
-                                    }
-                                    if(finalI == items.length - 1){
-                                        Collections.shuffle(songs);
-                                        querySongs(songs);
+                                        songs.add(currSong);
+                                        Log.i("fsd", "inside + " + item1 + " and title: " + item1);
                                     }
                                 }
                             }
-                        });
-                    }
+                            if(finalI == items.length - 1){
+                                Collections.shuffle(songs);
+                                querySongs(songs);
+                            }
+                        }
+                    });
                 }
+            }
+        });
+    }
+
+    private void updateLikedSongs() {
+        if(faveSongs.size() == 0){
+            return;
+        }
+
+        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
+        assert currLiked != null;
+        for(String song : faveSongs){
+            currLiked.put(song);
+        }
+        ParseUser.getCurrentUser().put("faveSongs", currLiked);
+        ParseUser.getCurrentUser().saveInBackground(e -> {
+            if(e != null){
+                Log.e("AddPlaylistFragment", "error saving playlists", e);
+            }
+            else{
+                Log.i("Addplaylistfragment", "faveSongs saved successfully");
             }
         });
     }

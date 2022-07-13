@@ -74,10 +74,11 @@ public class finalPlaylistActivity extends AppCompatActivity {
         rvSongs.setAdapter(adapter);
         // set the layout manager on the recycler view
         rvSongs.setLayoutManager(new LinearLayoutManager(this));
-        // query posts from Parstagram
 
         ArrayList<Song> finalArtists = Parcels.unwrap(getIntent()
                 .getParcelableExtra("final songs"));
+        Log.i("This is final artists playlist", "length of parecel: " + finalArtists.size());
+
         currUserArtists = ParseUser.getCurrentUser().getJSONArray("artists");
 
         //This stores information on the artists the user liked to use for collaborative filtering

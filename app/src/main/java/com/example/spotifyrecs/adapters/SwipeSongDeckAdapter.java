@@ -49,7 +49,7 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return songs.size();
+        return Math.min(songs.size(), 5);
     }
 
     @Override
@@ -64,6 +64,7 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.i("length", "length2: " + getCount());
 
         // in get view method we are inflating our layout on below line.
         View v = convertView;
@@ -79,18 +80,12 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
         ivCoverArt = (ImageView) v.findViewById(R.id.ivCoverArt);
         ibPlay = (ImageButton) v.findViewById(R.id.ibPlay);
 
-        ibPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startPlay((Song) getItem(position), true, v);
-            }
-        });
-
         startPlay((Song) getItem(position), false, v);
+
+        ibPlay.setOnClickListener(v1 -> startPlay((Song) getItem(position), true, v1));
+
         tvArtist.setText(songs.get(position).getArtist());
         tvTitle.setText(songs.get(position).getTitle());
-
-        // (ImageView) v.findViewById(R.id.ivCoverArt)...;
 
         return v;
     }
@@ -146,7 +141,7 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
                     // Set the background color of a layout based on the vibrant color
                     v.setBackgroundColor(vibrant.getRgb());
                 }
-                ivCoverArt.setImageBitmap(data);
+                ((ImageView) v.findViewById(R.id.ivCoverArt)).setImageBitmap(data);
             });
         }
     }

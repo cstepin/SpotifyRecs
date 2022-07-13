@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AddPlaylistFragment extends DialogFragment {
     EditText etPlaylistName;
@@ -90,6 +91,8 @@ public class AddPlaylistFragment extends DialogFragment {
             }
             else{
                 Log.i("Addplaylistfragment", "playlists saved successfully");
+                requireActivity().finish();
+                requireActivity().getFragmentManager().popBackStack();
             }
         });
     }

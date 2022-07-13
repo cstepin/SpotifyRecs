@@ -7,6 +7,15 @@
     android:orientation="vertical"
     android:gravity="center">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_url="https://assets6.lottiefiles.com/packages/lf20_b6cz19m8.json"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        android:visibility="invisible"/>
+
     <com.yalantis.library.Koloda
         android:id="@+id/koloda"
         android:layout_width="match_parent"
