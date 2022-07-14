@@ -4,18 +4,21 @@ import static com.example.spotifyrecs.resources.Resources.getClientId;
 import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.palette.graphics.Palette;
 
+import com.example.spotifyrecs.AnalyzeRecommendActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.models.Song;
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -23,6 +26,8 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
 import com.spotify.protocol.types.ImageUri;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -32,6 +37,10 @@ public class CollabSongDeckAdapter extends BaseAdapter {
     TextView tvArtist;
     ImageView ivCoverArt;
     ImageButton ibPlay;
+    Button btnIgnore;
+
+    float[] user_x_rating_raw = new float[10];
+    int user_rating_index = 0;
 
     Boolean pressed = false;
 
@@ -46,7 +55,7 @@ public class CollabSongDeckAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return Math.min(songs.size(), 5);
+        return songs.size();
     }
 
     @Override
@@ -76,10 +85,12 @@ public class CollabSongDeckAdapter extends BaseAdapter {
         tvTitle = v.findViewById(R.id.tvTitle);
         ivCoverArt = v.findViewById(R.id.ivCoverArt);
         ibPlay = v.findViewById(R.id.ibPlay);
+        btnIgnore = v.findViewById(R.id.btnIgnore);
 
         startPlay(getItem(position), false, v);
 
         ibPlay.setOnClickListener(v1 -> startPlay(getItem(position), true, v1));
+        btnIgnore.setOnClickListener(v1 -> ignoreClicked(v1, songs.get(position)));
 
         tvArtist.setText(songs.get(position).getArtist());
         tvTitle.setText(songs.get(position).getTitle());
@@ -111,6 +122,29 @@ public class CollabSongDeckAdapter extends BaseAdapter {
                         Log.e("Adapter", throwable.getMessage(), throwable);
                     }
                 });
+    }
+
+
+    private void ignoreClicked(View v, Song song) {
+        user_x_rating_raw[user_rating_index] = 0.0F;
+        user_rating_index++;
+
+        song.setVisible(false);
+
+        v.setVisibility(View.GONE);
+        song.visible = false;
+        Log.i("in ignore", "this is index: " + user_rating_index + " and " +
+                "this is the floats: " + user_x_rating_raw.length);
+
+        if(user_rating_index == 10){
+            Intent i = new Intent(v.getContext(),
+                    AnalyzeRecommendActivity.class);
+            i.putExtra("floats", user_x_rating_raw);
+            i.putExtra("songs",
+                    Parcels.wrap(songs));
+
+            v.getContext().startActivity(i);
+        }
     }
 
     private void connected(Song s, Boolean onClick, View v) {
