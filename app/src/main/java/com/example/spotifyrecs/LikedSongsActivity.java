@@ -105,12 +105,14 @@ public class LikedSongsActivity extends AppCompatActivity {
                 @Override
                 public void success(TracksPager tracksPager, Response response) {
                     Song song = new Song();
-                    for(Track track : tracksPager.tracks.items) {
-                        Log.i("this is track", "track name: " + track.name);
-                        song.artist = tracksPager.tracks.items.get(0).artists.get(0).name;
-                        song.title = songTitle;
-                        songs.add(song);
+                    if(tracksPager.tracks.items.size() < 1){
+                        Log.i("problem", "there's no items in liked songs");
                     }
+
+                    Log.i("this is track", "track name: " + tracksPager.tracks.items.get(0).name);
+                    song.artist = tracksPager.tracks.items.get(0).artists.get(0).name;
+                    song.title = songTitle;
+                    songs.add(song);
                     if(finalI == likedSongs.length() - 1){
                         querySongs(songs);
                     }

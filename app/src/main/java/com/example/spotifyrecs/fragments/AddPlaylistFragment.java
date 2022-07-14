@@ -1,5 +1,8 @@
 package com.example.spotifyrecs.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,8 +25,10 @@ import com.parse.ParseUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AddPlaylistFragment extends DialogFragment {
     EditText etPlaylistName;
@@ -74,12 +79,7 @@ public class AddPlaylistFragment extends DialogFragment {
         newPlaylist.setSongs(jsonArray);
         newPlaylist.setUser(ParseUser.getCurrentUser());
 
-        Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
-
         JSONArray currPlaylists = ParseUser.getCurrentUser().getJSONArray("playlists");
-
-
-      //    Log.i("tag tag ", "new playlist name: " + etPlaylistName.getText().toString());
 
         assert currPlaylists != null;
         currPlaylists.put(newPlaylist);
@@ -90,6 +90,9 @@ public class AddPlaylistFragment extends DialogFragment {
             }
             else{
                 Log.i("Addplaylistfragment", "playlists saved successfully");
+                Intent intent = new Intent();
+                getActivity().setResult(RESULT_OK, intent);
+                getActivity().finish();
             }
         });
     }

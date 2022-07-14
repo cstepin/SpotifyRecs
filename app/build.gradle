@@ -79,44 +79,18 @@ dependencies {
     implementation 'org.pytorch:pytorch_android_torchvision_lite:1.10.0'
 
     //card swipe holder
-  //  implementation 'com.github.Yalantis:Koloda-Android:v0.0.2-alpha'
+    implementation 'com.github.Yalantis:Koloda-Android:v0.0.2-alpha'
 
     //testing
     testImplementation "com.google.truth:truth:1.1.2"
     testImplementation 'org.json:json:20180813'
 
-    //Instrument tests
-    // Espresso
-    /*
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-androidTestImplementation 'androidx.test:rules:1.4.0'
-androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-     */
 
-    def androidXTestVersion = "1.4.0"
-   androidTestImplementation "androidx.test:runner:$androidXTestVersion"
-   androidTestImplementation "androidx.test:rules:$androidXTestVersion"
+ //   def androidXTestVersion = "1.4.0"
+ //  androidTestImplementation "androidx.test:runner:$androidXTestVersion"
+ //  androidTestImplementation "androidx.test:rules:$androidXTestVersion"
 
-    // Optional -- UI testing with Espresso
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
-    // Optional -- UI testing with UI Automator
-  //  androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
-    // Optional -- UI testing with Compose
- //   androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-
-    /*
-    def androidx_test_espresso = "3.1.0"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_test_espresso"
-
-    // androidx.test
-    testImplementation "org.mockito:mockito-core:3.4.6"
-    implementation 'androidx.arch.core:core-testing:2.1.0'
-
-
-    androidTestImplementation "androidx.test:runner:$androidx_test"
-    androidTestImplementation "androidx.test:core:$androidx_test"
- //   androidTestImplementation "androidx.test.ext:junit-javax:$androidx_test"
-
-//    androidTestImplementation "com.android.support.test.espresso:espresso-intents:$androidx_test_espresso"
-*/
+    //animation
+    def lottieVersion = "3.4.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 }

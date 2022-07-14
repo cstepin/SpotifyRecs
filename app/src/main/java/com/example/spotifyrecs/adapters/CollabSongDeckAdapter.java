@@ -4,52 +4,58 @@ import static com.example.spotifyrecs.resources.Resources.getClientId;
 import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.palette.graphics.Palette;
 
+import com.example.spotifyrecs.AnalyzeRecommendActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.models.Song;
-import com.parse.ParseUser;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.client.CallResult;
 import com.spotify.protocol.types.ImageUri;
 
-import org.json.JSONArray;
+import org.parceler.Parcels;
 
 import java.util.List;
 
-public class SwipeSongDeckAdapter extends BaseAdapter {
+public class CollabSongDeckAdapter extends BaseAdapter {
 
     TextView tvTitle;
     TextView tvArtist;
     ImageView ivCoverArt;
     ImageButton ibPlay;
+    Button btnIgnore;
+
+    float[] user_x_rating_raw = new float[10];
+    int user_rating_index = 0;
+
     Boolean pressed = false;
 
     private Context context;
     private List<Song> songs;
     private SpotifyAppRemote mSpotifyAppRemote;
 
-    public SwipeSongDeckAdapter(Context context, List<Song> songs) {
+    public CollabSongDeckAdapter(Context context, List<Song> songs) {
         this.context = context;
         this.songs = songs;
     }
 
     @Override
     public int getCount() {
-        return Math.min(songs.size(), 5);
+        return songs.size();
     }
 
     @Override
@@ -70,7 +76,7 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
         View v = convertView;
         if (v == null) {
             // on below line we are inflating our layout.
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_song, parent,
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_collab_song, parent,
                     false);
         }
 
@@ -79,10 +85,12 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
         tvTitle = v.findViewById(R.id.tvTitle);
         ivCoverArt = v.findViewById(R.id.ivCoverArt);
         ibPlay = v.findViewById(R.id.ibPlay);
+        btnIgnore = v.findViewById(R.id.btnIgnore);
 
         startPlay(getItem(position), false, v);
 
         ibPlay.setOnClickListener(v1 -> startPlay(getItem(position), true, v1));
+        btnIgnore.setOnClickListener(v1 -> ignoreClicked(v1, songs.get(position)));
 
         tvArtist.setText(songs.get(position).getArtist());
         tvTitle.setText(songs.get(position).getTitle());
@@ -116,6 +124,29 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
                 });
     }
 
+
+    private void ignoreClicked(View v, Song song) {
+        user_x_rating_raw[user_rating_index] = 0.0F;
+        user_rating_index++;
+
+        song.setVisible(false);
+
+        v.setVisibility(View.GONE);
+        song.visible = false;
+        Log.i("in ignore", "this is index: " + user_rating_index + " and " +
+                "this is the floats: " + user_x_rating_raw.length);
+
+        if(user_rating_index == 10){
+            Intent i = new Intent(v.getContext(),
+                    AnalyzeRecommendActivity.class);
+            i.putExtra("floats", user_x_rating_raw);
+            i.putExtra("songs",
+                    Parcels.wrap(songs));
+
+            v.getContext().startActivity(i);
+        }
+    }
+
     private void connected(Song s, Boolean onClick, View v) {
         if (onClick) {
             if (!pressed) {
@@ -145,36 +176,4 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
             });
         }
     }
-
-    /*
-    private void onDoubleClick(View v) {
-        Log.i("In double click2", "double click noticed");
-        Song song = new Song();
-        song.artist = (String) tvArtist.getText();
-        song.title = (String) tvTitle.getText();
-        //  Log.i("in double click3", "this is song: " + song.toString());
-        faveSongs.add(song.title);
-    }
-
-    private void updateLikedSongs() {
-        if(faveSongs.size() == 0){
-            return;
-        }
-
-        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
-        assert currLiked != null;
-        for(String song : faveSongs){
-            currLiked.put(song);
-        }
-        ParseUser.getCurrentUser().put("faveSongs", currLiked);
-        ParseUser.getCurrentUser().saveInBackground(e -> {
-            if(e != null){
-                Log.e("AddPlaylistFragment", "error saving playlists", e);
-            }
-            else{
-                Log.i("Addplaylistfragment", "faveSongs saved successfully");
-            }
-        });
-    }
-     */
 }

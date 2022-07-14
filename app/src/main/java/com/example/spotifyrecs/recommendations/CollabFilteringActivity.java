@@ -67,10 +67,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
         //Then we authenticate our current api
         setServiceApi();
-
-        // first, we need to show 10 songs which are very different to generate the thing.
-        // then we need to have a specific swiping thing to see if we should keep the data as a -1
-        // 0 or 1
     }
 
     private void addGenres() {
@@ -161,7 +157,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
-
         addGenres();
     }
 }

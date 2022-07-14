@@ -19,6 +19,13 @@ public class Song {
     public String imageString;
     public Boolean visible;
 
+    public Song(String title, String artist){
+        this.title = title;
+        this.artist = artist;
+    }
+
+    public Song(){}
+
     public Boolean getVisible() {
         return visible;
     }
@@ -58,8 +65,6 @@ public class Song {
     public void setUri(String uri) {
         this.uri = uri;
     }
-
-    public Song(){}
 
     public JSONObject toJSON() throws JSONException {
         JSONObject jo = new JSONObject();
