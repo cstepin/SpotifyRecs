@@ -52,6 +52,7 @@ import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
 
 public class AnalyzeRecommendActivity extends AppCompatActivity {
+    private static final String TAG = "AnalyzeRecommendActivity";
     private Module mModule = null;
 
     SpotifyApi api;
@@ -245,7 +246,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         }
 
         //now we know which is the favorite song...
-        ArrayList<Song> songs = Parcels.unwrap(getIntent()
+        List<Song> songs = Parcels.unwrap(getIntent()
                 .getParcelableExtra("songs"));
 
         getSimilarArtists(songs.get(pos2).artist);

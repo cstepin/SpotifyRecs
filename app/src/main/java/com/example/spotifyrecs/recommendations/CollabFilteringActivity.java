@@ -99,7 +99,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
         for(int i = 0; i < genres.size(); i++) {
             Map<String, Object> map = new HashMap<>();
             map.put("seed_genres", genres.get(i));
-            Log.i("this is map", "map: " + map);
 
             int finalI = i;
             spotifyService.getRecommendations(map, new SpotifyCallback<Recommendations>() {

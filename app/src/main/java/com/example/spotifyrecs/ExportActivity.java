@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.spotifyrecs.adapters.CollabSongDeckAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.models.Song;
@@ -66,7 +67,7 @@ public class ExportActivity extends AppCompatActivity {
     int user_rating_index = 0;
 
     List<String> genres = new ArrayList<>();
-    protected SwipeSongDeckAdapter adapter;
+    protected CollabSongDeckAdapter adapter;
     ProgressBar pb;
     final String TAG = "ExportActivity";
     LottieAnimationView animationView;
@@ -171,7 +172,7 @@ public class ExportActivity extends AppCompatActivity {
         songs.addAll(finalSongs);
        // adapter.notifyDataSetChanged();
 
-        adapter = new SwipeSongDeckAdapter(this, songs);
+        adapter = new CollabSongDeckAdapter(this, songs);
         koloda.setAdapter(adapter);
 
         koloda.setKolodaListener(new KolodaListener() {
@@ -209,6 +210,13 @@ public class ExportActivity extends AppCompatActivity {
 
             @Override
             public void onCardSingleTap(int i) {
+                if(adapter.getIgnoreClicked()){
+                    user_x_rating_raw[user_rating_index] = 0.0F;
+                  //  user_rating_index++;
+                    adapter.setIgnoreClicked(false);
+                  //  koloda.on
+
+                }
 
             }
 
@@ -219,7 +227,6 @@ public class ExportActivity extends AppCompatActivity {
                 Log.i(TAG, "This is the song: " +
                         ((Song) koloda.getAdapter().getItem(i + 1)).title);
                 faveSongs.add(song.title);
-             //   animationView.resumeAnimation();
             }
 
             @Override
@@ -233,8 +240,10 @@ public class ExportActivity extends AppCompatActivity {
 
                 Intent i = new Intent(ExportActivity.this,
                         AnalyzeRecommendActivity.class);
+                Log.i(TAG, "this is the final length: " + user_x_rating_raw.length + " and array: " + Arrays.toString(user_x_rating_raw));
+                Log.i(TAG, "and this is songs: " + songs);
                 i.putExtra("floats", user_x_rating_raw);
-                i.putExtra("final songs", Parcels.wrap(songs));
+                i.putExtra("songs", Parcels.wrap(songs));
                 startActivity(i);
             }
         });
