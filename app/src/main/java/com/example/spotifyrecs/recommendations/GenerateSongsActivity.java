@@ -64,6 +64,11 @@ public class GenerateSongsActivity extends AppCompatActivity {
     final String TAG = "ExportActivity";
     LottieAnimationView animationView;
 
+    //To time the amount of time it takes to generate songs
+    // Currently around 462047 milliseconds
+    long startTime;
+    long endTime;
+
     SpotifyApi api;
     public static SpotifyService spotifyService;
 
@@ -71,6 +76,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
+
+        startTime = System.nanoTime();
 
         koloda = findViewById(R.id.koloda);
         pb = findViewById(R.id.pbLoading);
@@ -358,6 +365,9 @@ public class GenerateSongsActivity extends AppCompatActivity {
 
 // run a background job and once complete
         pb.setVisibility(ProgressBar.INVISIBLE);
+        endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        Log.i(TAG, "this is the duration: " + duration);
     }
 
     private void updateLikedSongs() {

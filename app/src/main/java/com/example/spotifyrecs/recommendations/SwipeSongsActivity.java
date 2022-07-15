@@ -54,10 +54,15 @@ public class SwipeSongsActivity extends AppCompatActivity {
     final String TAG = "ExportActivity";
     LottieAnimationView animationView;
 
+    //We time the amount it takes to generate all of the song items
+    long startTime;
+    long endTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
+        startTime = System.nanoTime();
 
         koloda = findViewById(R.id.koloda);
         pb = findViewById(R.id.pbLoading);
@@ -150,6 +155,9 @@ public class SwipeSongsActivity extends AppCompatActivity {
 
 // run a background job and once complete
         pb.setVisibility(ProgressBar.INVISIBLE);
+        endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        Log.i(TAG, "this is the duration: " + duration);
     }
 
     @Override

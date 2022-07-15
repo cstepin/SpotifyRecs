@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#38464C"
+    android:gravity="center"
     tools:context=".recommendations.CollabFilteringActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSwipeSongs"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_url="https://assets6.lottiefiles.com/packages/lf20_b6cz19m8.json"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        android:visibility="invisible"/>
+
+    <com.yalantis.library.Koloda
+        android:id="@+id/koloda"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        app:koloda_card_layout="@layout/item_card_song"
+        app:koloda_card_offsetY="16dp"
+        app:koloda_card_rotate_angle="30">
+    </com.yalantis.library.Koloda>
 
     <ProgressBar
         android:id="@+id/pbLoading"
@@ -22,4 +34,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

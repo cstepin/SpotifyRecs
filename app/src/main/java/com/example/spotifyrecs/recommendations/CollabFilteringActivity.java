@@ -2,24 +2,39 @@ package com.example.spotifyrecs.recommendations;
 
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.example.spotifyrecs.AnalyzeRecommendActivity;
+import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.adapters.CollabSongAdapter;
+import com.example.spotifyrecs.adapters.CollabSongDeckAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
+import com.parse.ParseUser;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.yalantis.library.Koloda;
+import com.yalantis.library.KolodaListener;
+
+import org.json.JSONArray;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -33,37 +48,44 @@ import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
 
 public class CollabFilteringActivity extends AppCompatActivity {
-    String authToken;
+    private static final String TAG = "CollabFilteringActivity";
 
-    RecyclerView rvSwipeSongs;
-    List<Song> allSongs = new ArrayList<>();
+    List<String> faveSongs = new ArrayList<>();
+    List<Song> songs = new ArrayList<>();
     ProgressBar pb;
+    Koloda koloda;
+    float[] user_x_rating_raw = new float[10];
+    int user_rating_index = 0;
 
     List<String> genres = new ArrayList<>();
 
-    protected CollabSongAdapter adapter;
-
-    private SpotifyAppRemote mSpotifyAppRemote;
+    LottieAnimationView animationView;
+    protected CollabSongDeckAdapter adapter;
 
     SpotifyApi api;
     public static SpotifyService spotifyService;
     Random rand = new Random(); //instance of random class
 
+// To time amount it takes to generate 10 random songs
+    // Currently around 2562890 milliseconds
+    long startTime;
+    long endTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_collab_filtering);
+        setContentView(R.layout.activity_export);
 
+        startTime = System.nanoTime();
+
+        koloda = findViewById(R.id.koloda);
         pb = findViewById(R.id.pbLoading);
-
         pb.setVisibility(ProgressBar.VISIBLE);
-        rvSwipeSongs = findViewById(R.id.rvSwipeSongs);
+        animationView = new LottieAnimationView(CollabFilteringActivity.this);
+        animationView.findViewById(R.id.animationView);
+        animationView.pauseAnimation();
 
-        adapter = new CollabSongAdapter(this, allSongs);
-
-        rvSwipeSongs.setAdapter(adapter);
-        // set the layout manager on the recycler view
-        rvSwipeSongs.setLayoutManager(new LinearLayoutManager(this));
+        Log.i("in export", "in export activity");
 
         //Then we authenticate our current api
         setServiceApi();
@@ -130,7 +152,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
                     Log.i("success querying", "title: " + track.name + " and genre: " +
                             track.type);
 
-                  //  map.clear();
+                    //  map.clear();
 
                     if(finalI == genres.size() - 1){
                         Log.i("in here 3", "these are the songs: " + songs);
@@ -141,22 +163,123 @@ public class CollabFilteringActivity extends AppCompatActivity {
         }
     }
 
-    //Adds suggested songs into the recycler view.
     private void querySongs(List<Song> finalSongs) {
-        Log.i("generate", "in query songs" + finalSongs.size());
-        allSongs.addAll(finalSongs);
-        Log.i("allSongs", "allSongs is: " + allSongs.toString());
-        adapter.notifyDataSetChanged();
-        Log.i("generate", "after adapter notified");
-        // run a background job and once complete
+
+        Log.i(TAG, "length: " + finalSongs.size());
+        songs.addAll(finalSongs);
+        // adapter.notifyDataSetChanged();
+
+        adapter = new CollabSongDeckAdapter(this, songs);
+        koloda.setAdapter(adapter);
+
+        koloda.setKolodaListener(new KolodaListener() {
+            @Override
+            public void onNewTopCard(int i) {
+                animationView.pauseAnimation();
+            }
+
+            @Override
+            public void onCardDrag(int i, @NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onCardSwipedLeft(int i) {
+                user_x_rating_raw[user_rating_index] = -1.0F;
+                user_rating_index++;
+            }
+
+            @Override
+            public void onCardSwipedRight(int i) {
+                user_x_rating_raw[user_rating_index] = 1.0F;
+                user_rating_index++;
+            }
+
+            @Override
+            public void onClickRight(int i) {
+
+            }
+
+            @Override
+            public void onClickLeft(int i) {
+
+            }
+
+            @Override
+            public void onCardSingleTap(int i) {
+                if(adapter.getIgnoreClicked()){
+                    user_x_rating_raw[user_rating_index] = 0.0F;
+                    //  user_rating_index++;
+                    adapter.setIgnoreClicked(false);
+                    //  koloda.on
+
+                }
+
+            }
+
+            @Override
+            public void onCardDoubleTap(int i) {
+                animationView.playAnimation();
+                Song song = (Song) Objects.requireNonNull(koloda.getAdapter()).getItem(i + 1);
+                Log.i(TAG, "This is the song: " +
+                        ((Song) koloda.getAdapter().getItem(i + 1)).title);
+                faveSongs.add(song.title);
+            }
+
+            @Override
+            public void onCardLongPress(int i) {
+
+            }
+
+            @Override
+            public void onEmptyDeck() {
+                updateLikedSongs();
+
+                Intent i = new Intent(CollabFilteringActivity.this,
+                        AnalyzeRecommendActivity.class);
+                Log.i(TAG, "this is the final length: " + user_x_rating_raw.length + " and array: " + Arrays.toString(user_x_rating_raw));
+                Log.i(TAG, "and this is songs: " + songs);
+                i.putExtra("floats", user_x_rating_raw);
+                i.putExtra("songs", Parcels.wrap(songs));
+                startActivity(i);
+            }
+        });
+
+// run a background job and once complete
         pb.setVisibility(ProgressBar.INVISIBLE);
+        endTime = System.nanoTime();
+        long duration = ((endTime - startTime)/1000);
+        Log.i(TAG, "this is the duration: " + duration);
     }
 
+    private void updateLikedSongs() {
+        if(faveSongs.size() == 0){
+            return;
+        }
+
+        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
+        assert currLiked != null;
+        for(String song : faveSongs){
+            currLiked.put(song);
+        }
+        ParseUser.getCurrentUser().put("faveSongs", currLiked);
+        ParseUser.getCurrentUser().saveInBackground(e -> {
+            if(e != null){
+                Log.e("AddPlaylistFragment", "error saving playlists", e);
+            }
+            else{
+                Log.i("Addplaylistfragment", "faveSongs saved successfully");
+            }
+        });
+    }
+
+    //This sets up our api by passing in the authentication token from the log-in screen
     private void setServiceApi() {
-        Log.i("setService", "authToken is " + authToken);
+        Log.i("setService", "authToken is " + getAuthToken());
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
         addGenres();
     }
 }
