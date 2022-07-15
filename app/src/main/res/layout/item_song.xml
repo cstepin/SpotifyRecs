@@ -12,6 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#D7E0EC"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Example Song Title" />
@@ -21,7 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#D7E0EC"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         tools:text="Example Artist" />

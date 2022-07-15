@@ -8,6 +8,7 @@
     android:layout_margin="5dp"
     android:layout_marginTop="200dp"
     android:elevation="8dp"
+    app:cardBackgroundColor="#1C315C"
     app:cardCornerRadius="4dp">
 
     <LinearLayout
@@ -21,15 +22,19 @@
             android:id="@+id/ivCoverArt"
             android:layout_width="match_parent"
             android:layout_height="450dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/covert_art_image1" />
 
         <!--text view for our course name-->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-light"
             android:padding="3dp"
-            android:textColor="@color/black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="#C7D2DF"
+            android:textStyle="bold"
             tools:text="Example Example Example" />
 
         <!--text view for our course description-->
@@ -38,26 +43,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed-light"
             android:padding="3dp"
-            android:textColor="@color/black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="#C7D2DF"
+            android:textStyle="bold"
             tools:text="Artist Artist Artist" />
 
         <ImageButton
             android:id="@+id/ibPlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            android:backgroundTint="#1B1C32"
+            app:tint="#C1D2E3"
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:contentDescription="@string/press_to_hear_snippet_of_music1" />
 
         <Button
             android:id="@+id/btnIgnore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="#1E293A"
+            android:backgroundTint="#1E293A"
+            android:fontFamily="sans-serif-black"
+            android:foregroundTint="#1E293A"
+            android:foregroundTintMode="src_over"
             android:text="@string/skip_this_song"
             android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#E5E9ED"
+            android:textStyle="bold"
+            app:cornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvArtist" />
+            app:layout_constraintTop_toBottomOf="@+id/tvArtist"
+            app:rippleColor="#0E1930" />
 
     </LinearLayout>
 
