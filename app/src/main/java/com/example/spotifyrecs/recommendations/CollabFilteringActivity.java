@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -56,6 +57,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
     Koloda koloda;
     float[] user_x_rating_raw = new float[10];
     int user_rating_index = 0;
+    Boolean ignoreClicked = false;
 
     List<String> genres = new ArrayList<>();
 
@@ -185,14 +187,38 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onCardSwipedLeft(int i) {
-                user_x_rating_raw[user_rating_index] = -1.0F;
-                user_rating_index++;
+                if(adapter.getIgnoreClicked()){
+                    Log.i(TAG, "i'm in here");
+                    user_x_rating_raw[user_rating_index] = 0.0F;
+                    user_rating_index++;
+                    adapter.setIgnoreClicked(false);
+                }
+                else if(ignoreClicked){
+                    ignoreClicked = false;
+                }
+                else {
+                    Log.i("here", "here here here");
+                    user_x_rating_raw[user_rating_index] = -1.0F;
+                    user_rating_index++;
+                }
             }
 
             @Override
             public void onCardSwipedRight(int i) {
-                user_x_rating_raw[user_rating_index] = 1.0F;
-                user_rating_index++;
+                if(adapter.getIgnoreClicked()){
+                    Log.i(TAG, "i'm in here");
+                    user_x_rating_raw[user_rating_index] = 0.0F;
+                    user_rating_index++;
+                    adapter.setIgnoreClicked(false);
+                }
+                else if(ignoreClicked){
+                    ignoreClicked = false;
+                }
+                else {
+                    Log.i("here", "here here 2");
+                    user_x_rating_raw[user_rating_index] = 1.0F;
+                    user_rating_index++;
+                }
             }
 
             @Override
@@ -207,14 +233,14 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onCardSingleTap(int i) {
+                Log.i(TAG, "i'm here in here");
                 if(adapter.getIgnoreClicked()){
+                    Log.i(TAG, "i'm in here");
                     user_x_rating_raw[user_rating_index] = 0.0F;
-                    //  user_rating_index++;
+                    user_rating_index++;
                     adapter.setIgnoreClicked(false);
-                    //  koloda.on
-
+                    ignoreClicked = true;
                 }
-
             }
 
             @Override
@@ -233,6 +259,9 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onEmptyDeck() {
+
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
                 updateLikedSongs();
 
                 Intent i = new Intent(CollabFilteringActivity.this,
@@ -242,6 +271,8 @@ public class CollabFilteringActivity extends AppCompatActivity {
                 i.putExtra("floats", user_x_rating_raw);
                 i.putExtra("songs", Parcels.wrap(songs));
                 startActivity(i);
+                }, 800);   //5 seconds
+
             }
         });
 
