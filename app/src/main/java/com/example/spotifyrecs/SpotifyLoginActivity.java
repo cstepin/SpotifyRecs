@@ -23,6 +23,11 @@ import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 public class SpotifyLoginActivity extends AppCompatActivity {
 
+    //We time the amount it takes for the user to be verified by spotify.
+    // currently around 1092293 milliseconds
+    long startTime;
+    long endTime;
+
     private static final String TAG = "Spotify " + SpotifyLoginActivity.class.getSimpleName();
     public static String authToken = "";
 
@@ -37,6 +42,7 @@ public class SpotifyLoginActivity extends AppCompatActivity {
         Button mLoginButton = (Button)findViewById(R.id.login_button);
 
         mLoginButton.setOnClickListener(mListener);
+        startTime = System.nanoTime();
 
     }
 
@@ -71,6 +77,11 @@ public class SpotifyLoginActivity extends AppCompatActivity {
                     Log.e(TAG,"Auth token: " + authToken);
                     Intent intent = new Intent(SpotifyLoginActivity.this,
                             LoginActivity.class);
+
+                    endTime = System.nanoTime();
+                    long duration = ((endTime - startTime)/1000);
+                    Log.i(TAG, "this is the duration: " + duration);
+
                     startActivity(intent);
                     destroy();
                     break;

@@ -35,6 +35,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -84,11 +85,6 @@ dependencies {
     //testing
     testImplementation "com.google.truth:truth:1.1.2"
     testImplementation 'org.json:json:20180813'
-
-
- //   def androidXTestVersion = "1.4.0"
- //  androidTestImplementation "androidx.test:runner:$androidXTestVersion"
- //  androidTestImplementation "androidx.test:rules:$androidXTestVersion"
 
     //animation
     def lottieVersion = "3.4.0"

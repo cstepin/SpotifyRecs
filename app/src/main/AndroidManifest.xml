@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpotifyRecs"
         tools:targetApi="31">
+        <profileable android:shell="true"/>
         <activity
             android:name=".LikedSongsActivity"
             android:exported="false" />
@@ -74,5 +75,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
