@@ -182,4 +182,26 @@ query.findObjectsInBackground { (artists: [PFObject]?, error: Error?) in
     * (Read/GET) Use Spotify / Deezer API to find top x songs associated with the new artists.
 * Final finished album Screen 
     * (Update/PUT) Update user artists with the new artists to whom they like to listen.
+    * 
+
+### 7. Profiler numbers:
+
+Memory Profiler:
+![](https://github.com/cstepin/SpotifyRecs/blob/master/MemoryProfiler.png)
+
+CPU Profiler:
+![](https://github.com/cstepin/SpotifyRecs/blob/master/CPUProfiler.png)
+
+### 8. Loss for three algorithms:
+Loss for Simple Cosine Similarity:
+
+Loss for Fastai:
+About 2.9
+![](https://github.com/cstepin/SpotifyRecs/blob/master/FastAICollabFiltering.png)
+
+Loss for Naive Neural Networks:
+test loss 673.166 
+
+### 9. Database Schema:
+
 
