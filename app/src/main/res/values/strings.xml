@@ -21,4 +21,8 @@
     <string name="recommendations">Recommendations:</string>
     <string name="enter_your_first_artist">Enter Your First Artist…</string>
     <string name="mix_your_artists">Mix Your Artists!</string>
+    <string name="cover_art_image">Cover art image</string>
+    <string name="press_to_hear_snippet_of_music">Press to hear snippet of music</string>
+    <string name="press_to_hear_snippet_of_music1">Press to hear snippet of music</string>
+    <string name="covert_art_image1">Covert art image</string>
 </resources>

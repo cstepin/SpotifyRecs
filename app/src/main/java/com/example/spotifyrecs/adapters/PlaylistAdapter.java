@@ -2,10 +2,12 @@ package com.example.spotifyrecs.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Playlist;
@@ -55,10 +58,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle;
         View itemView;
+        ImageButton ibExport;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
+            ibExport = itemView.findViewById(R.id.ibExport);
             tvTitle = itemView.findViewById(R.id.tvTitle);
         }
 
@@ -117,6 +122,26 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
                     intent.putExtra("final songs",
                             Parcels.wrap(songs));
+                    context.startActivity(intent);
+                }
+            });
+
+            ibExport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ExportActivity.class);
+                    intent.putExtra("playlist name", playlist.getName());
+                    List<Song> songs = new ArrayList<>();
+                    for(int i = 0; i < playlist.getSongs().length(); i++){
+                        Song song = new Song();
+                        try {
+                            songs.add(fromJson(playlist.getSongs().getJSONObject(i)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    intent.putExtra("songs", Parcels.wrap(songs));
                     context.startActivity(intent);
                 }
             });

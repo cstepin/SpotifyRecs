@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void toExport(){
         Intent i = new Intent(MainActivity.this, ExportActivity.class);
-        startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+      //  startActivity(i);
+     //   overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

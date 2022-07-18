@@ -96,14 +96,7 @@ public class CollabSongDeckAdapter extends BaseAdapter {
 
         ibPlay.setOnClickListener(v1 -> startPlay(getItem(position), true, v1));
         View finalV = v;
-        btnIgnore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v1) {
-                ignoreClicked(finalV, songs.get(position));
-            }
-        });
-      //  btnIgnore.setOnClickListener(v1 -> ignoreClicked(v1, songs.get(position)));
-
+        btnIgnore.setOnClickListener(v1 -> ignoreClicked(finalV, songs.get(position)));
         tvArtist.setText(songs.get(position).getArtist());
         tvTitle.setText(songs.get(position).getTitle());
 
@@ -138,31 +131,11 @@ public class CollabSongDeckAdapter extends BaseAdapter {
 
 
     private void ignoreClicked(View v, Song song) {
+        Log.i("in ignore clicked", "here setting ignoreClicked to true");
         ignoreClicked = true;
         song.setVisible(false);
         v.setVisibility(View.GONE);
         song.visible = false;
-
-        /* user_x_rating_raw[user_rating_index] = 0.0F;
-        user_rating_index++;
-
-        song.setVisible(false);
-
-        v.setVisibility(View.GONE);
-        song.visible = false;
-        Log.i("in ignore", "this is index: " + user_rating_index + " and " +
-                "this is the floats: " + user_x_rating_raw.length);
-
-        if(user_rating_index == 10){
-            Intent i = new Intent(v.getContext(),
-                    AnalyzeRecommendActivity.class);
-            i.putExtra("floats", user_x_rating_raw);
-            i.putExtra("songs",
-                    Parcels.wrap(songs));
-
-            v.getContext().startActivity(i);
-        }
-         */
     }
 
     private void connected(Song s, Boolean onClick, View v) {
