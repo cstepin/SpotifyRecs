@@ -4,28 +4,19 @@ import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.parse.ParseUser;
-import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
@@ -61,7 +52,6 @@ import kaaes.spotify.webapi.android.models.Artists;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
-import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
 
 public class AnalyzeRecommendActivity extends AppCompatActivity {
@@ -72,6 +62,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
     private Module mModule = null;
     private Module naiveModule = null;
+    private Module betterModule = null;
 
     protected SwipeSongDeckAdapter adapter;
     ProgressBar pb;
@@ -120,8 +111,16 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             finish();
         }
 
-      //  run(mModule);
-        run2(naiveModule);
+        try {
+            betterModule = LiteModuleLoader.load(assetFilePath(getApplicationContext(), "model_nn_better.ptl"));
+        } catch (IOException e) {
+            Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
+            finish();
+        }
+
+        run(mModule);
+       // runNaive(naiveModule);
+        runBetter(betterModule);
     }
 
     // Given a certain song, it pulls the artist of the song and finds similar artists to
@@ -237,10 +236,10 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-        mostRelatedUser(output_rating.getDataAsFloatArray());
+      //  mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
-    public void run2(Module mModule){
+    public void runNaive(Module mModule){
         Log.i("in run", "run message here");
         final long[] user_x_rating_shape = new long[] {1, 10};
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
@@ -254,16 +253,20 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
         }
 
-        int[][] user_x_refined_rating = new int[10][2];
+        int[] user_x_refined_rating = new int[10];
 
-        for(int i = 0; i < user_x_rating_raw.length; i++){
-            int[] curr_long_arr = {1, Math.round(user_x_rating_raw[i])};
-            user_x_refined_rating[i] = curr_long_arr;
+        for(int i = 0; i < 10; i++){
+            if(i % 2 == 0) {
+                user_x_refined_rating[i] = 1;
+            }
+            else{
+                user_x_refined_rating[i] = (int) user_x_rating_raw[i];
+            }
         }
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
        // user_x_rating_int_buffer.put(user_x_refined_rating); //idk how to fix
-        user_x_rating_int_buffer.put(new int[]{1, 2, 3});
+        user_x_rating_int_buffer.put(user_x_refined_rating);
         final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_int_buffer, user_x_rating_shape);
         final IValue user_x_rating = IValue.from(user_x_rating_tensor);
 
@@ -273,16 +276,64 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         user_x_rating_float_buffer.put(user_x_rating_raw);
       //  final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_float_buffer, user_x_rating_shape);
         //final IValue user_x_rating = IValue.from(user_x_rating_tensor);
-        System.out.println("user_x_rating 2: " + Arrays.toString(user_x_rating.toTensor().getDataAsFloatArray()));
+        System.out.println("user_x_rating 2: " + Arrays.toString(user_x_rating.toTensor().getDataAsIntArray()));
 
         Log.i("export", "this is the rating 2: " + user_x_rating + " and this is the ");
-        final Tensor output_rating = mModule.forward(user_x_rating).toTensor(); //IValue.from(0)
+        final Tensor output_rating = naiveModule.forward(user_x_rating).toTensor(); //IValue.from(0)
 
         output_rating.getDataAsFloatArray();
 
         System.out.println("output rating is 2: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
       //  mostRelatedUser(output_rating.getDataAsFloatArray());
+    }
+
+    public void runBetter(Module mModule){
+        final long[] user_x_rating_shape = new long[] {1, 10};
+        final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
+        final float[] user_x_rating_raw;
+
+        if(getIntent().hasExtra("floats")) {
+            user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
+        }
+        else{
+            user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
+        }
+
+        int[] user_x_refined_rating = new int[10];
+
+        for(int i = 0; i < 10; i++){
+            if(i % 2 == 0) {
+                user_x_refined_rating[i] = 1;
+            }
+            else{
+                user_x_refined_rating[i] = (int) user_x_rating_raw[i];
+            }
+        }
+
+        final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
+        user_x_rating_int_buffer.put(user_x_refined_rating);
+        final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_int_buffer, user_x_rating_shape);
+        final IValue user_x_rating = IValue.from(user_x_rating_tensor);
+
+        System.out.println("num_user_x_rating_numel is 3 : " + num_user_x_rating_numel);
+
+        final FloatBuffer user_x_rating_float_buffer = Tensor.allocateFloatBuffer((int)num_user_x_rating_numel);
+        user_x_rating_float_buffer.put(user_x_rating_raw);
+        //  final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_float_buffer, user_x_rating_shape);
+        //final IValue user_x_rating = IValue.from(user_x_rating_tensor);
+        System.out.println("user_x_rating 3: " + Arrays.toString(user_x_rating.toTensor().getDataAsIntArray()));
+
+        Log.i("export", "this is the rating 3: " + user_x_rating + " and this is the ");
+
+        //second parameter is probably incorrect
+        final Tensor output_rating = betterModule.forward(user_x_rating, IValue.from(0), IValue.from(-1), IValue.from(1)).toTensor(); //IValue.from(0)
+
+        output_rating.getDataAsFloatArray();
+
+        System.out.println("output rating is 3: " + Arrays.toString(output_rating.getDataAsFloatArray()));
+
+        //  mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     private void mostRelatedUser(float[] data) {

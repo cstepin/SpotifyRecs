@@ -7,14 +7,22 @@
     android:orientation="vertical"
     android:gravity="center">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_bottom_navigation" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lottie_url="https://assets6.lottiefiles.com/packages/lf20_b6cz19m8.json"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false"
-        android:visibility="invisible"/>
+        app:lottie_url="https://assets3.lottiefiles.com/packages/lf20_cjoombb4.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false" />
 
     <com.yalantis.library.Koloda
         android:id="@+id/koloda"
