@@ -196,12 +196,32 @@ CPU Profiler:
 Loss for Simple Cosine Similarity:
 
 Loss for Fastai:
-About 2.9
+About 2.9 after first run
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/FastAICollabFiltering.png)
+
+2.95 after second run:
+![](https://github.com/cstepin/SpotifyRecs/blob/master/Screen%20Shot%202022-07-19%20at%201.16.57%20PM.png)
 
 Loss for Naive Neural Networks:
 test loss 673.166 
 
+Loss for Better Neural Networks:
+
+Final RMSE: 1.3319
+
+Conclusion:
+
+Better Neural Networks is the most accurate predictor for recommendations for music.
+
 ### 9. Database Schema:
 
+Used back4app.
 
+Structure of a "User" object:
+
+![](https://github.com/cstepin/SpotifyRecs/blob/master/userObject1.png)
+![](https://github.com/cstepin/SpotifyRecs/blob/master/userObject2.png)
+
+Structure of a "Playlist" object:
+
+![](https://github.com/cstepin/SpotifyRecs/blob/master/playlistObject.png)
