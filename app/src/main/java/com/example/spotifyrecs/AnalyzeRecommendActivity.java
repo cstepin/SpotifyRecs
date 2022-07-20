@@ -289,16 +289,22 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is 2: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-        mostRelatedUser(output_rating.getDataAsFloatArray());
+      //  mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     public void runBetter(Module mModule){
+
+        //I think I should run this ten times and then just collect that list of 10
+
         // First variable
-        final long[] user_x_rating_shape = new long[] {1, 1};
+      //  final long[] user_x_rating_shape = new long[] {1, 1};
+        final long[] user_x_rating_shape = new long[] {1, 10};
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_x_rating_raw;
 
-        user_x_rating_raw = new int[]{195214};
+      //  user_x_rating_raw = new int[]{195214};
+        user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
+        123, 423, 6, 3245, 2134};
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
@@ -306,12 +312,15 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         final IValue user_x_rating = IValue.from(user_x_rating_tensor);
 
-        // Seocnd variable
-        final long[] user_y_rating_shape = new long[] {1, 1};
+        // Second variable
+     //   final long[] user_y_rating_shape = new long[] {1, 1};
+        final long[] user_y_rating_shape = new long[] {1, 10};
         final long num_user_y_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_y_rating_raw;
 
-        user_y_rating_raw = new int[]{1169};
+   //     user_y_rating_raw = new int[]{1169};
+        user_y_rating_raw = new int[]{123489, 1233, 4563, 43251, 1234,
+        23465, 56473, 23465, 5423, 85764};
 
         final IntBuffer user_y_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_y_rating_numel);
         user_y_rating_int_buffer.put(user_y_rating_raw);
@@ -324,10 +333,15 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         final Tensor output_rating = mModule.forward(user_x_rating, user_y_rating, IValue.from(-1), IValue.from(1)).toTensor(); //IValue.from(0)
 
-        output_rating.getDataAsFloatArray();
+        float[] output_float_rating = output_rating.getDataAsFloatArray();
+        float[] final_output_float = new float[10];
+        for(int i = 0; i < final_output_float.length; i++){
+            final_output_float[i] = output_float_rating[i];
+        }
 
         System.out.println("output rating is 3: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
+        mostRelatedUser(final_output_float);
     }
 
     private void mostRelatedUser(float[] data) {
