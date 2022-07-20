@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.spotifyrecs.R;
+import com.example.spotifyrecs.adapters.CollabSongDeckAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Song;
@@ -61,7 +63,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     List<String> faveSongs = new ArrayList<>();
     List<Song> keepSongs = new ArrayList<>();
     Koloda koloda;
-    // Jason is the best TA
 
     private Module cosineSimModule = null;
     private Module naiveModule = null;
@@ -71,6 +72,9 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     ProgressBar pb;
     final String TAG = "AnalyzeRecommendedActivity";
     LottieAnimationView animationView;
+    Button btnSimple;
+    Button btnBetter;
+    Button btnNaive;
 
     SpotifyApi api;
     public static SpotifyService spotifyService;
@@ -84,16 +88,26 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export);
+        setContentView(R.layout.activity_analyze_recommend);
 
         startTime = System.nanoTime();
 
         koloda = findViewById(R.id.koloda);
         pb = findViewById(R.id.pbLoading);
-        pb.setVisibility(ProgressBar.VISIBLE);
         animationView = new LottieAnimationView(AnalyzeRecommendActivity.this);
         animationView.findViewById(R.id.animationView);
         animationView.pauseAnimation();
+
+        btnSimple = findViewById(R.id.btnSimple);
+        btnNaive = findViewById(R.id.btnNaive);
+        btnBetter = findViewById(R.id.btnBetter);
+
+        //Button onClick listeners
+        btnSimple.setOnClickListener(v -> selectedButton(btnSimple));
+
+        btnNaive.setOnClickListener(v -> selectedButton(btnNaive));
+
+        btnBetter.setOnClickListener(v -> selectedButton(btnBetter));
 
         Log.i("in export", "in export activity");
 
@@ -121,9 +135,29 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             finish();
         }
 
-        run(cosineSimModule);
-        runNaive(naiveModule);
-        runBetter(betterModule);
+      //  run(cosineSimModule);
+     //   runNaive(naiveModule);
+      //  runBetter(betterModule);
+    }
+
+    private void selectedButton(Button selectButton) {
+        pb.setVisibility(ProgressBar.VISIBLE);
+        clearAllButtons();
+        if(selectButton.getId() == R.id.btnSimple){
+            run(cosineSimModule);
+        }
+        else if(selectButton.getId() == R.id.btnNaive){
+            runNaive(naiveModule);
+        }
+        else{
+            runBetter(betterModule);
+        }
+    }
+
+    private void clearAllButtons() {
+        btnSimple.setVisibility(View.GONE);
+        btnNaive.setVisibility(View.GONE);
+        btnBetter.setVisibility(View.GONE);
     }
 
     // Given a certain song, it pulls the artist of the song and finds similar artists to
@@ -239,7 +273,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-        //  mostRelatedUser(output_rating.getDataAsFloatArray());
+        mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     public void runNaive(Module mModule){
@@ -255,14 +289,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         else{
             //     user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
         }
-
-        /*
-        user_x_rating_raw = new int[]{195214,   1169,
-                76700,   2020,
-                79741,  23960,
-                123533,   4710,
-                195514,  43495};
-         */
 
         user_x_rating_raw = new int[]{195214,   1169,
         76700,   2020,
@@ -289,7 +315,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is 2: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-      //  mostRelatedUser(output_rating.getDataAsFloatArray());
+        mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     public void runBetter(Module mModule){
@@ -394,7 +420,8 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         songs.addAll(finalSongs);
         // adapter.notifyDataSetChanged();
 
-        adapter = new SwipeSongDeckAdapter(this, songs);
+        adapter = new SwipeSongDeckAdapter(AnalyzeRecommendActivity.this, songs);
+
         koloda.setAdapter(adapter);
 
         koloda.setKolodaListener(new KolodaListener() {

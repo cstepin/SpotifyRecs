@@ -11,8 +11,17 @@
         android:id="@+id/rvSwipeSongs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-50dp" />
+
+    <com.yalantis.library.Koloda
+        android:id="@+id/koloda"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:koloda_card_layout="@layout/item_card_song"
+        app:koloda_card_offsetY="16dp"
+        app:koloda_card_rotate_angle="30">
+    </com.yalantis.library.Koloda>
 
     <ProgressBar
         android:id="@+id/pbLoading"
@@ -21,4 +30,34 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="232dp"
+        android:text="Click for Simple"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnNaive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Click for Naive Neural Nets"
+        app:layout_constraintEnd_toEndOf="@+id/rvSwipeSongs"
+        app:layout_constraintStart_toStartOf="@+id/rvSwipeSongs"
+        app:layout_constraintTop_toBottomOf="@+id/btnSimple" />
+
+    <Button
+        android:id="@+id/btnBetter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:text="Click for Better Neural Nets"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnNaive" />
 </androidx.constraintlayout.widget.ConstraintLayout>

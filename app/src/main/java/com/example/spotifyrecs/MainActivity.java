@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
-                    Fragment fragment;
                     if (menuItem.getItemId() == R.id.action_logout) {
                         onLogout();
                     }
