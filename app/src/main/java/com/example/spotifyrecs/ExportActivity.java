@@ -3,14 +3,18 @@ package com.example.spotifyrecs;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 import com.yalantis.library.Koloda;
 import org.parceler.Parcels;
 import java.util.ArrayList;
@@ -63,6 +67,20 @@ public class ExportActivity extends AppCompatActivity {
         animationView.pauseAnimation();
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setOnItemSelectedListener(
+                menuItem -> {
+                    if (menuItem.getItemId() == R.id.action_logout) {
+                        onLogout();
+                    }
+                    else if (menuItem.getItemId() == R.id.action_home) {
+                        onHome();
+                    }
+                    else if (menuItem.getItemId() == R.id.action_liked) {
+                        onLiked();
+                    }
+                    return true;
+                });
 
         Log.i("in export", "in export activity");
 
@@ -179,5 +197,28 @@ public class ExportActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+    }
+
+    //Menu item functions
+    private void onHome() {
+        startActivity(new Intent(ExportActivity.this, MainActivity.class));
+    }
+
+    private void onLiked(){
+        Intent i = new Intent(ExportActivity.this, LikedSongsActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    private void onLogout() {
+        Toast.makeText(ExportActivity.this, "logging out", Toast.LENGTH_LONG).show();
+        // navigate backwards to Login screen
+        Intent i = new Intent(this, SpotifyLoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
+        startActivity(i);
+        ParseUser.logOutInBackground();
+        ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+        finish();
     }
 }
