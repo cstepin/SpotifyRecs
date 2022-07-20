@@ -69,6 +69,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     List<String> faveSongs = new ArrayList<>();
     List<Song> keepSongs = new ArrayList<>();
     Koloda koloda;
+    // Jason is the best TA
 
     private Module mModule = null;
     private Module naiveModule = null;
