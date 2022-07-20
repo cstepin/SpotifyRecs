@@ -59,7 +59,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     List<String> faveSongs = new ArrayList<>();
     List<Song> keepSongs = new ArrayList<>();
     Koloda koloda;
-    // Jason is the best TA
 
     private Module mModule = null;
     private Module naiveModule = null;
@@ -285,7 +284,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is 2: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
-      //  mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     public void runBetter(Module mModule){
