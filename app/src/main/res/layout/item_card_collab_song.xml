@@ -18,14 +18,15 @@
         android:orientation="vertical">
 
         <!--image view for course image-->
+
+        <!--text view for our course name-->
         <ImageView
             android:id="@+id/ivCoverArt"
             android:layout_width="match_parent"
             android:layout_height="450dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/covert_art_image1" />
+            android:contentDescription="@string/covert_art_image1"
+            android:scaleType="centerCrop" />
 
-        <!--text view for our course name-->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"

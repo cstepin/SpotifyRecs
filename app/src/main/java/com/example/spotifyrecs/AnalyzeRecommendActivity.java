@@ -122,7 +122,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         }
 
         run(cosineSimModule);
-        //  runNaive(naiveModule);
+        runNaive(naiveModule);
         runBetter(betterModule);
     }
 
@@ -243,9 +243,8 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     }
 
     public void runNaive(Module mModule){
-        Log.i("in run", "run message here");
-        final long[] user_x_rating_shape = new long[] {5, 2};
-        //final long[] user_x_rating_shape = new long[] {2, 10};
+      //  final long[] user_x_rating_shape = new long[] {5, 2};
+        final long[] user_x_rating_shape = new long[] {10, 2};
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_x_rating_raw;
 
@@ -257,11 +256,24 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             //     user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
         }
 
+        /*
         user_x_rating_raw = new int[]{195214,   1169,
                 76700,   2020,
                 79741,  23960,
                 123533,   4710,
                 195514,  43495};
+         */
+
+        user_x_rating_raw = new int[]{195214,   1169,
+        76700,   2020,
+        79741,  23960,
+        123533,   4710,
+        195514,  43495,
+        101539,  20038,
+        82228,  29767,
+        170764, 107713,
+        83770,  89582,
+        22045,     76};
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
@@ -277,6 +289,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         System.out.println("output rating is 2: " + Arrays.toString(output_rating.getDataAsFloatArray()));
 
+        mostRelatedUser(output_rating.getDataAsFloatArray());
     }
 
     public void runBetter(Module mModule){
