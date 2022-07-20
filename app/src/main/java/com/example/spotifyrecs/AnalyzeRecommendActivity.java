@@ -274,8 +274,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
         final FloatBuffer user_x_rating_float_buffer = Tensor.allocateFloatBuffer((int)num_user_x_rating_numel);
         user_x_rating_float_buffer.put(user_x_rating_raw);
-      //  final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_float_buffer, user_x_rating_shape);
-        //final IValue user_x_rating = IValue.from(user_x_rating_tensor);
+
         System.out.println("user_x_rating 2: " + Arrays.toString(user_x_rating.toTensor().getDataAsIntArray()));
 
         Log.i("export", "this is the rating 2: " + user_x_rating + " and this is the ");
