@@ -63,6 +63,9 @@ public class finalPlaylistActivity extends AppCompatActivity {
                     else if (menuItem.getItemId() == R.id.action_home) {
                         onHome();
                     }
+                    else if (menuItem.getItemId() == R.id.action_liked) {
+                        onLiked();
+                    }
                     return true;
                 });
 
@@ -172,6 +175,12 @@ public class finalPlaylistActivity extends AppCompatActivity {
     //Menu item functions
     private void onHome() {
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void onLiked(){
+        Intent i = new Intent(finalPlaylistActivity.this, LikedSongsActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void onLogout() {

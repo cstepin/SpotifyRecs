@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     Button btnNewPlaylist;
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
-    Button btnExport;
     Button btnCollab;
 
     @Override
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         btnNewPlaylist = findViewById(R.id.btnNewPlaylist);
         btnOldPlaylist = findViewById(R.id.btnOldPlaylist);
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
-        btnExport = findViewById(R.id.btnExport);
         btnCollab = findViewById(R.id.btnCollab);
 
         Song song = new Song();
@@ -44,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(
                 menuItem -> {
-                    Fragment fragment;
                     if (menuItem.getItemId() == R.id.action_logout) {
                         onLogout();
                     }
@@ -59,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         btnOldPlaylist.setOnClickListener(v -> toOldPlaylist());
 
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
-
-        btnExport.setOnClickListener(v -> toExport());
     }
 
     private void toCollab() {
@@ -107,11 +102,5 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, EnterArtistsActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    private void toExport(){
-        Intent i = new Intent(MainActivity.this, ExportActivity.class);
-      //  startActivity(i);
-     //   overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }
