@@ -83,7 +83,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
         pb = findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.VISIBLE);
         animationView = new LottieAnimationView(GenerateSongsActivity.this);
-        animationView.findViewById(R.id.animationView);
+        animationView = findViewById(R.id.animationView);
         animationView.pauseAnimation();
 
         Log.i("in export", "in export activity");
@@ -294,6 +294,7 @@ public class GenerateSongsActivity extends AppCompatActivity {
         koloda.setKolodaListener(new KolodaListener() {
             @Override
             public void onNewTopCard(int i) {
+                animationView.setVisibility(View.INVISIBLE);
                 animationView.pauseAnimation();
             }
 
@@ -344,8 +345,8 @@ public class GenerateSongsActivity extends AppCompatActivity {
                 Log.i(TAG, "This is the song: " +
                         ((Song) koloda.getAdapter().getItem(i + 1)).title);
                 faveSongs.add(song.title);
-                //   animationView.resumeAnimation();
-
+                animationView.setVisibility(View.VISIBLE);
+                animationView.playAnimation();
             }
 
             @Override

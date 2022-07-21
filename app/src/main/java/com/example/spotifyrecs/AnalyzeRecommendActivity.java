@@ -286,14 +286,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         List<Song> songs = Parcels.unwrap(getIntent()
                 .getParcelableExtra("songs"));
 
-        if(getIntent().hasExtra("floats")) {
-            //   user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
-            //     Log.i("floats", "got floats from user input: " + Arrays.toString(user_x_rating_raw));
-        }
-        else{
-            //     user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
-        }
-
         user_x_rating_raw = new int[]{195214,   1169,
         76700,   2020,
         79741,  23960,
@@ -338,14 +330,21 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final int[] user_x_rating_raw;
 
       //  user_x_rating_raw = new int[]{195214};
-        user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
-        123, 423, 6, 3245, 2134};
+
+       // user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
+      //  123, 423, 6, 3245, 2134};
+
+        user_x_rating_raw = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
         final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_int_buffer, user_x_rating_shape);
 
         final IValue user_x_rating = IValue.from(user_x_rating_tensor);
+
+        //to get song id from here
+        List<Song> songs = Parcels.unwrap(getIntent()
+                .getParcelableExtra("songs"));
 
         // Second variable
      //   final long[] user_y_rating_shape = new long[] {1, 1};
@@ -369,7 +368,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final IValue user_y_rating = IValue.from(user_y_rating_tensor);
 
 
-        System.out.println("num_user_x_rating_numel is 2 : " + num_user_x_rating_numel);
+        System.out.println("num_user_x_rating_numel is 3 : " + num_user_x_rating_numel);
 
         final Tensor output_rating = mModule.forward(user_x_rating, user_y_rating, IValue.from(-1), IValue.from(1)).toTensor(); //IValue.from(0)
 
