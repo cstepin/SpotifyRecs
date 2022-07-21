@@ -72,11 +72,11 @@ public class EnterArtistsActivity extends AppCompatActivity {
 
     //Menu navigation buttons
     private void onHome() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(EnterArtistsActivity.this, MainActivity.class));
     }
 
     private void onLiked(){
-        Intent i = new Intent(finalPlaylistActivity.this, LikedSongsActivity.class);
+        Intent i = new Intent(EnterArtistsActivity.this, LikedSongsActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
