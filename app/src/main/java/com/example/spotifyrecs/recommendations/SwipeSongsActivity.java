@@ -1,5 +1,6 @@
 package com.example.spotifyrecs.recommendations;
 
+import static com.example.spotifyrecs.resources.Resources.decodeBase62;
 import static com.example.spotifyrecs.resources.Resources.getClientId;
 import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
 
@@ -229,8 +230,11 @@ public class SwipeSongsActivity extends AppCompatActivity {
                                         currSong.artist = item1.subtitle;
                                         currSong.imageString = item1.imageUri.raw;
 
+                                        currSong.setId(decodeBase62(item1.id));
+
+                                        Log.i(TAG, "this is the id: " + currSong.getId());
+
                                         songs.add(currSong);
-                                        Log.i("fsd", "inside + " + item1 + " and title: " + item1);
                                     }
                                 }
                             }

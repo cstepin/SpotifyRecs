@@ -22,7 +22,7 @@ public class Resources {
     // Python transcribed from: https://stackoverflow.com/questions/1119722/base-62-conversion
     static String BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public static int decode(String encoded) {
+    public static int decodeBase62(String encoded) {
         /* Decode a Base X encoded string into the number
 
         Arguments:

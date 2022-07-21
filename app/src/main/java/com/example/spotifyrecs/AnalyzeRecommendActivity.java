@@ -282,6 +282,10 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_x_rating_raw;
 
+        //to get song id from here
+        List<Song> songs = Parcels.unwrap(getIntent()
+                .getParcelableExtra("songs"));
+
         if(getIntent().hasExtra("floats")) {
             //   user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
             //     Log.i("floats", "got floats from user input: " + Arrays.toString(user_x_rating_raw));
@@ -300,6 +304,11 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         170764, 107713,
         83770,  89582,
         22045,     76};
+
+        for(int i = 0; i < 10; i++){
+            Log.i(TAG, "curr id is: " + songs.get(i).getId());
+            user_x_rating_raw[i*2] = songs.get(i).getId();
+        }
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
@@ -347,6 +356,11 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
    //     user_y_rating_raw = new int[]{1169};
         user_y_rating_raw = new int[]{123489, 1233, 4563, 43251, 1234,
         23465, 56473, 23465, 5423, 85764};
+
+        for(int i = 0; i < 10; i++){
+            Log.i(TAG, "curr id is: " + songs.get(i).getId());
+            user_y_rating_raw[i] = songs.get(i).getId();
+        }
 
         final IntBuffer user_y_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_y_rating_numel);
         user_y_rating_int_buffer.put(user_y_rating_raw);
@@ -406,7 +420,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 pos2 = i;
             }
         }
-
         //now we know which is the favorite song...
         List<Song> songs = Parcels.unwrap(getIntent()
                 .getParcelableExtra("songs"));

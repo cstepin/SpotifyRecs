@@ -18,6 +18,15 @@ public class Song {
     public String uri;
     public String imageString;
     public Boolean visible;
+    public int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Song(String title, String artist){
         this.title = title;
