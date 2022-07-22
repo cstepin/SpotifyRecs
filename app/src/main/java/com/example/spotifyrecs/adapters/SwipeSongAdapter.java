@@ -198,13 +198,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             }
         }
 
-        /*
-        protected void onStop() {
-            // Aaand we will finish off here.
-            SpotifyAppRemote.disconnect(mSpotifyAppRemote);
-        }
-         */
-
         private void onSongClick(View v, MotionEvent event, long lastClickTime){
             final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
 
@@ -275,7 +268,6 @@ public class SwipeSongAdapter extends RecyclerView.Adapter<SwipeSongAdapter.View
             Song song = new Song();
             song.artist = (String) tvArtist.getText();
             song.title = (String) tvTitle.getText();
-          //  Log.i("in double click3", "this is song: " + song.toString());
             faveSongs.add(song.title);
         }
     }

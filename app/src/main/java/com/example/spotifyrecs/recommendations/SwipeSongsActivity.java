@@ -13,13 +13,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
-import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Song;

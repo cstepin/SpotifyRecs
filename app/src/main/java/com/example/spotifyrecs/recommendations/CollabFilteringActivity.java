@@ -5,8 +5,6 @@ import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,14 +15,10 @@ import android.widget.ProgressBar;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.spotifyrecs.AnalyzeRecommendActivity;
-import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
-import com.example.spotifyrecs.adapters.CollabSongAdapter;
 import com.example.spotifyrecs.adapters.CollabSongDeckAdapter;
-import com.example.spotifyrecs.adapters.SwipeSongAdapter;
 import com.example.spotifyrecs.models.Song;
 import com.parse.ParseUser;
-import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
@@ -32,7 +26,6 @@ import org.json.JSONArray;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +39,6 @@ import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Recommendations;
 import kaaes.spotify.webapi.android.models.SeedsGenres;
 import kaaes.spotify.webapi.android.models.Track;
-import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.client.Response;
 
 public class CollabFilteringActivity extends AppCompatActivity {
