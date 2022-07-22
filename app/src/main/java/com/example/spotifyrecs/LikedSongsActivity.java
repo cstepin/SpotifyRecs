@@ -78,12 +78,6 @@ public class LikedSongsActivity extends AppCompatActivity {
         rvSongs.setLayoutManager(new LinearLayoutManager(this));
 
         setServiceApi();
-
-        try {
-            queryLikedSongs();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void queryLikedSongs() throws JSONException {
@@ -106,7 +100,8 @@ public class LikedSongsActivity extends AppCompatActivity {
                 public void success(TracksPager tracksPager, Response response) {
                     Song song = new Song();
                     if(tracksPager.tracks.items.size() < 1){
-                        Log.i("problem", "there's no items in liked songs");
+                        Log.i("problem", "problem with: " + songTitle + " and got: " +
+                                tracksPager.tracks.items);
                     }
 
                     Log.i("this is track", "track name: " + tracksPager.tracks.items.get(0).name);
@@ -150,5 +145,11 @@ public class LikedSongsActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
+        try {
+            queryLikedSongs();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

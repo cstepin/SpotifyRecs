@@ -134,10 +134,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
         }
-
-      //  run(cosineSimModule);
-     //   runNaive(naiveModule);
-      //  runBetter(betterModule);
     }
 
     private void selectedButton(Button selectButton) {

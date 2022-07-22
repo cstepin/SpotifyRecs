@@ -85,7 +85,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
         pb = findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.VISIBLE);
         animationView = new LottieAnimationView(CollabFilteringActivity.this);
-        animationView.findViewById(R.id.animationView);
+        animationView = findViewById(R.id.animationView);
         animationView.pauseAnimation();
 
         //Then we authenticate our current api
@@ -177,6 +177,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
         koloda.setKolodaListener(new KolodaListener() {
             @Override
             public void onNewTopCard(int i) {
+                animationView.setVisibility(View.INVISIBLE);
                 animationView.pauseAnimation();
             }
 
@@ -239,6 +240,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onCardDoubleTap(int i) {
+                animationView.setVisibility(View.VISIBLE);
                 animationView.playAnimation();
                 Song song = (Song) Objects.requireNonNull(koloda.getAdapter()).getItem(i + 1);
                 Log.i(TAG, "This is the song: " +
