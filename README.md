@@ -228,4 +228,4 @@ Structure of a "Playlist" object:
 
 ## Walkthrough of App:
 
-!()[https://github.com/cstepin/SpotifyRecs/blob/master/SpotifyRecsWalkthrough_AdobeExpress.gif]
+![](https://github.com/cstepin/SpotifyRecs/blob/master/SpotifyRecsWalkthrough_AdobeExpress.gif)
