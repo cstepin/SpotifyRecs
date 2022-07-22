@@ -1,9 +1,5 @@
 # SpotifyRecs
-
-Original App Design Project - README Template
 ===
-
-# SpotifyRecs
 
 ## Table of Contents
 1. [Overview](#Overview)
@@ -212,6 +208,10 @@ Final RMSE: 1.3319
 Conclusion:
 
 Better Neural Networks is the most accurate predictor for recommendations for music.
+
+Download number:
+
+![](https://github.com/cstepin/SpotifyRecs/blob/master/DownloadSizes%2C%20Assets%2C%20and%20Lib.png)
 
 ### 9. Database Schema:
 
