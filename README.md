@@ -225,3 +225,7 @@ Structure of a "User" object:
 Structure of a "Playlist" object:
 
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/playlistObject.png)
+
+## Walkthrough of App:
+
+!()[https://github.com/cstepin/SpotifyRecs/blob/master/SpotifyRecsWalkthrough_AdobeExpress.gif]
