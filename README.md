@@ -1,11 +1,10 @@
 # SpotifyRecs
-===
 
 ## Table of Contents
 1. [Overview](#Overview)
-1. [Product Spec](#Product-Spec)
-1. [Wireframes](#Wireframes)
-2. [Schema](#Schema)
+2. [Product Spec](#Product-Spec)
+3. [Wireframes](#Wireframes)
+4. [Schema](#Schema)
 
 ## Overview
 ### Description
@@ -72,7 +71,7 @@ This can be used on avid music listeners / maybe then develop a side that can be
 
 **Flow Navigation** (Screen to Screen)
 * Forced Log-in -> Account creation if no log in is available
-* Music Selection -> Tinder swiping screen -> Final album
+* Music Selection -> Song swiping screen -> Final album
 * Youtube -> Listening to recently albums if need be.
 
 ### 4. Rough Wireframe
@@ -106,20 +105,13 @@ Week 3
 	[x] Figure out how to get song recommendation from what the PyTorch model gives back.
 
 GOAL: Get the above end-to-end complete by the end of this week
-
-(Optional)
-- Start working on second algorithm (pulling information from multiple APIs)
-	- The algorithm will pull results from multiple API's then try to find the maximum intersection (if any exists)
-	of artists similar to the the users' inputted artists.
-	
-
 - Start researching how to do comparison matrix for algorithms
 - Also start working on Unit tests for algorithms
 	- Especially for the Pytorch model, unit tests are very important
 
 Week 4 *Goal* — have a mostly-complete app
 - [x] Figure out how to play bits of sound / YouTube or Spotify music in the swiping window
-- (Maybe) figure out how to export the album into a different window
+- [x] Figure out how to export the album into a different window
 
 Week 5
 - Style the app to make it look nice
@@ -127,11 +119,12 @@ Week 5
 
 Week 6 *Goal* have the app look like a real app and have at least one stretch goal finished
 - [x] Stretch goal: Trying to look at past albums
-- Stretch goal: Trying to play the “most repeated” part of videos
+- [x] Develop several PyTorch models (one control and several others to test) to see which one predicts most accurately.
+- [] Allow users to delete playlists as well
 
 Week 7:
-- Stretch goal: Make the artists “anonymous” when playing the snippets
-- Polishing the app
+- [] Allow users to delete playlists as well
+- [] Implement a way to keep track of user ID and use that with the simple and better nn models
 
 ### 6. Models
 
@@ -162,23 +155,10 @@ Outline Parse Network Requests
     * (Update/PUT) Update user’s artists if they enter new artists
 * Generating songs screen
     * (Read/GET) Check the artists the user has to try not duplicate artists
-
-let query = PFQuery(className:”User”)
-query.order(byDescending: "createdAt")
-query.findObjectsInBackground { (artists: [PFObject]?, error: Error?) in
-   if let error = error { 
-      print(error.localizedDescription)
-   } else if let artists = artists {
-      print("Successfully retrieved \(artists.count) artists.”)
-  // TODO: Copy the array over to then check against other users’ artists
-   }
-}
-
     * (Read/GET) Check the artists other users have to try and suggest some of the artists not in the overlap
     * (Read/GET) Use Spotify / Deezer API to find top x songs associated with the new artists.
 * Final finished album Screen 
     * (Update/PUT) Update user artists with the new artists to whom they like to listen.
-    * 
 
 ### 7. Profiler numbers:
 
@@ -188,28 +168,39 @@ Memory Profiler:
 CPU Profiler:
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/CPUProfiler.png)
 
-### 8. Loss for three algorithms:
-Loss for Simple Cosine Similarity:
+### 8. Loss for three algorithms and Links to Notebooks:
+Link to Cosine Similarity notebook:
+https://colab.research.google.com/drive/1Gw6BYINN8iAcAI4WVpLKiL5kl0DFuMLl#scrollTo=ti8YxB4tJBn6
 
-Loss for Fastai:
+(loss not evaluated, because dataset is too small)
+
+MSE for Fastai (the control):
 About 2.9 after first run
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/FastAICollabFiltering.png)
+
+Link to notebook:
+https://colab.research.google.com/drive/1jZEX67I2BVd962PbeOINo5FXdGhmdhLy#scrollTo=o_wi229b5nlW
 
 2.95 after second run:
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/Screen%20Shot%202022-07-19%20at%201.16.57%20PM.png)
 
-Loss for Naive Neural Networks:
+MSE for Naive Neural Networks:
 test loss 673.166 
 
-Loss for Better Neural Networks:
+Link to notebook:
+https://colab.research.google.com/drive/14lGLmvGP3aVGJazOFwpe7cPMsipxAVUp#scrollTo=9H1D9BJMZe2E
 
+MSE for Better Neural Networks using more training data:
 Final RMSE: 1.3319
+
+Link to notebook:
+https://colab.research.google.com/drive/1vnpi75mVP1jZ2WVLdOR83ZWK6HDK84GJ#scrollTo=680c2a05
 
 Conclusion:
 
 Better Neural Networks is the most accurate predictor for recommendations for music.
 
-Download number:
+Download memory usage numbers:
 
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/DownloadSizes%2C%20Assets%2C%20and%20Lib.png)
 
@@ -229,3 +220,13 @@ Structure of a "Playlist" object:
 ## Walkthrough of App:
 
 ![](https://github.com/cstepin/SpotifyRecs/blob/master/SpotifyRecsWalkthrough_AdobeExpress.gif)
+
+## Future Ideas for App:
+
+There are several possible areas of improvement for the app.
+
+First, is recommendation ratings.
+I added several recommendation algorithms to be used with a/b testing purposes. To fully complete the a/b testing, I would need to also have users rate their satisfaction based on several metrics (genre of music, liveliness of songs, etc), and alter the next series of recommendations based on the ratings. These ratings could also help show which recommendation algorithm is preferred by users.
+
+Second, is recommendations based on other users in the network.
+I could also allow users to see what other users there are in the network and what their general music tastes are (and maybe give a score for how related their music interests are.) This would allow users who want music recommendations based on other users to choose which users they would want to influence their music.
