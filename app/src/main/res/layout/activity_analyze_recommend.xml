@@ -20,7 +20,8 @@
         android:layout_height="match_parent"
         app:koloda_card_layout="@layout/item_card_song"
         app:koloda_card_offsetY="16dp"
-        app:koloda_card_rotate_angle="30">
+        app:koloda_card_rotate_angle="30"
+        android:elevation="2dp">
     </com.yalantis.library.Koloda>
 
     <ProgressBar
