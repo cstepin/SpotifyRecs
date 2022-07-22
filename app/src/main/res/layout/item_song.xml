@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#5A7FA8">
+    android:background="#5A7FA8"
+    android:outlineAmbientShadowColor="#141920"
+    android:outlineProvider="bounds"
+    android:outlineSpotShadowColor="#151923">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-condensed-light"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#D7E0EC"
@@ -22,9 +25,9 @@
 
     <TextView
         android:id="@+id/tvArtist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_width="200dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:fontFamily="sans-serif-condensed-light"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"

@@ -102,14 +102,19 @@ public class LikedSongsActivity extends AppCompatActivity {
                     if(tracksPager.tracks.items.size() < 1){
                         Log.i("problem", "problem with: " + songTitle + " and got: " +
                                 tracksPager.tracks.items);
-                    }
 
+                        if(finalI == likedSongs.length() - 1) {
+                            querySongs(songs);
+                        }
+                    }
+                    else{
                     Log.i("this is track", "track name: " + tracksPager.tracks.items.get(0).name);
                     song.artist = tracksPager.tracks.items.get(0).artists.get(0).name;
                     song.title = songTitle;
                     songs.add(song);
-                    if(finalI == likedSongs.length() - 1){
+                    if(finalI == likedSongs.length() - 1) {
                         querySongs(songs);
+                    }
                     }
                 }
             });

@@ -16,7 +16,8 @@
         app:lottie_url="https://assets6.lottiefiles.com/packages/lf20_b6cz19m8.json"
         app:lottie_autoPlay="false"
         app:lottie_loop="false"
-        android:visibility="invisible"/>
+        android:visibility="visible"
+        android:elevation="2dp"/>
 
     <com.yalantis.library.Koloda
         android:id="@+id/koloda"
@@ -24,7 +25,8 @@
         android:layout_height="match_parent"
         app:koloda_card_layout="@layout/item_card_song"
         app:koloda_card_offsetY="16dp"
-        app:koloda_card_rotate_angle="30">
+        app:koloda_card_rotate_angle="30"
+        android:elevation="0dp">
     </com.yalantis.library.Koloda>
 
     <ProgressBar
