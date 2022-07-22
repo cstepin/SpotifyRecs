@@ -1,5 +1,6 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.resources.Resources.decodeBase62;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.annotation.NonNull;
@@ -293,9 +294,14 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         83770,  89582,
         22045,     76};
 
+
+        int userId = decodeBase62(ParseUser.getCurrentUser().getObjectId());
+        Log.i(TAG, "userID is: " + userId);
+
         for(int i = 0; i < 10; i++){
             Log.i(TAG, "curr id is: " + songs.get(i).getId());
             user_x_rating_raw[i*2] = songs.get(i).getId();
+            user_x_rating_raw[i*2 + 1] = userId;
         }
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
@@ -317,20 +323,15 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
 
     public void runBetter(Module mModule){
 
-        //I think I should run this ten times and then just collect that list of 10
-
         // First variable
-      //  final long[] user_x_rating_shape = new long[] {1, 1};
         final long[] user_x_rating_shape = new long[] {1, 10};
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_x_rating_raw;
 
-      //  user_x_rating_raw = new int[]{195214};
+        int userId = decodeBase62(ParseUser.getCurrentUser().getObjectId());
 
-       // user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
-      //  123, 423, 6, 3245, 2134};
-
-        user_x_rating_raw = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        user_x_rating_raw = new int[]{userId, userId, userId, userId, userId, userId, userId,
+                userId, userId, userId};
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
@@ -343,14 +344,11 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 .getParcelableExtra("songs"));
 
         // Second variable
-     //   final long[] user_y_rating_shape = new long[] {1, 1};
         final long[] user_y_rating_shape = new long[] {1, 10};
         final long num_user_y_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_y_rating_raw;
 
-   //     user_y_rating_raw = new int[]{1169};
-        user_y_rating_raw = new int[]{123489, 1233, 4563, 43251, 1234,
-        23465, 56473, 23465, 5423, 85764};
+        user_y_rating_raw = new int[10];
 
         for(int i = 0; i < 10; i++){
             Log.i(TAG, "curr id is: " + songs.get(i).getId());

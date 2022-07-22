@@ -131,10 +131,7 @@ public class ExportActivity extends AppCompatActivity {
             @Override
             public void success(Playlist playlist, Response response) {
                 Log.i(TAG, "playlist successfully added");
-                pb.setVisibility(ProgressBar.INVISIBLE);
-                animationView.playAnimation();
                 getSongUris(playlist.id, playlistSongs);
-               // addToPlaylist(playlist.id);
             }
         });
     }
@@ -160,6 +157,9 @@ public class ExportActivity extends AppCompatActivity {
             @Override
             public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
                 Log.i(TAG, "successfully added to new playlist " + playlistTrackPager.items);
+                pb.setVisibility(ProgressBar.INVISIBLE);
+                animationView.playAnimation();
+                Toast.makeText(ExportActivity.this, "Successfully exported playlist!", Toast.LENGTH_SHORT).show();
             }
         });
     }
