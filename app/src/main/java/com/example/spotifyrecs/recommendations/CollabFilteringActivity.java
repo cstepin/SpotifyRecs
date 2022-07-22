@@ -1,5 +1,6 @@
 package com.example.spotifyrecs.recommendations;
 
+import static com.example.spotifyrecs.resources.Resources.decodeBase62;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.annotation.NonNull;
@@ -84,10 +85,8 @@ public class CollabFilteringActivity extends AppCompatActivity {
         pb = findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.VISIBLE);
         animationView = new LottieAnimationView(CollabFilteringActivity.this);
-        animationView.findViewById(R.id.animationView);
+        animationView = findViewById(R.id.animationView);
         animationView.pauseAnimation();
-
-        Log.i("in export", "in export activity");
 
         //Then we authenticate our current api
         setServiceApi();
@@ -133,7 +132,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
                             " with genre: " + genres.get(finalI));
 
                     if(finalI == genres.size() - 1){
-                        Log.i("in here 3", "these are the songs: " + songs);
                         querySongs(songs);
                     }
                 }
@@ -150,16 +148,17 @@ public class CollabFilteringActivity extends AppCompatActivity {
                     song.uri = track.uri;
                     song.imageString = track.album.images.get(0).url;
                     song.visible = true;
+
+                    song.setId(decodeBase62(track.id));
+
+                    Log.i(TAG, "this is the id: " + song.getId());
+
                     songs.add(song);
-                    Log.i("added song", "added song: " + songs.size());
 
                     Log.i("success querying", "title: " + track.name + " and genre: " +
                             track.type);
 
-                    //  map.clear();
-
                     if(finalI == genres.size() - 1){
-                        Log.i("in here 3", "these are the songs: " + songs);
                         querySongs(songs);
                     }
                 }
@@ -171,7 +170,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
         Log.i(TAG, "length: " + finalSongs.size());
         songs.addAll(finalSongs);
-        // adapter.notifyDataSetChanged();
 
         adapter = new CollabSongDeckAdapter(this, songs);
         koloda.setAdapter(adapter);
@@ -179,6 +177,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
         koloda.setKolodaListener(new KolodaListener() {
             @Override
             public void onNewTopCard(int i) {
+                animationView.setVisibility(View.INVISIBLE);
                 animationView.pauseAnimation();
             }
 
@@ -190,7 +189,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
             @Override
             public void onCardSwipedLeft(int i) {
                 if(adapter.getIgnoreClicked()){
-                    Log.i(TAG, "i'm in here");
                     user_x_rating_raw[user_rating_index] = 0.0F;
                     user_rating_index++;
                     adapter.setIgnoreClicked(false);
@@ -199,7 +197,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
                     ignoreClicked = false;
                 }
                 else {
-                    Log.i("here", "here here here");
                     user_x_rating_raw[user_rating_index] = -1.0F;
                     user_rating_index++;
                 }
@@ -208,7 +205,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
             @Override
             public void onCardSwipedRight(int i) {
                 if(adapter.getIgnoreClicked()){
-                    Log.i(TAG, "i'm in here");
                     user_x_rating_raw[user_rating_index] = 0.0F;
                     user_rating_index++;
                     adapter.setIgnoreClicked(false);
@@ -217,7 +213,6 @@ public class CollabFilteringActivity extends AppCompatActivity {
                     ignoreClicked = false;
                 }
                 else {
-                    Log.i("here", "here here 2");
                     user_x_rating_raw[user_rating_index] = 1.0F;
                     user_rating_index++;
                 }
@@ -235,9 +230,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onCardSingleTap(int i) {
-                Log.i(TAG, "i'm here in here");
                 if(adapter.getIgnoreClicked()){
-                    Log.i(TAG, "i'm in here");
                     user_x_rating_raw[user_rating_index] = 0.0F;
                     user_rating_index++;
                     adapter.setIgnoreClicked(false);
@@ -247,6 +240,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
             @Override
             public void onCardDoubleTap(int i) {
+                animationView.setVisibility(View.VISIBLE);
                 animationView.playAnimation();
                 Song song = (Song) Objects.requireNonNull(koloda.getAdapter()).getItem(i + 1);
                 Log.i(TAG, "This is the song: " +
@@ -262,13 +256,13 @@ public class CollabFilteringActivity extends AppCompatActivity {
             @Override
             public void onEmptyDeck() {
 
+                //To ensure data from swipe is saved
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
                 updateLikedSongs();
 
                 Intent i = new Intent(CollabFilteringActivity.this,
                         AnalyzeRecommendActivity.class);
-                Log.i(TAG, "this is the final length: " + user_x_rating_raw.length + " and array: " + Arrays.toString(user_x_rating_raw));
                 Log.i(TAG, "and this is songs: " + songs);
                 i.putExtra("floats", user_x_rating_raw);
                 i.putExtra("songs", Parcels.wrap(songs));

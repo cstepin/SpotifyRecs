@@ -134,10 +134,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
         }
-
-      //  run(cosineSimModule);
-     //   runNaive(naiveModule);
-      //  runBetter(betterModule);
     }
 
     private void selectedButton(Button selectButton) {
@@ -282,13 +278,9 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final long num_user_x_rating_numel = Tensor.numel(user_x_rating_shape);
         final int[] user_x_rating_raw;
 
-        if(getIntent().hasExtra("floats")) {
-            //   user_x_rating_raw = getIntent().getFloatArrayExtra("floats");
-            //     Log.i("floats", "got floats from user input: " + Arrays.toString(user_x_rating_raw));
-        }
-        else{
-            //     user_x_rating_raw = new float[]{0.0F, 0.5F, 0.5F, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.0F};
-        }
+        //to get song id from here
+        List<Song> songs = Parcels.unwrap(getIntent()
+                .getParcelableExtra("songs"));
 
         user_x_rating_raw = new int[]{195214,   1169,
         76700,   2020,
@@ -300,6 +292,11 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         170764, 107713,
         83770,  89582,
         22045,     76};
+
+        for(int i = 0; i < 10; i++){
+            Log.i(TAG, "curr id is: " + songs.get(i).getId());
+            user_x_rating_raw[i*2] = songs.get(i).getId();
+        }
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
@@ -329,14 +326,21 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final int[] user_x_rating_raw;
 
       //  user_x_rating_raw = new int[]{195214};
-        user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
-        123, 423, 6, 3245, 2134};
+
+       // user_x_rating_raw = new int[]{413, 1423, 213, 645, 423,
+      //  123, 423, 6, 3245, 2134};
+
+        user_x_rating_raw = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
         final IntBuffer user_x_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_x_rating_numel);
         user_x_rating_int_buffer.put(user_x_rating_raw);
         final Tensor user_x_rating_tensor = Tensor.fromBlob(user_x_rating_int_buffer, user_x_rating_shape);
 
         final IValue user_x_rating = IValue.from(user_x_rating_tensor);
+
+        //to get song id from here
+        List<Song> songs = Parcels.unwrap(getIntent()
+                .getParcelableExtra("songs"));
 
         // Second variable
      //   final long[] user_y_rating_shape = new long[] {1, 1};
@@ -348,6 +352,11 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         user_y_rating_raw = new int[]{123489, 1233, 4563, 43251, 1234,
         23465, 56473, 23465, 5423, 85764};
 
+        for(int i = 0; i < 10; i++){
+            Log.i(TAG, "curr id is: " + songs.get(i).getId());
+            user_y_rating_raw[i] = songs.get(i).getId();
+        }
+
         final IntBuffer user_y_rating_int_buffer = Tensor.allocateIntBuffer((int)num_user_y_rating_numel);
         user_y_rating_int_buffer.put(user_y_rating_raw);
         final Tensor user_y_rating_tensor = Tensor.fromBlob(user_y_rating_int_buffer, user_y_rating_shape);
@@ -355,7 +364,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         final IValue user_y_rating = IValue.from(user_y_rating_tensor);
 
 
-        System.out.println("num_user_x_rating_numel is 2 : " + num_user_x_rating_numel);
+        System.out.println("num_user_x_rating_numel is 3 : " + num_user_x_rating_numel);
 
         final Tensor output_rating = mModule.forward(user_x_rating, user_y_rating, IValue.from(-1), IValue.from(1)).toTensor(); //IValue.from(0)
 
@@ -406,7 +415,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
                 pos2 = i;
             }
         }
-
         //now we know which is the favorite song...
         List<Song> songs = Parcels.unwrap(getIntent()
                 .getParcelableExtra("songs"));
