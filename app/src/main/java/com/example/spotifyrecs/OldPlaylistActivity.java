@@ -85,7 +85,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void queryPlaylists() {
-        // specify what type of data we want to query - Post.class
+        // specify what type of data we want to query - Playlist.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key
         query.include(Playlist.KEY_USER);
