@@ -51,6 +51,9 @@ public class SwipeSongsActivity extends AppCompatActivity {
     final String TAG = "ExportActivity";
     LottieAnimationView animationView;
 
+    //to check whether we already liked the current song
+    Boolean currSongLiked = false;
+
     //We time the amount it takes to generate all of the song items
     long startTime;
     long endTime;
@@ -81,6 +84,7 @@ public class SwipeSongsActivity extends AppCompatActivity {
         koloda.setKolodaListener(new KolodaListener() {
             @Override
             public void onNewTopCard(int i) {
+                currSongLiked = false;
                 animationView.setVisibility(View.INVISIBLE);
                 animationView.pauseAnimation();
             }
@@ -126,14 +130,27 @@ public class SwipeSongsActivity extends AppCompatActivity {
 
             @Override
             public void onCardDoubleTap(int i) {
-                animationView.playAnimation();
-                Song song = (Song) Objects.requireNonNull(koloda.getAdapter())
-                        .getItem(i + 1);
-                Log.i(TAG, "This is the song: " +
-                        ((Song) koloda.getAdapter().getItem(i + 1)).title);
-                faveSongs.add(song.title);
-                animationView.setVisibility(View.VISIBLE);
-                animationView.playAnimation();
+                if(currSongLiked) {
+                    animationView.setAnimationFromUrl("https://assets1.lottiefiles.com/datafiles/tdCLmdmRpULFtsT/data.json");
+                    animationView.setVisibility(View.VISIBLE);
+                    animationView.playAnimation();
+                    Log.i(TAG, "This is the song: " +
+                            (faveSongs.get(faveSongs.size() - 1)));
+                    faveSongs.remove(faveSongs.size() - 1);
+                    currSongLiked = false;
+                }
+
+                else {
+                    animationView.setAnimationFromUrl("https://assets6.lottiefiles.com/packages/lf20_b6cz19m8.json");
+                    Song song = (Song) Objects.requireNonNull(koloda.getAdapter())
+                            .getItem(i + 1);
+                    Log.i(TAG, "This is the song: " +
+                            ((Song) koloda.getAdapter().getItem(i + 1)).title);
+                    faveSongs.add(song.title);
+                    animationView.setVisibility(View.VISIBLE);
+                    animationView.playAnimation();
+                    currSongLiked = true;
+                }
             }
 
             @Override

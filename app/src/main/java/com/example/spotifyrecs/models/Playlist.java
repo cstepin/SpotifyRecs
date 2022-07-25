@@ -14,6 +14,15 @@ public class Playlist extends ParseObject {
     public static final String KEY_NAME = "name";
     public static final String KEY_SONGS = "songs";
     public static final String KEY_USER = "user";
+    public static String playlistCover;
+
+    public static void setPlaylistCover(String playlistCover) {
+        Playlist.playlistCover = playlistCover;
+    }
+
+    public static String getPlaylistCover() {
+        return playlistCover;
+    }
 
     public Playlist(){}
 

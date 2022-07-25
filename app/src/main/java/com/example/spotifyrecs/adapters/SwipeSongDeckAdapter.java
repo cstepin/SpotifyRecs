@@ -145,36 +145,4 @@ public class SwipeSongDeckAdapter extends BaseAdapter {
             });
         }
     }
-
-    /*
-    private void onDoubleClick(View v) {
-        Log.i("In double click2", "double click noticed");
-        Song song = new Song();
-        song.artist = (String) tvArtist.getText();
-        song.title = (String) tvTitle.getText();
-        //  Log.i("in double click3", "this is song: " + song.toString());
-        faveSongs.add(song.title);
-    }
-
-    private void updateLikedSongs() {
-        if(faveSongs.size() == 0){
-            return;
-        }
-
-        JSONArray currLiked = ParseUser.getCurrentUser().getJSONArray("faveSongs");
-        assert currLiked != null;
-        for(String song : faveSongs){
-            currLiked.put(song);
-        }
-        ParseUser.getCurrentUser().put("faveSongs", currLiked);
-        ParseUser.getCurrentUser().saveInBackground(e -> {
-            if(e != null){
-                Log.e("AddPlaylistFragment", "error saving playlists", e);
-            }
-            else{
-                Log.i("Addplaylistfragment", "faveSongs saved successfully");
-            }
-        });
-    }
-     */
 }
