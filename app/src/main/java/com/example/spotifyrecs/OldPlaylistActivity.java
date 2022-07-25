@@ -3,6 +3,7 @@ package com.example.spotifyrecs;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -28,6 +29,8 @@ public class OldPlaylistActivity extends AppCompatActivity {
     RecyclerView rvPlaylists;
     ArrayList<Playlist> allPlaylists;
     protected PlaylistAdapter adapter;
+
+    SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,20 @@ public class OldPlaylistActivity extends AppCompatActivity {
         rvPlaylists.setAdapter(adapter);
         // set the layout manager on the recycler view
         rvPlaylists.setLayoutManager(new LinearLayoutManager(this));
+
+        swipeContainer = findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(() -> {
+            // Your code to refresh the list here.
+            // Make sure you call swipeContainer.setRefreshing(false)
+            // once the network request has completed successfully.
+            fetchTimelineAsync(0);
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         queryPlaylists();
     }
@@ -107,5 +124,13 @@ public class OldPlaylistActivity extends AppCompatActivity {
             allPlaylists.addAll(playlists);
             adapter.notifyDataSetChanged();
         });
+    }
+
+    public void fetchTimelineAsync(int page) {
+        adapter.clear();
+        // ...the data has come back, add new items to your adapter...
+        queryPlaylists();
+        // Now we call setRefreshing(false) to signal refresh has finished
+        swipeContainer.setRefreshing(false);
     }
 }

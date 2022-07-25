@@ -2,6 +2,7 @@ package com.example.spotifyrecs.adapters;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -139,15 +140,21 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             ibExport.setOnClickListener(v -> onExport(playlist));
 
             ibDelete.setOnClickListener(v -> {
-                try {
-                    onDelete(playlist);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+
+                    Log.i("playlist adapter", "in if onclick");
+                    try {
+                        onDelete(playlist, position);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
 
-        void onDelete(Playlist playlist) throws JSONException {
+        void onDelete(Playlist playlist, int position) throws JSONException {
 
             //First, delete playlist id from user
             JSONArray currPlaylists = ParseUser.getCurrentUser().getJSONArray("playlists");
@@ -190,10 +197,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                     return;
                 }
 
-                Log.i(TAG, "this is first object id: " + playlist.getObjectId());
-
                 for(Playlist playlist1 : playlists){
-                    Log.i(TAG, "in here playlists, curr id: " + playlist1.getObjectId());
                     if(playlist1.getObjectId().equals(playlist.getObjectId())){
                         playlist1.deleteInBackground(e1 -> {
                             if(e1 != null){
@@ -206,6 +210,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                     }
                 }
             });
+
+            Log.i(TAG, "position is: " + position);
+            playlists.remove(position);
+            notifyItemRemoved(position);
         }
 
         void onExport(Playlist playlist){
@@ -224,5 +232,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             intent.putExtra("songs", Parcels.wrap(songs));
             context.startActivity(intent);
         }
+    }
+
+    // Clean all elements of the recycler
+    @SuppressLint("NotifyDataSetChanged")
+    public void clear() {
+        playlists.clear();
+        notifyDataSetChanged();
     }
 }
