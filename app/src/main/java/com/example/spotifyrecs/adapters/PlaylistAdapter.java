@@ -2,6 +2,7 @@ package com.example.spotifyrecs.adapters;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -224,5 +225,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             intent.putExtra("songs", Parcels.wrap(songs));
             context.startActivity(intent);
         }
+    }
+
+    // Clean all elements of the recycler
+    @SuppressLint("NotifyDataSetChanged")
+    public void clear() {
+        playlists.clear();
+        notifyDataSetChanged();
     }
 }
