@@ -17,13 +17,6 @@ public class Playlist extends ParseObject {
 
     public Playlist(){}
 
-    /*
-    public Playlist(String name, List<Song> songs){
-        this.songs = songs;
-        this.name = name;
-    }
-     */
-
     public String getName(){
         return getString(KEY_NAME);
     }
