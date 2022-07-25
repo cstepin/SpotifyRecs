@@ -10,13 +10,12 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.237"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivPlaylistCover"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Example Title here" />
 
@@ -24,25 +23,33 @@
         android:id="@+id/ibExport"
         android:layout_width="66dp"
         android:layout_height="59dp"
-        android:layout_marginStart="64dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.321"
-        app:srcCompat="@android:drawable/ic_menu_share"
-        android:contentDescription="@string/click_to_export_this_playlist_to_spotify" />
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/click_to_export_this_playlist_to_spotify"
+        app:layout_constraintStart_toEndOf="@+id/ivPlaylistCover"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:srcCompat="@android:drawable/ic_menu_share" />
 
     <ImageButton
         android:id="@+id/ibDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ibExport"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:contentDescription="@string/click_to_delete_this_playlist" />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/click_to_delete_this_playlist"
+        app:layout_constraintStart_toEndOf="@+id/ibExport"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <ImageView
+        android:id="@+id/ivPlaylistCover"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

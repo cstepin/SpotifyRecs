@@ -2,22 +2,29 @@ package com.example.spotifyrecs.adapters;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.spotifyrecs.resources.Resources.getClientId;
+import static com.example.spotifyrecs.resources.Resources.getRedirectUrl;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuView;
+import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.spotifyrecs.ExportActivity;
 import com.example.spotifyrecs.R;
 import com.example.spotifyrecs.finalPlaylistActivity;
@@ -27,6 +34,11 @@ import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.spotify.protocol.client.CallResult;
+import com.spotify.protocol.types.ImageUri;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +52,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     List<Playlist> playlists;
     private Context context;
     final String TAG = "PlaylistAdapter";
+
+    //To display images
+    private SpotifyAppRemote mSpotifyAppRemote;
 
     public PlaylistAdapter(Context context, List<Playlist> playlists) {
         this.context = context;
@@ -69,6 +84,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         View itemView;
         ImageButton ibExport;
         ImageButton ibDelete;
+        ImageView ivPlaylistCover;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +92,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             ibExport = itemView.findViewById(R.id.ibExport);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             ibDelete = itemView.findViewById(R.id.ibDelete);
+            ivPlaylistCover = itemView.findViewById(R.id.ivPlaylistCover);
         }
 
         @Override
@@ -137,6 +154,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 }
             });
 
+            //to set image
+            startPlay(playlist);
+
             ibExport.setOnClickListener(v -> onExport(playlist));
 
             ibDelete.setOnClickListener(v -> {
@@ -153,6 +173,42 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 }
             });
         }
+
+
+        public void startPlay(Playlist playlist) {
+
+            ConnectionParams connectionParams =
+                    new ConnectionParams.Builder(getClientId())
+                            .setRedirectUri(getRedirectUrl())
+                            .showAuthView(true)
+                            .build();
+
+            SpotifyAppRemote.connect(context, connectionParams,
+                    new Connector.ConnectionListener() {
+                        //Connects with the Android SDK
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote = spotifyAppRemote;
+                            Log.d("Adapter", "Connected! Yay!");
+                            // Now you can start interacting with App Remote
+                            connected(playlist);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.e("Adapter", throwable.getMessage(), throwable);
+                        }
+                    });
+        }
+
+        private void connected(Playlist playlist) {
+                //Sets up background by converting image to bitmap then finding the brightest color
+                // and setting the background to be that color
+                ImageUri newUri = new ImageUri(Playlist.getPlaylistCover());
+                CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote.getImagesApi()
+                        .getImage(newUri);
+                bitmapCallResult.setResultCallback(data -> ivPlaylistCover.setImageBitmap(data));
+            }
 
         void onDelete(Playlist playlist, int position) throws JSONException {
 

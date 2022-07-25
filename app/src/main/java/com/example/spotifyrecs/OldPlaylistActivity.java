@@ -1,5 +1,7 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.resources.Resources.getAuthToken;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,14 +23,26 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyCallback;
+import kaaes.spotify.webapi.android.SpotifyError;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.TracksPager;
+import retrofit.client.Response;
 
 public class OldPlaylistActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     RecyclerView rvPlaylists;
     ArrayList<Playlist> allPlaylists;
     protected PlaylistAdapter adapter;
+    SpotifyApi api;
+    public static SpotifyService spotifyService;
+    final String TAG = "OldPlaylistActivity";
 
     SwipeRefreshLayout swipeContainer;
 
@@ -63,12 +77,10 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
         swipeContainer = findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(() -> {
-            // Your code to refresh the list here.
-            // Make sure you call swipeContainer.setRefreshing(false)
-            // once the network request has completed successfully.
-            fetchTimelineAsync(0);
-        });
+        // Your code to refresh the list here.
+        // Make sure you call swipeContainer.setRefreshing(false)
+        // once the network request has completed successfully.
+        swipeContainer.setOnRefreshListener(this::fetchTimelineAsync);
         // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -102,6 +114,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void queryPlaylists() {
+        setServiceApi();
         // specify what type of data we want to query - Playlist.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key
@@ -120,17 +133,56 @@ public class OldPlaylistActivity extends AppCompatActivity {
                 return;
             }
 
-            // save received playlists to list and notify adapter of new data
-            allPlaylists.addAll(playlists);
-            adapter.notifyDataSetChanged();
+            try {
+                addImagesToPlaylists(playlists);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
-    public void fetchTimelineAsync(int page) {
+    private void addImagesToPlaylists(List<Playlist> playlists) throws JSONException {
+        for(int i = 0; i < playlists.size(); i++){
+            Playlist playlist = playlists.get(i);
+            String currTitle = (String) playlist.getSongs().getJSONObject(0).get("title");
+
+            int finalI = i;
+            spotifyService.searchTracks(currTitle, new SpotifyCallback<TracksPager>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+                    Log.e(TAG, "failure getting tracks", spotifyError);
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void success(TracksPager tracksPager, Response response) {
+                    Log.i(TAG, "success getting tracks");
+
+                    Playlist.setPlaylistCover(tracksPager.tracks.items.get(0).album
+                            .images.get(0).url);
+
+                    if(finalI == playlists.size() - 1){
+                        // save received playlists to list and notify adapter of new data
+                        allPlaylists.addAll(playlists);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    }
+
+    public void fetchTimelineAsync() {
         adapter.clear();
         // ...the data has come back, add new items to your adapter...
         queryPlaylists();
         // Now we call setRefreshing(false) to signal refresh has finished
         swipeContainer.setRefreshing(false);
+    }
+
+    private void setServiceApi() {
+        Log.i("setService", "authToken is " + getAuthToken());
+        api = new SpotifyApi();
+        api.setAccessToken(getAuthToken());
+        spotifyService = api.getService();
     }
 }
