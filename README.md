@@ -194,7 +194,7 @@ MSE for Better Neural Networks using more training data:
 Final RMSE: 1.3319
 
 Link to notebook:
-https://colab.research.google.com/drive/1vnpi75mVP1jZ2WVLdOR83ZWK6HDK84GJ#scrollTo=680c2a05
+https://colab.research.google.com/drive/190VSpMsalLnobAXcj_6kT-XEK5H6zxDU#scrollTo=fac5b3e8
 
 Conclusion:
 
