@@ -191,7 +191,9 @@ Link to notebook:
 https://colab.research.google.com/drive/14lGLmvGP3aVGJazOFwpe7cPMsipxAVUp#scrollTo=9H1D9BJMZe2E
 
 MSE for Better Neural Networks using more training data:
-Final RMSE: 1.3319
+Final RMSE: 1.3319 (after both training 1 epoch and 5 epochs.)
+
+![](https://github.com/cstepin/SpotifyRecs/blob/master/dataAfterEpochs.png)
 
 Link to notebook:
 https://colab.research.google.com/drive/190VSpMsalLnobAXcj_6kT-XEK5H6zxDU#scrollTo=fac5b3e8
