@@ -80,7 +80,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
         private void toYoutubeScreen(Song song) {
             Intent i = new Intent(context, YoutubeScreenActivity.class);
-            i.putExtra("song", (Parcelable) song);
+            i.putExtra("title", song.title);
+            i.putExtra("artist", song.artist);
             context.startActivity(i);
         }
 

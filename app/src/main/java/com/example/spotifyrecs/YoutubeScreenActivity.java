@@ -28,8 +28,9 @@ import okhttp3.OkHttpClient;
 public class YoutubeScreenActivity extends YouTubeBaseActivity {
 
  //   public static String CHANNEL_ID = "UCoMdktPbSTixAyNGwb-UYkQ";
+    public static String searchQuery = "";
 
-    public static String CHANNEL_GET_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=date&q="+"chopin_tristesse"+"&maxResults=20&key="+BuildConfig.YOUTUBE_API_KEY+"";
+    public static String CHANNEL_GET_URL = "";
 
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer.OnInitializedListener mOnInitializedListener;
@@ -46,24 +47,13 @@ public class YoutubeScreenActivity extends YouTubeBaseActivity {
 
         OkHttpClient client = new OkHttpClient();
 
-        /*
-        mOnInitializedListener = new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                Log.i(TAG, "onSuccess");
-                youTubePlayer.loadVideo("5xVh-7ywKpE");
-            }
+        if(getIntent().hasExtra("title")){
+            searchQuery += ((String)getIntent().getExtras().get("title")).replaceAll("\\s", "");;
+            searchQuery += ((String) getIntent().getExtras().get("artist")).replaceAll("\\s", "");;
+            CHANNEL_GET_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=date&q="+searchQuery+"&maxResults=20&key="+BuildConfig.YOUTUBE_API_KEY+"";
 
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                Log.e(TAG, "onFailure");
-            }
-        };
-         */
-
-     //   youTubePlayerView.initialize(YOUTUBE_API_KEY, mOnInitializedListener);
-
-        new RequestYoutubeAPI().execute();
+            new RequestYoutubeAPI().execute();
+        }
     }
 
     /**
