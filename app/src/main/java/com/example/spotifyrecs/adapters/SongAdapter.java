@@ -1,6 +1,8 @@
 package com.example.spotifyrecs.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifyrecs.R;
+import com.example.spotifyrecs.YoutubeScreenActivity;
 import com.example.spotifyrecs.models.Song;
 
 import org.json.JSONException;
@@ -71,6 +74,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             else{
                 tvArtist.setVisibility(View.GONE);
             }
+
+            itemView.setOnClickListener(v -> toYoutubeScreen(song));
+        }
+
+        private void toYoutubeScreen(Song song) {
+            Intent i = new Intent(context, YoutubeScreenActivity.class);
+            i.putExtra("song", (Parcelable) song);
+            context.startActivity(i);
         }
 
         @Override
@@ -85,4 +96,5 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             }
         }
     }
+
 }

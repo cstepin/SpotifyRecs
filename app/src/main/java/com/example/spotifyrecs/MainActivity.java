@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toSelectArtists(){
-        Intent i = new Intent(MainActivity.this, EnterArtistsActivity.class);
+        //Change this back
+        Intent i = new Intent(MainActivity.this, YoutubeScreenActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
