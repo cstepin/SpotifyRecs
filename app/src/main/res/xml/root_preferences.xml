@@ -15,8 +15,8 @@
     <ListPreference
         android:dependency="check_box_nn"
         android:defaultValue="false"
-        android:entries="@array/reply_entries"
-        android:entryValues="@array/reply_values"
+        android:entries="@array/nn_entries"
+        android:entryValues="@array/nn_values"
         android:key="list_preference_1"
         android:title="List preference" />
 
