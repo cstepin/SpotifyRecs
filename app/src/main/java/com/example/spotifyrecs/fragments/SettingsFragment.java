@@ -17,10 +17,10 @@ import javax.annotation.Nullable;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    CheckBoxPreference checkbox_spotify;
-    CheckBoxPreference checkbox_collab_filter;
-    CheckBoxPreference checkbox_nn;
-    ListPreference listPreference;
+    public CheckBoxPreference checkbox_spotify;
+    public CheckBoxPreference checkbox_collab_filter;
+    public CheckBoxPreference checkbox_nn;
+    public ListPreference listPreference;
 
     /*
     @Override
@@ -45,6 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert listPreference != null;
         Log.i("here", "value is: " + listPreference.getEntry());
 
+        /*
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -52,6 +53,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return false;
             }
         });
+         */
 
         if(checkbox_collab_filter.isChecked()){
             Log.i("asdf", "i'm checked");

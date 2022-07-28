@@ -1,8 +1,7 @@
 package com.example.spotifyrecs;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.preference.CheckBoxPreference;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.spotifyrecs.fragments.AddPlaylistFragment;
 import com.example.spotifyrecs.fragments.SettingsFragment;
 import com.example.spotifyrecs.models.Song;
 import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
@@ -32,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton ibSettings;
     ImageButton ibExitFragment;
     FrameLayout frameLayout;
+    SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +81,31 @@ public class MainActivity extends AppCompatActivity {
     private void deleteFragment() {
         Log.i(TAG, "in delete fragment");
         frameLayout.setVisibility(View.INVISIBLE);
-        getSupportFragmentManager().popBackStack();
+        checkChecked(settingsFragment.checkbox_collab_filter, btnNewPlaylist);
+        checkChecked(settingsFragment.checkbox_nn, btnCollab);
+        checkChecked(settingsFragment.checkbox_spotify, btnSpotifyAlg);
+        
+        if(settingsFragment.checkbox_nn.isChecked()) {
+            setNNPreference(settingsFragment.listPreference.getEntry());
+        }
+        
+    //    getSupportFragmentManager().popBackStack();
+    }
+
+    private void setNNPreference(CharSequence entry) {
+    }
+
+    private void checkChecked(CheckBoxPreference checkbox, Button btn) {
+        if(checkbox.isChecked()){
+            btn.setVisibility(View.VISIBLE);
+        }
+        else{
+            btn.setVisibility(View.GONE);
+        }
     }
 
     private void openActivityFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment = new SettingsFragment();
         /*
         getSupportFragmentManager().beginTransaction().add(settingsFragment,
                 "starting settings fragment").commit();
@@ -96,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         frameLayout.setVisibility(View.VISIBLE);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainerView, new SettingsFragment())
+                .replace(R.id.fragmentContainerView, settingsFragment)
                 .commit();
     }
 
