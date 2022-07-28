@@ -2,14 +2,19 @@ package com.example.spotifyrecs;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.spotifyrecs.fragments.AddPlaylistFragment;
+import com.example.spotifyrecs.fragments.SettingsFragment;
 import com.example.spotifyrecs.models.Song;
 import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
 import com.example.spotifyrecs.recommendations.SwipeSongsActivity;
@@ -23,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
     Button btnCollab;
+    ImageButton ibSettings;
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         btnOldPlaylist = findViewById(R.id.btnOldPlaylist);
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
         btnCollab = findViewById(R.id.btnCollab);
+        ibSettings = findViewById(R.id.ibSettings);
+        frameLayout = findViewById(R.id.fragmentContainerView);
 
         Song song = new Song();
         String toStringResult = song.toString();
@@ -51,11 +60,28 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 });
 
+        ibSettings.setOnClickListener(v -> openActivityFragment());
+
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
         btnOldPlaylist.setOnClickListener(v -> toOldPlaylist());
 
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
+    }
+
+    private void openActivityFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        SettingsFragment settingsFragment = new SettingsFragment();
+        /*
+        getSupportFragmentManager().beginTransaction().add(settingsFragment,
+                "starting settings fragment").commit();
+         */
+
+        frameLayout.setVisibility(View.VISIBLE);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainerView, new SettingsFragment())
+                .commit();
     }
 
     private void toCollab() {

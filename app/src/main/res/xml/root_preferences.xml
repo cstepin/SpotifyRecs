@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="check_box_spotify"
+        android:title="Allow Spotify Generation" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="check_box_collab_filter"
+        android:title="Allow Collaborative Filtering" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="check_box_nn"
+        android:title="Allow NeuralNet Generation" />
+    <ListPreference
+        android:dependency="check_box_nn"
+        android:defaultValue="false"
+        android:entries="@array/reply_entries"
+        android:entryValues="@array/reply_values"
+        android:key="list_preference_1"
+        android:title="List preference" />
+
+</PreferenceScreen>

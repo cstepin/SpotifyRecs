@@ -28,6 +28,8 @@
         <entry key="app/src/main/res/layout/item_song.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/item_swipe_song.xml" value="0.2587997436523437" />
         <entry key="app/src/main/res/menu/menu_bottom_navigation.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/xml/preference_screen.xml" value="0.221875" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.22282608695652173" />
       </map>
     </option>
   </component>

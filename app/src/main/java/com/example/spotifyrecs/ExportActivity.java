@@ -37,9 +37,6 @@ import retrofit.client.Response;
 
 
 public class ExportActivity extends AppCompatActivity {
-    List<Song> songs = new ArrayList<>();
-    List<String> faveSongs = new ArrayList<>();
-    List<Song> keepSongs = new ArrayList<>();
     Koloda koloda;
     String playlistName;
     List<Song> playlistSongs = new ArrayList<>();
@@ -87,7 +84,6 @@ public class ExportActivity extends AppCompatActivity {
         //Then we authenticate our current api
         setServiceApi();
 
-
         getUserID();
     }
 
@@ -100,7 +96,6 @@ public class ExportActivity extends AppCompatActivity {
 
             @Override
             public void success(UserPrivate userPrivate, Response response) {
-                Log.i(TAG, "got userID yay");
                 userID = userPrivate.id;
                 createPlaylist();
             }
@@ -140,11 +135,9 @@ public class ExportActivity extends AppCompatActivity {
         Map<String, Object> queryMap = new HashMap<>();
         Map<String, Object> requestBodyMap = new HashMap<>();
 
-     //   String finalUris = getSongUris(playlistSongs);
         Log.i(TAG, "These are finalUris: " + finalUris);
 
          queryMap.put("uris", finalUris);
-     //   queryMap.put("uris", "spotify:track:0muI8DpTEpLqqibPm3sKYf");
 
         requestBodyMap.put("Request Body", "");
 
