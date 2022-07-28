@@ -23,12 +23,14 @@ import com.parse.ParseUser;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     BottomNavigationView bottomNavigationView;
     Button btnNewPlaylist;
     Button btnOldPlaylist;
     Button btnSpotifyAlg;
     Button btnCollab;
     ImageButton ibSettings;
+    ImageButton ibExitFragment;
     FrameLayout frameLayout;
 
     @Override
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btnSpotifyAlg = findViewById(R.id.btnSpotifyAlg);
         btnCollab = findViewById(R.id.btnCollab);
         ibSettings = findViewById(R.id.ibSettings);
+        ibExitFragment = findViewById(R.id.ibExitFragment);
         frameLayout = findViewById(R.id.fragmentContainerView);
 
         Song song = new Song();
@@ -62,11 +65,24 @@ public class MainActivity extends AppCompatActivity {
 
         ibSettings.setOnClickListener(v -> openActivityFragment());
 
+        ibExitFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteFragment();
+            }
+        });
+
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
         btnOldPlaylist.setOnClickListener(v -> toOldPlaylist());
 
         btnNewPlaylist.setOnClickListener(v -> toSelectArtists());
+    }
+
+    private void deleteFragment() {
+        Log.i(TAG, "in delete fragment");
+        frameLayout.setVisibility(View.INVISIBLE);
+        getSupportFragmentManager().popBackStack();
     }
 
     private void openActivityFragment() {

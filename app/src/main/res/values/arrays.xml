@@ -1,5 +1,5 @@
 <resources>
-    <!-- Reply Preference -->
+    <!-- Algorithm NN Preference -->
     <string-array name="nn_entries">
         <item>Simple Cosine Similarity</item>
         <item>Naive Training NN</item>

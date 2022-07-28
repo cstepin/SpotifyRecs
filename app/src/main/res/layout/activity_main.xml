@@ -20,10 +20,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageButton
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:backgroundTint="@color/common_google_signin_btn_text_dark"
+            android:id="@+id/ibExitFragment"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:elevation="102dp"
-            android:icon="@android:drawable/ic_menu_close_clear_cancel" />
+            android:elevation="102dp" />
 
     </FrameLayout>
 
