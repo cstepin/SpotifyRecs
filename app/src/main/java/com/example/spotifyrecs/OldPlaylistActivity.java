@@ -142,9 +142,15 @@ public class OldPlaylistActivity extends AppCompatActivity {
     }
 
     private void addImagesToPlaylists(List<Playlist> playlists) throws JSONException {
+        List<Playlist> toAddPlaylists = new ArrayList<>();
+
         for(int i = 0; i < playlists.size(); i++){
+
             Playlist playlist = playlists.get(i);
             String currTitle = (String) playlist.getSongs().getJSONObject(0).get("title");
+
+            Log.i(TAG, "currTitle; " + currTitle);
+
 
             int finalI = i;
             spotifyService.searchTracks(currTitle, new SpotifyCallback<TracksPager>() {
@@ -153,17 +159,29 @@ public class OldPlaylistActivity extends AppCompatActivity {
                     Log.e(TAG, "failure getting tracks", spotifyError);
                 }
 
+                Playlist toAddPlaylist;
+
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void success(TracksPager tracksPager, Response response) {
                     Log.i(TAG, "success getting tracks");
-
-                    Playlist.setPlaylistCover(tracksPager.tracks.items.get(0).album
+               /*     playlist.setPlaylistCover(tracksPager.tracks.items.get(0).album
                             .images.get(0).url);
+                */
+                    toAddPlaylist = new Playlist();
+                    toAddPlaylist.setName(playlist.getName());
+                    toAddPlaylist.setSongs(playlist.getSongs());
+                    toAddPlaylist.playlistCover = tracksPager.tracks.items.get(0).album
+                            .images.get(0).url;
+
+                    Log.i(TAG, "currTitle url; " + tracksPager.tracks.items.get(0).album
+                            .images.get(0).url);
+
+                    toAddPlaylists.add(toAddPlaylist);
 
                     if(finalI == playlists.size() - 1){
                         // save received playlists to list and notify adapter of new data
-                        allPlaylists.addAll(playlists);
+                        allPlaylists.addAll(toAddPlaylists);
                         adapter.notifyDataSetChanged();
                     }
                 }

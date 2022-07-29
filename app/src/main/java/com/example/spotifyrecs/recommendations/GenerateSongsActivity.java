@@ -73,15 +73,9 @@ public class GenerateSongsActivity extends AppCompatActivity {
         animationView.pauseAnimation();
 
         Log.i("in export", "in export activity");
-        String[] artists = getIntent().getStringArrayExtra("artists");
-
-        Log.i(TAG, "artists length: " + artists.length);
 
         //Then we authenticate our current api
         setServiceApi();
-
-        //Finally set up the RecyclerView for Android
-        queryUsers(artists);
     }
 
     //This gets related artists and compiles a list of songs by those artists
@@ -384,5 +378,12 @@ public class GenerateSongsActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
+        String[] artists = getIntent().getStringArrayExtra("artists");
+
+        Log.i(TAG, "artists length: " + artists.length);
+
+        //Finally set up the RecyclerView for Android
+        queryUsers(artists);
     }
 }

@@ -2,6 +2,7 @@ package com.example.spotifyrecs.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -10,6 +11,7 @@ import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.spotifyrecs.R;
+import com.parse.ParseUser;
 
 import java.util.Arrays;
 
@@ -21,15 +23,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public CheckBoxPreference checkbox_collab_filter;
     public CheckBoxPreference checkbox_nn;
     public ListPreference listPreference;
-
-    /*
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.i("settinsg fragment", "in settings fragment");
-    }
-     */
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -45,31 +38,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert listPreference != null;
         Log.i("here", "value is: " + listPreference.getEntry());
 
-        /*
-        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Log.i("asdfsa", "new object: " + newValue + " and preference: " + preference);
-                return false;
-            }
-        });
-         */
+        checkbox_spotify.setChecked(ParseUser.getCurrentUser().getBoolean("checkedSpotify"));
 
-        if(checkbox_collab_filter.isChecked()){
-            Log.i("asdf", "i'm checked");
-        }
-        if(!checkbox_collab_filter.isChecked()){
-            Log.i("asdf", "i'm not checked");
-        }
+        checkbox_nn.setChecked(ParseUser.getCurrentUser().getBoolean("checkedNN"));
 
-        /*
-        checkbox_collab_filter.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                checkbox_collab_filter.setChecked(!checkbox_collab_filter.isChecked());
-                return true;
-            }
-        });
-         */
+        checkbox_collab_filter.setChecked(ParseUser.getCurrentUser().getBoolean("checkedCollab"));
     }
 }

@@ -204,7 +204,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         private void connected(Playlist playlist) {
                 //Sets up background by converting image to bitmap then finding the brightest color
                 // and setting the background to be that color
-                ImageUri newUri = new ImageUri(Playlist.getPlaylistCover());
+                ImageUri newUri = new ImageUri(playlist.getPlaylistCover());
                 CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote.getImagesApi()
                         .getImage(newUri);
                 bitmapCallResult.setResultCallback(data -> ivPlaylistCover.setImageBitmap(data));

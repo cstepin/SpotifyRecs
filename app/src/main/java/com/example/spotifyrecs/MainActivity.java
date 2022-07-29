@@ -78,12 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
         if(ParseUser.getCurrentUser().getBoolean("checkedSpotify")){
             btnSpotifyAlg.setVisibility(View.VISIBLE);
+            tvInstruct.setVisibility(View.INVISIBLE);
         }
         else {
             btnSpotifyAlg.setVisibility(View.INVISIBLE);
         }
 
         if(ParseUser.getCurrentUser().getBoolean("checkedNN")){
+            tvInstruct.setVisibility(View.INVISIBLE);
             btnCollab.setVisibility(View.VISIBLE);
         }
         else {
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(ParseUser.getCurrentUser().getBoolean("checkedCollab")){
+            tvInstruct.setVisibility(View.INVISIBLE);
             btnNewPlaylist.setVisibility(View.VISIBLE);
         }
         else {

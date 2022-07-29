@@ -62,10 +62,10 @@
         android:layout_marginTop="2dp"
         android:backgroundTint="#536DFE"
         android:text="@string/mix_new_playlist"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSpotifyAlg"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnSpotifyAlg" />
 
     <Button
         android:id="@+id/btnOldPlaylist"
@@ -85,11 +85,11 @@
         android:layout_marginTop="10dp"
         android:backgroundTint="#536DFE"
         android:text="@string/spotify_s_generation_algorithm"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs" />
 
     <Button
         android:id="@+id/btnCollab"
@@ -97,10 +97,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#536DFE"
         android:text="@string/improved_filtering_system"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist" />
 
     <TextView
         android:id="@+id/tvGenAlgs"
@@ -135,7 +135,7 @@
         android:id="@+id/tvNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="296dp"
         android:fontFamily="sans-serif-condensed-light"
         android:text="@string/navigation"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -143,9 +143,8 @@
         android:textStyle="bold"
         android:typeface="sans"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCollab" />
+        app:layout_constraintTop_toBottomOf="@+id/tvHome" />
 
     <ImageButton
         android:id="@+id/ibSettings"
@@ -153,11 +152,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
+        android:contentDescription="@string/select_to_see_settings_options_for_algorithms"
         app:layout_constraintEnd_toStartOf="@+id/tvHome"
         app:layout_constraintHorizontal_bias="0.591"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_preferences"
-        android:contentDescription="@string/select_to_see_settings_options_for_algorithms" />
+        app:srcCompat="@android:drawable/ic_menu_preferences" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

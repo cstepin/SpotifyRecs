@@ -123,6 +123,9 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
             Log.e("AnalyzeRecommendActivity", "Error reading assets", e);
             finish();
         }
+
+        //Then call to ask which setting the user inputted
+        selectedButton();
     }
 
     private void selectedButton() {
@@ -520,8 +523,5 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
-
-        //Then call to ask which setting the user inputted
-        selectedButton();
     }
 }

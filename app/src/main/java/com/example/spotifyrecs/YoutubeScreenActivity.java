@@ -282,7 +282,6 @@ public class YoutubeScreenActivity extends YouTubeBaseActivity {
             try {
                 HttpResponse response = httpClient.execute(httpGet);
                 HttpEntity httpEntity = response.getEntity();
-           //     Log.e("response", EntityUtils.toString(httpEntity));
                 return EntityUtils.toString(httpEntity);
 
             } catch (IOException e) {
