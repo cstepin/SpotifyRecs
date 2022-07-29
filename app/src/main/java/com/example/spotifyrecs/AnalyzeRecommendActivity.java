@@ -22,6 +22,7 @@ import com.example.spotifyrecs.adapters.CollabSongDeckAdapter;
 import com.example.spotifyrecs.adapters.SwipeSongDeckAdapter;
 import com.example.spotifyrecs.finalPlaylistActivity;
 import com.example.spotifyrecs.models.Song;
+import com.example.spotifyrecs.models.User;
 import com.parse.ParseUser;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
@@ -74,9 +75,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     ProgressBar pb;
     final String TAG = "AnalyzeRecommendedActivity";
     LottieAnimationView animationView;
-    Button btnSimple;
-    Button btnBetter;
-    Button btnNaive;
 
     SpotifyApi api;
     public static SpotifyService spotifyService;
@@ -99,17 +97,6 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         animationView = new LottieAnimationView(AnalyzeRecommendActivity.this);
         animationView.findViewById(R.id.animationView);
         animationView.pauseAnimation();
-
-        btnSimple = findViewById(R.id.btnSimple);
-        btnNaive = findViewById(R.id.btnNaive);
-        btnBetter = findViewById(R.id.btnBetter);
-
-        //Button onClick listeners
-        btnSimple.setOnClickListener(v -> selectedButton(btnSimple));
-
-        btnNaive.setOnClickListener(v -> selectedButton(btnNaive));
-
-        btnBetter.setOnClickListener(v -> selectedButton(btnBetter));
 
         Log.i("in export", "in export activity");
 
@@ -138,45 +125,24 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         }
     }
 
-    private void selectedButton(Button selectButton) {
+    private void selectedButton() {
         pb.setVisibility(ProgressBar.VISIBLE);
-        clearAllButtons();
-        String selectedAlgorithm = getAlgorithm();
-
-        /*
-        <item>cosine_sim</item>
-        <item>naive_nn</item>
-        <item>advanced_nn</item>
-         */
+        String selectedAlgorithm = ((User) ParseUser.getCurrentUser()).getAlgorithm();
 
         Log.i(TAG, "selected alg: " + selectedAlgorithm);
 
-        if(selectedAlgorithm.equals("cosine_sim")){
+        if(selectedAlgorithm.equals("Simple Cosine Similarity")){
+            Log.i(TAG, "here!");
             run(cosineSimModule);
         }
-        else if(selectedAlgorithm.equals("naive_nn")){
+        else if(selectedAlgorithm.equals("Naive Training NN")){
+            Log.i(TAG, "here 2!");
             runNaive(naiveModule);
         }
         else{
+            Log.i(TAG, "here 3!");
             runBetter(betterModule);
         }
-        /*
-        if(selectButton.getId() == R.id.btnSimple){
-            run(cosineSimModule);
-        }
-        else if(selectButton.getId() == R.id.btnNaive){
-            runNaive(naiveModule);
-        }
-        else{
-            runBetter(betterModule);
-        }
-         */
-    }
-
-    private void clearAllButtons() {
-        btnSimple.setVisibility(View.GONE);
-        btnNaive.setVisibility(View.GONE);
-        btnBetter.setVisibility(View.GONE);
     }
 
     // Given a certain song, it pulls the artist of the song and finds similar artists to
@@ -554,5 +520,8 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
+        //Then call to ask which setting the user inputted
+        selectedButton();
     }
 }

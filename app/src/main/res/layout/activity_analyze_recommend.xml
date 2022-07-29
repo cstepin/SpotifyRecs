@@ -32,33 +32,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnSimple"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="232dp"
-        android:text="Click for Simple"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnNaive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Click for Naive Neural Nets"
-        app:layout_constraintEnd_toEndOf="@+id/rvSwipeSongs"
-        app:layout_constraintStart_toStartOf="@+id/rvSwipeSongs"
-        app:layout_constraintTop_toBottomOf="@+id/btnSimple" />
-
-    <Button
-        android:id="@+id/btnBetter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="Click for Better Neural Nets"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNaive" />
 </androidx.constraintlayout.widget.ConstraintLayout>

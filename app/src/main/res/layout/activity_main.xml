@@ -8,6 +8,22 @@
     android:background="#38464C"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/tvInstruct"
+        android:layout_width="289dp"
+        android:layout_height="151dp"
+        android:elevation="87dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/select_settings_to_choose_recommendations"
+        android:textAlignment="center"
+        android:textColor="#E0E1EF"
+        android:textSize="29sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/tvNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs" />
+
     <FrameLayout
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
@@ -48,7 +64,8 @@
         android:text="@string/mix_new_playlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSpotifyAlg" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSpotifyAlg"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/btnOldPlaylist"
@@ -71,7 +88,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs" />
+        app:layout_constraintTop_toBottomOf="@+id/tvGenAlgs"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/btnCollab"
@@ -81,7 +99,8 @@
         android:text="@string/improved_filtering_system"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist" />
+        app:layout_constraintTop_toBottomOf="@+id/btnNewPlaylist"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/tvGenAlgs"
@@ -138,6 +157,7 @@
         app:layout_constraintHorizontal_bias="0.591"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_preferences" />
+        app:srcCompat="@android:drawable/ic_menu_preferences"
+        android:contentDescription="@string/select_to_see_settings_options_for_algorithms" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

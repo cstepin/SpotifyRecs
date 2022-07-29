@@ -2,17 +2,17 @@
 
     <CheckBoxPreference
         android:id="@+id/checkbox_spotify"
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="check_box_spotify"
         android:title="Allow Spotify Generation" />
     <CheckBoxPreference
         android:id="@+id/checkbox_collab_filter"
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="check_box_collab_filter"
         android:title="Allow Collaborative Filtering" />
     <CheckBoxPreference
         android:id="@+id/checkbox_nn"
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="check_box_nn"
         android:title="Allow NeuralNet Generation" />
     <ListPreference
