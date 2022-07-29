@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.spotifyrecs.databinding.ActivitySignUpBinding;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -53,7 +54,9 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void signUpUser(String username, String password) {
-        ParseUser user = new ParseUser();
+        ParseUser user = (ParseUser) ParseUser.create("_User");
+
+     //   ParseUser user = new ParseUser();
         // Set fields for the user to be created
         user.setUsername(username);
         user.setPassword(password);

@@ -1,6 +1,7 @@
 package com.example.spotifyrecs;
 
 import static com.example.spotifyrecs.resources.Resources.decodeBase62;
+import static com.example.spotifyrecs.resources.Resources.getAlgorithm;
 import static com.example.spotifyrecs.resources.Resources.getAuthToken;
 
 import androidx.annotation.NonNull;
@@ -140,6 +141,26 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
     private void selectedButton(Button selectButton) {
         pb.setVisibility(ProgressBar.VISIBLE);
         clearAllButtons();
+        String selectedAlgorithm = getAlgorithm();
+
+        /*
+        <item>cosine_sim</item>
+        <item>naive_nn</item>
+        <item>advanced_nn</item>
+         */
+
+        Log.i(TAG, "selected alg: " + selectedAlgorithm);
+
+        if(selectedAlgorithm.equals("cosine_sim")){
+            run(cosineSimModule);
+        }
+        else if(selectedAlgorithm.equals("naive_nn")){
+            runNaive(naiveModule);
+        }
+        else{
+            runBetter(betterModule);
+        }
+        /*
         if(selectButton.getId() == R.id.btnSimple){
             run(cosineSimModule);
         }
@@ -149,6 +170,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         else{
             runBetter(betterModule);
         }
+         */
     }
 
     private void clearAllButtons() {

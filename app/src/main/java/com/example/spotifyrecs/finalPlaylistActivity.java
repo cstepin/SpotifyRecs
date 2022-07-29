@@ -123,7 +123,7 @@ public class finalPlaylistActivity extends AppCompatActivity {
     private void addNewPlaylist(ArrayList<Song> finalArtists) {
         FragmentManager fm = getSupportFragmentManager();
         AddPlaylistFragment addPlaylistFragment = new AddPlaylistFragment(finalArtists);
-        addPlaylistFragment.show(fm, "hello");
+        addPlaylistFragment.show(fm, "opening playlist fragment");
     }
 
     //This just adds new artists for every user into the database

@@ -27,11 +27,6 @@ import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 
-/**
- * Sample Java code for youtube.search.list
- * See instructions for running these code samples locally:
- * https://developers.google.com/explorer-help/code-samples#java
- */
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -192,8 +187,8 @@ public class YoutubeScreenActivity extends YouTubeBaseActivity {
         if(getIntent().hasExtra("title")){
             searchQuery = "";
             searchQuery += ((String)getIntent().getExtras().get("title")).replaceAll("\\s", "");
+            searchQuery += "by";
             searchQuery += ((String) getIntent().getExtras().get("artist")).replaceAll("\\s", "");
-         //   searchQuery += "chopin_tristesse";
             CHANNEL_GET_URL = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=date&q="+searchQuery+"&maxResults=20&order=viewCount&type=video&key="+BuildConfig.YOUTUBE_API_KEY+"";
 
             new RequestYoutubeAPI().execute();

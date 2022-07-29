@@ -3,6 +3,8 @@ package com.example.spotifyrecs.resources;
 public class Resources {
     public static String authToken;
 
+    private static String nnAlgorithm = "cosine_sim";
+
     public static int getReqCode(){
         return 1337;
     }
@@ -18,6 +20,12 @@ public class Resources {
     public static void setAuthToken(String token) {authToken = token; }
 
     public static String getAuthToken() {return authToken;}
+
+    public static String getAlgorithm() {return nnAlgorithm;}
+
+    public static void setAlgorithm(String nnAlgorithm) {
+        Resources.nnAlgorithm = nnAlgorithm;
+    }
 
     // Python transcribed from: https://stackoverflow.com/questions/1119722/base-62-conversion
     static String BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";

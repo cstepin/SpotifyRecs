@@ -1,0 +1,14 @@
+<resources>
+    <!-- Algorithm NN Preference -->
+    <string-array name="nn_entries">
+        <item>Simple Cosine Similarity</item>
+        <item>Naive Training NN</item>
+        <item>Advanced Neural Nets</item>
+    </string-array>
+
+    <string-array name="nn_values">
+        <item>cosine_sim</item>
+        <item>naive_nn</item>
+        <item>advanced_nn</item>
+    </string-array>
+</resources>
