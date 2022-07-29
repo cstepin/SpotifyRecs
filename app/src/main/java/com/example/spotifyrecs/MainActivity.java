@@ -1,5 +1,7 @@
 package com.example.spotifyrecs;
 
+import static com.example.spotifyrecs.resources.Resources.setAlgorithm;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.CheckBoxPreference;
 
@@ -14,10 +16,15 @@ import android.widget.Toast;
 
 import com.example.spotifyrecs.fragments.SettingsFragment;
 import com.example.spotifyrecs.models.Song;
+import com.example.spotifyrecs.models.User;
 import com.example.spotifyrecs.recommendations.CollabFilteringActivity;
 import com.example.spotifyrecs.recommendations.SwipeSongsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -86,13 +93,37 @@ public class MainActivity extends AppCompatActivity {
         checkChecked(settingsFragment.checkbox_spotify, btnSpotifyAlg);
         
         if(settingsFragment.checkbox_nn.isChecked()) {
-            setNNPreference(settingsFragment.listPreference.getEntry());
+            setNNPreference((String) settingsFragment.listPreference.getEntry());
         }
         
     //    getSupportFragmentManager().popBackStack();
     }
 
-    private void setNNPreference(CharSequence entry) {
+    private void setNNPreference(String entry) {
+        setAlgorithm(entry);
+
+        String currAlgo = ((User) ParseUser.getCurrentUser()).getAlgorithm();
+
+        Log.i(TAG, "currAlgo: " + currAlgo + " and entry: " + entry);
+
+        JSONObject currAlgo2 = ParseUser.getCurrentUser().getJSONObject("nnAlgorithm");
+
+        Log.i(TAG, "currAlgo2: " + currAlgo2 + " and user: " + ParseUser.getCurrentUser().toString());
+
+      /*  if(!(currAlgo.equals(entry))){
+            ParseUser.getCurrentUser().put("nnAlgorithm", entry);
+            ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e != null){
+                        Log.e(TAG, "couldn't save algorithm", e);
+                        return;
+                    }
+                    Log.i(TAG, "successfully saved new algorithm");
+                }
+            });
+        }
+       */
     }
 
     private void checkChecked(CheckBoxPreference checkbox, Button btn) {

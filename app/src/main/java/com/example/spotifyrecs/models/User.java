@@ -10,6 +10,7 @@ import org.json.JSONArray;
 public class User extends ParseUser {
 
     public static final String KEY_ARTISTS = "artists";
+    public static final String KEY_ALGORITHM = "nnAlgorithm";
 
     public User() {}
 
@@ -20,4 +21,11 @@ public class User extends ParseUser {
     public void setArtists(String[] artists){
         put(KEY_ARTISTS, artists);
     }
+
+    public String getAlgorithm() { return getString(KEY_ALGORITHM); }
+
+    public void setAlgorithm(String algorithm){
+        put(KEY_ALGORITHM, algorithm);
+    }
+
 }
