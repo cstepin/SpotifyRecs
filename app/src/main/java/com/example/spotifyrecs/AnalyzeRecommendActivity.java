@@ -143,6 +143,24 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         clearAllButtons();
         String selectedAlgorithm = getAlgorithm();
 
+        /*
+        <item>cosine_sim</item>
+        <item>naive_nn</item>
+        <item>advanced_nn</item>
+         */
+
+        Log.i(TAG, "selected alg: " + selectedAlgorithm);
+
+        if(selectedAlgorithm.equals("cosine_sim")){
+            run(cosineSimModule);
+        }
+        else if(selectedAlgorithm.equals("naive_nn")){
+            runNaive(naiveModule);
+        }
+        else{
+            runBetter(betterModule);
+        }
+        /*
         if(selectButton.getId() == R.id.btnSimple){
             run(cosineSimModule);
         }
@@ -152,6 +170,7 @@ public class AnalyzeRecommendActivity extends AppCompatActivity {
         else{
             runBetter(betterModule);
         }
+         */
     }
 
     private void clearAllButtons() {
