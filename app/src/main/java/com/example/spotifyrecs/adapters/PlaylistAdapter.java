@@ -215,9 +215,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             //First, delete playlist id from user
             JSONArray currPlaylists = ParseUser.getCurrentUser().getJSONArray("playlists");
 
-            String playlistID = playlist.getObjectId();
+            String playlistID = playlist.id;
 
-            Log.i(TAG, "playlist id is: " + playlist.getObjectId());
+            Log.i(TAG, "playlist id is: " + playlist.id + " and playlist: " + playlist);
 
             assert currPlaylists != null;
 

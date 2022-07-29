@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -87,7 +88,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        queryPlaylists();
+        setServiceApi();
     }
 
     private void onHome() {
@@ -114,7 +115,6 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void queryPlaylists() {
-        setServiceApi();
         // specify what type of data we want to query - Playlist.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key
@@ -171,6 +171,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
                     toAddPlaylist = new Playlist();
                     toAddPlaylist.setName(playlist.getName());
                     toAddPlaylist.setSongs(playlist.getSongs());
+                    toAddPlaylist.id = playlist.getId();
                     toAddPlaylist.playlistCover = tracksPager.tracks.items.get(0).album
                             .images.get(0).url;
 
@@ -202,5 +203,8 @@ public class OldPlaylistActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
+        Handler handler = new Handler();
+        handler.postDelayed(this::queryPlaylists, 1000);   //5 seconds
     }
 }
