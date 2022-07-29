@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spotifyrecs.fragments.SettingsFragment;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton ibSettings;
     ImageButton ibExitFragment;
     FrameLayout frameLayout;
+    TextView tvInstruct;
     SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         ibSettings = findViewById(R.id.ibSettings);
         ibExitFragment = findViewById(R.id.ibExitFragment);
         frameLayout = findViewById(R.id.fragmentContainerView);
+        tvInstruct = findViewById(R.id.tvInstruct);
 
         Song song = new Song();
         String toStringResult = song.toString();
@@ -71,12 +74,31 @@ public class MainActivity extends AppCompatActivity {
 
         ibSettings.setOnClickListener(v -> openActivityFragment());
 
-        ibExitFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteFragment();
-            }
-        });
+        ibExitFragment.setOnClickListener(v -> deleteFragment());
+
+        if(ParseUser.getCurrentUser().getBoolean("checkedSpotify")){
+            btnSpotifyAlg.setVisibility(View.VISIBLE);
+            tvInstruct.setVisibility(View.INVISIBLE);
+        }
+        else {
+            btnSpotifyAlg.setVisibility(View.INVISIBLE);
+        }
+
+        if(ParseUser.getCurrentUser().getBoolean("checkedNN")){
+            tvInstruct.setVisibility(View.INVISIBLE);
+            btnCollab.setVisibility(View.VISIBLE);
+        }
+        else {
+            btnCollab.setVisibility(View.INVISIBLE);
+        }
+
+        if(ParseUser.getCurrentUser().getBoolean("checkedCollab")){
+            tvInstruct.setVisibility(View.INVISIBLE);
+            btnNewPlaylist.setVisibility(View.VISIBLE);
+        }
+        else {
+            btnNewPlaylist.setVisibility(View.INVISIBLE);
+        }
 
         btnSpotifyAlg.setOnClickListener(v -> toNewPlaylists());
 
@@ -88,15 +110,33 @@ public class MainActivity extends AppCompatActivity {
     private void deleteFragment() {
         Log.i(TAG, "in delete fragment");
         frameLayout.setVisibility(View.INVISIBLE);
-        checkChecked(settingsFragment.checkbox_collab_filter, btnNewPlaylist);
-        checkChecked(settingsFragment.checkbox_nn, btnCollab);
-        checkChecked(settingsFragment.checkbox_spotify, btnSpotifyAlg);
-        
-        if(settingsFragment.checkbox_nn.isChecked()) {
-            setNNPreference((String) settingsFragment.listPreference.getEntry());
+        Boolean firstResult = checkChecked(settingsFragment.checkbox_collab_filter, btnNewPlaylist);
+        ParseUser.getCurrentUser().put("checkedCollab", firstResult);
+
+        Boolean secResult = checkChecked(settingsFragment.checkbox_nn, btnCollab);
+        ParseUser.getCurrentUser().put("checkedNN", secResult);
+
+        Boolean thirdResult =checkChecked(settingsFragment.checkbox_spotify, btnSpotifyAlg);
+        ParseUser.getCurrentUser().put("checkedSpotify", thirdResult);
+
+        ParseUser.getCurrentUser().saveInBackground(e -> {
+            if(e != null){
+                Log.e(TAG, "didn't save user preferences", e);
+                return;
+            }
+            Log.i(TAG, "saved user preferences");
+        });
+
+        if(firstResult || secResult || thirdResult){
+            tvInstruct.setVisibility(View.INVISIBLE);
+        }
+        else{
+            tvInstruct.setVisibility(View.VISIBLE);
         }
         
-    //    getSupportFragmentManager().popBackStack();
+        if(secResult) {
+            setNNPreference((String) settingsFragment.listPreference.getEntry());
+        }
     }
 
     private void setNNPreference(String entry) {
@@ -106,32 +146,26 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "currAlgo: " + currAlgo + " and entry: " + entry);
 
-        JSONObject currAlgo2 = ParseUser.getCurrentUser().getJSONObject("nnAlgorithm");
-
-        Log.i(TAG, "currAlgo2: " + currAlgo2 + " and user: " + ParseUser.getCurrentUser().toString());
-
-      /*  if(!(currAlgo.equals(entry))){
+        if(!(currAlgo.equals(entry))){
             ParseUser.getCurrentUser().put("nnAlgorithm", entry);
-            ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e != null){
-                        Log.e(TAG, "couldn't save algorithm", e);
-                        return;
-                    }
-                    Log.i(TAG, "successfully saved new algorithm");
+            ParseUser.getCurrentUser().saveInBackground(e -> {
+                if(e != null){
+                    Log.e(TAG, "couldn't save algorithm", e);
+                    return;
                 }
+                Log.i(TAG, "successfully saved new algorithm");
             });
         }
-       */
     }
 
-    private void checkChecked(CheckBoxPreference checkbox, Button btn) {
+    private boolean checkChecked(CheckBoxPreference checkbox, Button btn) {
         if(checkbox.isChecked()){
             btn.setVisibility(View.VISIBLE);
+            return true;
         }
         else{
             btn.setVisibility(View.GONE);
+            return false;
         }
     }
 

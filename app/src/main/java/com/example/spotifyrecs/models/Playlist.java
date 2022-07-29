@@ -14,13 +14,27 @@ public class Playlist extends ParseObject {
     public static final String KEY_NAME = "name";
     public static final String KEY_SONGS = "songs";
     public static final String KEY_USER = "user";
-    public static String playlistCover;
+    public static final String KEY_ID = "objectId";
+    public static String id;
 
-    public static void setPlaylistCover(String playlistCover) {
-        Playlist.playlistCover = playlistCover;
+    public String playlistCover;
+
+    public String getId() {
+        return getString("objectId");
     }
 
-    public static String getPlaylistCover() {
+   /*
+    public void setId(String id) {
+        {
+            put(KEY_ID, id);;
+        }
+    */
+
+    public void setPlaylistCover(String playlistCover) {
+        this.playlistCover = playlistCover;
+    }
+
+    public String getPlaylistCover() {
         return playlistCover;
     }
 

@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -87,7 +88,7 @@ public class OldPlaylistActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        queryPlaylists();
+        setServiceApi();
     }
 
     private void onHome() {
@@ -114,7 +115,6 @@ public class OldPlaylistActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void queryPlaylists() {
-        setServiceApi();
         // specify what type of data we want to query - Playlist.class
         ParseQuery<Playlist> query = ParseQuery.getQuery(Playlist.class);
         // include data referred by user key
@@ -142,9 +142,15 @@ public class OldPlaylistActivity extends AppCompatActivity {
     }
 
     private void addImagesToPlaylists(List<Playlist> playlists) throws JSONException {
+        List<Playlist> toAddPlaylists = new ArrayList<>();
+
         for(int i = 0; i < playlists.size(); i++){
+
             Playlist playlist = playlists.get(i);
             String currTitle = (String) playlist.getSongs().getJSONObject(0).get("title");
+
+            Log.i(TAG, "currTitle; " + currTitle);
+
 
             int finalI = i;
             spotifyService.searchTracks(currTitle, new SpotifyCallback<TracksPager>() {
@@ -153,17 +159,30 @@ public class OldPlaylistActivity extends AppCompatActivity {
                     Log.e(TAG, "failure getting tracks", spotifyError);
                 }
 
+                Playlist toAddPlaylist;
+
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void success(TracksPager tracksPager, Response response) {
                     Log.i(TAG, "success getting tracks");
-
-                    Playlist.setPlaylistCover(tracksPager.tracks.items.get(0).album
+               /*     playlist.setPlaylistCover(tracksPager.tracks.items.get(0).album
                             .images.get(0).url);
+                */
+                    toAddPlaylist = new Playlist();
+                    toAddPlaylist.setName(playlist.getName());
+                    toAddPlaylist.setSongs(playlist.getSongs());
+                    toAddPlaylist.id = playlist.getId();
+                    toAddPlaylist.playlistCover = tracksPager.tracks.items.get(0).album
+                            .images.get(0).url;
+
+                    Log.i(TAG, "currTitle url; " + tracksPager.tracks.items.get(0).album
+                            .images.get(0).url);
+
+                    toAddPlaylists.add(toAddPlaylist);
 
                     if(finalI == playlists.size() - 1){
                         // save received playlists to list and notify adapter of new data
-                        allPlaylists.addAll(playlists);
+                        allPlaylists.addAll(toAddPlaylists);
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -184,5 +203,8 @@ public class OldPlaylistActivity extends AppCompatActivity {
         api = new SpotifyApi();
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
+
+        Handler handler = new Handler();
+        handler.postDelayed(this::queryPlaylists, 1000);   //5 seconds
     }
 }

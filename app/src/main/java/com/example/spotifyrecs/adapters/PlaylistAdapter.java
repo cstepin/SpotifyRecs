@@ -204,7 +204,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         private void connected(Playlist playlist) {
                 //Sets up background by converting image to bitmap then finding the brightest color
                 // and setting the background to be that color
-                ImageUri newUri = new ImageUri(Playlist.getPlaylistCover());
+                ImageUri newUri = new ImageUri(playlist.getPlaylistCover());
                 CallResult<Bitmap> bitmapCallResult = mSpotifyAppRemote.getImagesApi()
                         .getImage(newUri);
                 bitmapCallResult.setResultCallback(data -> ivPlaylistCover.setImageBitmap(data));
@@ -215,9 +215,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             //First, delete playlist id from user
             JSONArray currPlaylists = ParseUser.getCurrentUser().getJSONArray("playlists");
 
-            String playlistID = playlist.getObjectId();
+            String playlistID = playlist.id;
 
-            Log.i(TAG, "playlist id is: " + playlist.getObjectId());
+            Log.i(TAG, "playlist id is: " + playlist.id + " and playlist: " + playlist);
 
             assert currPlaylists != null;
 

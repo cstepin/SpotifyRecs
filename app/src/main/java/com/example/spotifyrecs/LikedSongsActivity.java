@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -151,10 +152,13 @@ public class LikedSongsActivity extends AppCompatActivity {
         api.setAccessToken(getAuthToken());
         spotifyService = api.getService();
 
-        try {
-            queryLikedSongs();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            try {
+                queryLikedSongs();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, 1000);   //5 seconds
     }
 }

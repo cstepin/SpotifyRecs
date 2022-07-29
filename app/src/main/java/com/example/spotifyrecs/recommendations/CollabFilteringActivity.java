@@ -130,7 +130,7 @@ public class CollabFilteringActivity extends AppCompatActivity {
 
                 @Override
                 public void success(Recommendations recommendations, Response response) {
-                    Log.i(TAG, "these are tracks size: " + recommendations.tracks.size());
+                  //  Log.i(TAG, "these are tracks size: " + recommendations.tracks.size());
 
                     Track track = recommendations.tracks.get(rand.nextInt
                             (recommendations.tracks.size()));
